@@ -91,9 +91,24 @@ integer falling;
 integer spaz = 0;
 integer trap = 0;
  
+
+ 
+list LISTENERS; // list of hud channel handles we are listening for, for building lists
+ 
 //===============================================
 //PREDEFINED FUNCTIONS
 //===============================================
+
+//NG lets send pings here and listen for pong replys
+SendCommand(key id)
+{
+    if (llGetListLength(LISTENERS) >= 60) return;  // lets not cause "too many listen" error
+    
+    integer channel = getPersonalChannel(id, 1111);
+    llRegionSayTo(id, channel, (string)id+ ":ping");
+    LISTENERS += [ llListen(channel, "", NULL_KEY, "" )] ;// if we have a reply on the channel lets see what it is.
+    llSetTimerEvent(5.0);// no reply by now, lets kick off the timer
+}
 
 //===============================================================================
 //= parameters   :    string    sMsg    message string received
@@ -381,11 +396,26 @@ default
 		g_sScriptName = llGetScriptName();
 		
         Debug((string)llGetFreeMemory() + " bytes free");
-		llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by Zopf");
+		llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthor);
 	    llWhisper(0, "INSTRUCTIONS");
 		if (g_iVerbose) llWhisper(0, "Loading notecard...");
 		;
+		        listener=llListen(getPersonalChannel(wearer,1111),"","",""); //lets listen here
+
 	}
+	
+	timer()//clear things after ping
+    {
+        llSetTimerEvent(0);
+        AGENTS = [];
+        integer n = llGetListLength(LISTENERS) - 1;
+        for (; n >= 0; n--)
+        {
+            llListenRemove(llList2Integer(LISTENERS,n));
+        }
+        LISTENERS = [];
+    }
+	
 
 	on_rez(integer i) {
 		;
