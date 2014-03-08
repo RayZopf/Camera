@@ -17,7 +17,7 @@
 
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: when reusing some older code
-//04. Jan. 2014
+//08. Mrz. 2014
 //v1.0
 
 //Files:
