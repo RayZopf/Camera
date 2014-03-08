@@ -1,9 +1,85 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Camera Control
+//
+//parts from:
 //Original Camera Script
 //Linden Lab
 //Dan Linden
 //Hijacked by Penny Patton to show what SL looks like with better camera placement!
-
 //Search script for "changedefault" to find the line you need to alter to change the default view you see when first attaching the HUD!
+//
+//parts from:
+// Script Vitality - keeps the script itself and all scripts in same prim 
+// running also in 'dead' areas, those areas where scrpts are not allowed.
+// This works simply by taking avatar controls. 
+// Author  Jenna Felton
+// Version 1.0
+
+//modified by: Zopf Resident - Ray Zopf (Raz)
+//Additions: when reusing some older code
+//04. Jan. 2014
+//v1.0
+
+//Files:
+//CameraScript.lsl
+//NAME OF NOTEDACRD
+//
+//
+//Prequisites: ---
+//Notecard format: when storing settings
+//basic help:
+//
+
+//Changelog
+//	NOTECARD NAME, LINK, GIT, SHORT DESCRIPTION, ETC.
+//	TEXT
+
+//bug:
+
+//todo:
+// 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//===============================================
+//FIRESTORM SPECIFIC DEBUG STUFF
+//===============================================
+
+//#define FSDEBUG
+//#include "fs_debug.lsl"
+
+
+//===============================================
+//GLOBAL VARIABLES
+//===============================================
+
+//debug variables
+//-----------------------------------------------
+integer g_iDebugMode=FALSE; // set to TRUE to enable Debug messages
+
+
+//user changeable variables
+//-----------------------------------------------
+integer g_iVerbose = TRUE;         // show more/less info during startup
+
+
+//internal variables
+//-----------------------------------------------
+string g_sTitle = "SCRIPT NAME";			// title
+string g_sVersion = "VERSION NUMBER";		// version
+string g_sScriptName;
+
+
+// Constants
+integer iCONSTANT;
+
+//SCRIPT MESSAGE MAP
+
+
+// Variables
+key g_kOwner;                      // object owner
+key g_kUser;                       // key of last avatar to touch object
+key g_kQuery = NULL_KEY;
 
 integer CHANNEL; // dialog channel
 list MENU_MAIN = ["Centre", "Right", "Left", "Cam ON", "Cam OFF"]; // the main menu
@@ -14,6 +90,27 @@ integer flying;
 integer falling;
 integer spaz = 0;
 integer trap = 0;
+ 
+//===============================================
+//PREDEFINED FUNCTIONS
+//===============================================
+
+//===============================================================================
+//= parameters   :    string    sMsg    message string received
+//=
+//= return        :    none
+//=
+//= description  :    output debug messages
+//=
+//===============================================================================
+Debug(string sMsg)
+{
+    if (!g_iDebugMode) return;
+    llOwnerSay("DEBUG: "+ g_sScriptName + "; " + sMsg);
+}
+
+//most important function
+//-----------------------------------------------
  
 take_camera_control(key agent)
 {
@@ -266,9 +363,63 @@ setup_listen()
     CHANNEL = -50000 -llRound(llFrand(1) * 100000);
     integer x = llListen(CHANNEL, "", "", ""); // listen for dialog answers
 }
- 
+
+
+//===============================================
+//===============================================
+//MAIN
+//===============================================
+//===============================================
+
+//-----------------------------------------------
+
 default
 {
+
+		state_entry() {
+		g_kOwner = llGetOwner();
+		g_sScriptName = llGetScriptName();
+		
+        Debug((string)llGetFreeMemory() + " bytes free");
+		llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by Zopf");
+	    llWhisper(0, "INSTRUCTIONS");
+		if (g_iVerbose) llWhisper(0, "Loading notecard...");
+		;
+	}
+
+	on_rez(integer i) {
+		;
+	}
+	
+	changed(integer change) {
+		if(change & CHANGED_INVENTORY) ;
+		if(change & CHANGED_REGION) ;
+		if(change & CHANGED_OWNER) llResetScript();
+	}
+
+//let it run in noscript areas
+//-----------------------------------------------
+	run_time_permissions(integer perms) {
+		if (perms & PERMISSION_TAKE_CONTROLS) { 
+			llOwnerSay("Automatic Group Changer runs in noscript-areas");
+			llTakeControls(CONTROL_DOWN, TRUE, TRUE);
+        }
+	}
+	
+	//  This is the magic. Even if empty the event handler makes the script
+	//  to keep the avatar's control. The script itself does not use it.
+    control(key name, integer levels, integer edges)
+    {
+        ;
+    }
+	
+	//make sure that we always have permissions
+    timer() {
+        if(llGetPermissions() & PERMISSION_TAKE_CONTROLS) return;
+        llRequestPermissions(kOwner, PERMISSION_TAKE_CONTROLS);
+    }
+
+	
     state_entry()
     {
         llSitTarget(<0.0, 0.0, 0.1>, ZERO_ROTATION);
@@ -276,6 +427,8 @@ default
         llSetTimerEvent(2.0);
     }
  
+//listen for linked messages from other RealFire scripts and devices
+//-----------------------------------------------
     link_message(integer sender_num, integer num, string str, key id)
     {
         if(str == "cam")
@@ -286,6 +439,9 @@ default
         }
     }
  
+//user interaction
+//listen to usercommands
+//-----------------------------------------------
     listen(integer channel, string name, key id, string message)
     {
         if (~llListFindList(MENU_MAIN + MENU_2, [message]))  // verify dialog choice
@@ -401,4 +557,8 @@ default
             focus_on_me();
         }
     }
+	
+//-----------------------------------------------
+//END STATE: default
+//-----------------------------------------------	
 }
