@@ -14,39 +14,30 @@
 // This works simply by taking avatar controls. 
 // Author  Jenna Felton
 // Version 1.0
-
+//
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: when reusing some older code
 //08. Mrz. 2014
 //v1.0
+//
 
 //Files:
 //CameraScript.lsl
+//
 //NAME OF NOTEDACRD
 //
 //
-//Prequisites: ---
-//Notecard format: when storing settings
-//basic help:
+//Prequisites: ----
+//Notecard format: ----
+//basic help: ----
 //
-
 //Changelog
-//	NOTECARD NAME, LINK, GIT, SHORT DESCRIPTION, ETC.
-//	TEXT
+// Formatting
 
-//bug:
+//FIXME: llListens() - too many listeners
 
-//todo:
-// 
+//TODO: ----
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//===============================================
-//FIRESTORM SPECIFIC DEBUG STUFF
-//===============================================
-
-//#define FSDEBUG
-//#include "fs_debug.lsl"
 
 
 //===============================================
@@ -94,7 +85,21 @@ integer trap = 0;
 
  
 list LISTENERS; // list of hud channel handles we are listening for, for building lists
- 
+integer verbose;
+
+//===============================================
+//LSLForge MODULES
+//===============================================
+
+//general modules
+//-----------------------------------------------
+$import Debug2.lslm(m_sScriptName=g_sScriptName);
+$import MemoryManagement.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_iVerbose=verbose);
+
+//project specific modules
+//-----------------------------------------------
+
+
 //===============================================
 //PREDEFINED FUNCTIONS
 //===============================================
@@ -380,6 +385,7 @@ setup_listen()
 }
 
 
+
 //===============================================
 //===============================================
 //MAIN
@@ -456,7 +462,8 @@ default
         setup_listen();
         llSetTimerEvent(2.0);
     }
- 
+
+
 //listen for linked messages from other RealFire scripts and devices
 //-----------------------------------------------
     link_message(integer sender_num, integer num, string str, key id)
@@ -468,7 +475,8 @@ default
                 llDialog(id, "What do you want to do?", MENU_MAIN, CHANNEL); // present dialog on click
         }
     }
- 
+
+
 //user interaction
 //listen to usercommands
 //-----------------------------------------------
@@ -548,14 +556,16 @@ default
         } else
         llOwnerSay(name + " picked invalid option '" + llToLower(message) + "'."); // not a valid dialog choice
     }
- 
+
+
     run_time_permissions(integer perm) {
         if (perm & PERMISSION_CONTROL_CAMERA) {
             llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
             llOwnerSay("Camera permissions have been taken");
         }
     }
- 
+
+
     changed(integer change)
     {
         if (change & CHANGED_LINK)
@@ -568,7 +578,8 @@ default
             }
         }
     }
- 
+
+
     attach(key agent)
     {
         if (agent)
@@ -579,7 +590,8 @@ default
             //changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centre_cam(); to have the default view be centered behind your avatar!
         }
     }
- 
+
+
     timer()
     {
         if (trap == 1)
@@ -587,8 +599,8 @@ default
             focus_on_me();
         }
     }
-	
+
 //-----------------------------------------------
 //END STATE: default
-//-----------------------------------------------	
+//-----------------------------------------------
 }
