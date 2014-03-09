@@ -59,6 +59,7 @@ integer g_iVerbose = TRUE;         // show more/less info during startup
 string g_sTitle = "SCRIPT NAME";			// title
 string g_sVersion = "VERSION NUMBER";		// version
 string g_sScriptName;
+string g_sAuthors = "Zopf";
 
 
 // Constants
@@ -103,7 +104,7 @@ $import MemoryManagement.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_
 //===============================================
 //PREDEFINED FUNCTIONS
 //===============================================
-
+/*
 //XXX
 //NG lets send pings here and listen for pong replys
 SendCommand(key id)
@@ -115,7 +116,7 @@ SendCommand(key id)
 	LISTENERS += [ llListen(channel, "", NULL_KEY, "" )] ;// if we have a reply on the channel lets see what it is.
 	llSetTimerEvent(5.0);// no reply by now, lets kick off the timer
 }
-
+*/
 
 //most important function
 //-----------------------------------------------
@@ -388,18 +389,21 @@ setup_listen()
 
 default
 {
+/*
 //XXX
 	state_entry()
 	{
+		//debug=TRUE; // set to TRUE to enable Debug messages
+		
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		Debug((string)llGetFreeMemory() + " bytes free");
-		llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthor);
+		if (debug) Debug((string)llGetFreeMemory() + " bytes free", FALSE, FALSE);
+		llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
 		llWhisper(0, "INSTRUCTIONS");
-		if (g_iVerbose) llWhisper(0, "Loading notecard...");
+		if (verbose) llWhisper(0, "Loading notecard...");
 		;
-				listener=llListen(getPersonalChannel(wearer,1111),"","",""); //lets listen here
+		//listener=llListen(getPersonalChannel(wearer,1111),"","",""); //lets listen here
 	}
 
 //XXX
@@ -455,7 +459,7 @@ default
 		if(llGetPermissions() & PERMISSION_TAKE_CONTROLS) return;
 		llRequestPermissions(kOwner, PERMISSION_TAKE_CONTROLS);
 	}
-
+*/
 
 	state_entry()
 	{
