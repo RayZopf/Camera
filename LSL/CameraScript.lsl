@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Sun Mar  9 20:57:09 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Sun Mar  9 21:52:54 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -31,6 +31,7 @@ list MENU_2 = ["More...","...Back"];
 //SCRIPT MESSAGE MAP
 integer CH;
 
+integer g_iHandle = 0;
 integer g_iOn = 0;
 integer trap = 0;
 
@@ -143,8 +144,9 @@ spin_cam(){
 
 setup_listen(){
     llListenRemove(1);
+    llListenRemove(g_iHandle);
     (CH = (-50000 - llRound((llFrand(1) * 100000))));
-    integer x = llListen(CH,"","","");
+    (g_iHandle = llListen(CH,"","",""));
 }
 
 

@@ -68,6 +68,7 @@ key g_kOwner;                      // object owner
 key g_kUser;                       // key of last avatar to touch object
 key g_kQuery = NULL_KEY;
 
+integer g_iHandle = 0;
 integer g_iOn = FALSE;
 integer flying;
 integer falling;
@@ -363,8 +364,9 @@ spin_cam()
 setup_listen()
 {
 	llListenRemove(1);
+	llListenRemove(g_iHandle);
 	CH = -50000 -llRound(llFrand(1) * 100000);
-	integer x = llListen(CH, "", "", ""); // listen for dialog answers
+	g_iHandle = llListen(CH, "", "", ""); // listen for dialog answers
 }
 
 
