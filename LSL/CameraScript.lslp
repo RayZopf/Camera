@@ -83,9 +83,9 @@ integer spaz = 0;
 integer trap = 0;
 
 
-
 list LISTENERS; // list of hud channel handles we are listening for, for building lists
 integer verbose;
+
 
 //===============================================
 //LSLForge MODULES
@@ -104,6 +104,7 @@ $import MemoryManagement.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_
 //PREDEFINED FUNCTIONS
 //===============================================
 
+//XXX
 //NG lets send pings here and listen for pong replys
 SendCommand(key id)
 {
@@ -115,23 +116,9 @@ SendCommand(key id)
 	llSetTimerEvent(5.0);// no reply by now, lets kick off the timer
 }
 
-//===============================================================================
-//= parameters   :    string    sMsg    message string received
-//=
-//= return        :    none
-//=
-//= description  :    output debug messages
-//=
-//===============================================================================
-Debug(string sMsg)
-{
-	if (!g_iDebugMode) return;
-	llOwnerSay("DEBUG: "+ g_sScriptName + "; " + sMsg);
-}
 
 //most important function
 //-----------------------------------------------
-
 take_camera_control(key agent)
 {
 	llOwnerSay("take_camera_control"); // say function name for debugging
@@ -141,6 +128,7 @@ take_camera_control(key agent)
 	on = TRUE;
 }
 
+
 release_camera_control(key agent)
 {
 	llOwnerSay("release_camera_control"); // say function name for debugging
@@ -148,6 +136,7 @@ release_camera_control(key agent)
 	llReleaseCamera(agent);
 	on = FALSE;
 }
+
 
 focus_on_me()
 {
@@ -172,13 +161,12 @@ focus_on_me()
 	]);
 }
 
+
 default_cam()
 {
 //    llOwnerSay("default_cam"); // say function name for debugging
 llClearCameraParams(); // reset camera to default
 	llSetCameraParams([CAMERA_ACTIVE, 1]);
-
-
 }
 
 
@@ -227,6 +215,7 @@ shoulder_cam()
 	]);
 }
 
+
 shoulder_cam3()
 {
 	llOwnerSay("Left Shoulder"); // say function name for debugging
@@ -248,6 +237,7 @@ shoulder_cam3()
 		CAMERA_FOCUS_OFFSET, <-0.5,0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
 }
+
 
 centre_cam()
 {
@@ -296,7 +286,6 @@ drop_camera_5_seconds()
 }
 
 
-
 worm_cam()
 {
 	llOwnerSay("worm_cam"); // say function name for debugging
@@ -317,6 +306,7 @@ worm_cam()
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
 }
+
 
 spaz_cam()
 {
@@ -348,6 +338,7 @@ spaz_cam()
 	default_cam();
 }
 
+
 spin_cam()
 {
 	llSetCameraParams([
@@ -377,6 +368,7 @@ spin_cam()
 	default_cam();
 }
 
+
 setup_listen()
 {
 	llListenRemove(1);
@@ -396,8 +388,9 @@ setup_listen()
 
 default
 {
-
-		state_entry() {
+//XXX
+	state_entry()
+	{
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
@@ -407,9 +400,9 @@ default
 		if (g_iVerbose) llWhisper(0, "Loading notecard...");
 		;
 				listener=llListen(getPersonalChannel(wearer,1111),"","",""); //lets listen here
-
 	}
 
+//XXX
 	timer()//clear things after ping
 	{
 		llSetTimerEvent(0);
@@ -422,26 +415,32 @@ default
 		LISTENERS = [];
 	}
 
-
-	on_rez(integer i) {
+//XXX
+	on_rez(integer i)
+	{
 		;
 	}
 
-	changed(integer change) {
+//XXX
+	changed(integer change)
+	{
 		if(change & CHANGED_INVENTORY) ;
 		if(change & CHANGED_REGION) ;
 		if(change & CHANGED_OWNER) llResetScript();
 	}
 
+//XXX
 //let it run in noscript areas
 //-----------------------------------------------
-	run_time_permissions(integer perms) {
+	run_time_permissions(integer perms)
+	{
 		if (perms & PERMISSION_TAKE_CONTROLS) {
 			llOwnerSay("Automatic Group Changer runs in noscript-areas");
 			llTakeControls(CONTROL_DOWN, TRUE, TRUE);
 		}
 	}
 
+//XXX
 	//  This is the magic. Even if empty the event handler makes the script
 	//  to keep the avatar's control. The script itself does not use it.
 	control(key name, integer levels, integer edges)
@@ -449,8 +448,10 @@ default
 		;
 	}
 
+//XXX
 	//make sure that we always have permissions
-	timer() {
+	timer()
+	{
 		if(llGetPermissions() & PERMISSION_TAKE_CONTROLS) return;
 		llRequestPermissions(kOwner, PERMISSION_TAKE_CONTROLS);
 	}
@@ -464,15 +465,13 @@ default
 	}
 
 
-//listen for linked messages from other RealFire scripts and devices
+//listen for linked messages from other scripts and devices
 //-----------------------------------------------
 	link_message(integer sender_num, integer num, string str, key id)
 	{
-		if(str == "cam")
-		{
+		if(str == "cam") {
 			integer perm = llGetPermissions();
-			if (perm & PERMISSION_CONTROL_CAMERA)
-				llDialog(id, "What do you want to do?", MENU_MAIN, CHANNEL); // present dialog on click
+			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(id, "What do you want to do?", MENU_MAIN, CHANNEL); // present dialog on click
 		}
 	}
 
@@ -486,75 +485,46 @@ default
 //        if (~llListFindList(MENU_MAIN, [message]))  // verify dialog choice
 		{
 //            llOwnerSay(name + " picked the option '" + message + "'."); // output the answer
-			if (message == "More...")
-				llDialog(id, "Pick an option!", MENU_2, CHANNEL); // present submenu on request
-			else if (message == "...Back")
-				llDialog(id, "What do you want to do?", MENU_MAIN, CHANNEL); // present main menu on request to go back
-
-
-			else if (message == "Cam ON")
-			{
+			if (message == "More...") llDialog(id, "Pick an option!", MENU_2, CHANNEL); // present submenu on request
+			else if (message == "...Back") llDialog(id, "What do you want to do?", MENU_MAIN, CHANNEL); // present main menu on request to go back
+			else if (message == "Cam ON") {
 				take_camera_control(id);
 			}
-
-			else if (message == "Cam OFF")
-			{
+			else if (message == "Cam OFF") {
 				release_camera_control(id);
 			}
-
-			else if (message == "Default")
-			{
+			else if (message == "Default") {
 				default_cam();
 			}
-
-			else if (message == "Right")
-			{
+			else if (message == "Right") {
 				shoulder_cam2();
 			}
-
-			else if (message == "Worm Cam")
-			{
+			else if (message == "Worm Cam") {
 				worm_cam();
 			}
-
-			else if (message == "Centre")
-			{
+			else if (message == "Centre") {
 				centre_cam();
 			}
-
-			else if (message == "Left")
-			{
+			else if (message == "Left") {
 				shoulder_cam3();
 			}
-
-			else if (message == "Shoulder")
-			{
+			else if (message == "Shoulder") {
 				shoulder_cam();
 			}
-
-			else if (message == "Drop Cam")
-			{
+			else if (message == "Drop Cam") {
 				drop_camera_5_seconds();
 			}
-
-			else if (message == "Trap Toggle")
-			{
+			else if (message == "Trap Toggle") {
 				trap = !trap;
 				if (trap == 1) {
 					llOwnerSay("trap is on");
-				}
-				else {
+				} else {
 					llOwnerSay("trap is off");
 				}
-			}
-
-			else if (message == "Spin Cam")
-			{
+			} else if (message == "Spin Cam") {
 				spin_cam();
 			}
-
-		} else
-		llOwnerSay(name + " picked invalid option '" + llToLower(message) + "'."); // not a valid dialog choice
+		} else llOwnerSay(name + " picked invalid option '" + llToLower(message) + "'."); // not a valid dialog choice
 	}
 
 
@@ -568,11 +538,9 @@ default
 
 	changed(integer change)
 	{
-		if (change & CHANGED_LINK)
-		{
+		if (change & CHANGED_LINK) {
 			key agent = llAvatarOnSitTarget();
-			if (agent)
-			{
+			if (agent) {
 				setup_listen();
 				llRequestPermissions(agent, PERMISSION_CONTROL_CAMERA);
 			}
@@ -582,8 +550,7 @@ default
 
 	attach(key agent)
 	{
-		if (agent)
-		{
+		if (agent) {
 			setup_listen();
 			llRequestPermissions(agent, PERMISSION_CONTROL_CAMERA);
 			shoulder_cam();
@@ -594,8 +561,7 @@ default
 
 	timer()
 	{
-		if (trap == 1)
-		{
+		if (trap == 1) {
 			focus_on_me();
 		}
 	}
