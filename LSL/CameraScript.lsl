@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Sun Mar  9 20:44:34 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Sun Mar  9 20:57:09 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -18,17 +18,20 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: when reusing some older code
-//08. Mrz. 2014
-//v1.0
+//09. Mrz. 2014
+//v1.1
 //
 
 
 
-integer CHANNEL;
+// Constants
 list MENU_MAIN = ["Centre","Right","Left","Cam ON","Cam OFF"];
 list MENU_2 = ["More...","...Back"];
 
-integer on = 0;
+//SCRIPT MESSAGE MAP
+integer CH;
+
+integer g_iOn = 0;
 integer trap = 0;
 
 //project specific modules
@@ -54,20 +57,20 @@ SendCommand(key id)
 
 //most important function
 //-----------------------------------------------
-take_camera_control(key agent){
+take_camera_control(key id){
     llOwnerSay("take_camera_control");
-    llOwnerSay(((string)agent));
-    llRequestPermissions(agent,2048);
+    llOwnerSay(((string)id));
+    llRequestPermissions(id,2048);
     llSetCameraParams([12,1]);
-    (on = 1);
+    (g_iOn = 1);
 }
 
 
-release_camera_control(key agent){
+release_camera_control(key id){
     llOwnerSay("release_camera_control");
     llSetCameraParams([12,0]);
-    llReleaseCamera(agent);
-    (on = 0);
+    llReleaseCamera(id);
+    (g_iOn = 0);
 }
 
 
@@ -140,8 +143,8 @@ spin_cam(){
 
 setup_listen(){
     llListenRemove(1);
-    (CHANNEL = (-50000 - llRound((llFrand(1) * 100000))));
-    integer x = llListen(CHANNEL,"","","");
+    (CH = (-50000 - llRound((llFrand(1) * 100000))));
+    integer x = llListen(CH,"","","");
 }
 
 
@@ -241,7 +244,7 @@ default {
 	link_message(integer sender_num,integer num,string str,key id) {
         if ((str == "cam")) {
             integer perm = llGetPermissions();
-            if ((perm & 2048)) llDialog(id,"What do you want to do?",MENU_MAIN,CHANNEL);
+            if ((perm & 2048)) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
         }
     }
 
@@ -252,8 +255,8 @@ default {
 //-----------------------------------------------
 	listen(integer channel,string name,key id,string message) {
         if ((~llListFindList((MENU_MAIN + MENU_2),[message]))) {
-            if ((message == "More...")) llDialog(id,"Pick an option!",MENU_2,CHANNEL);
-            else  if ((message == "...Back")) llDialog(id,"What do you want to do?",MENU_MAIN,CHANNEL);
+            if ((message == "More...")) llDialog(id,"Pick an option!",MENU_2,CH);
+            else  if ((message == "...Back")) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
             else  if ((message == "Cam ON")) {
                 take_camera_control(id);
             }
@@ -310,20 +313,20 @@ default {
 
 	changed(integer change) {
         if ((change & 32)) {
-            key agent = llAvatarOnSitTarget();
-            if (agent) {
+            key id = llAvatarOnSitTarget();
+            if (id) {
                 setup_listen();
-                llRequestPermissions(agent,2048);
+                llRequestPermissions(id,2048);
             }
         }
     }
 
 
 
-	attach(key agent) {
-        if (agent) {
+	attach(key id) {
+        if (id) {
             setup_listen();
-            llRequestPermissions(agent,2048);
+            llRequestPermissions(id,2048);
             shoulder_cam();
         }
     }

@@ -17,8 +17,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: when reusing some older code
-//08. Mrz. 2014
-//v1.0
+//09. Mrz. 2014
+//v1.1
 //
 
 //Files:
@@ -44,40 +44,31 @@
 //GLOBAL VARIABLES
 //===============================================
 
-//debug variables
-//-----------------------------------------------
-integer g_iDebugMode=FALSE; // set to TRUE to enable Debug messages
-
-
 //user changeable variables
 //-----------------------------------------------
-integer g_iVerbose = TRUE;         // show more/less info during startup
+integer verbose = TRUE;         // show more/less info during startup
 
 
 //internal variables
 //-----------------------------------------------
-string g_sTitle = "SCRIPT NAME";			// title
-string g_sVersion = "VERSION NUMBER";		// version
+string g_sTitle = "CameraScript";			// title
+string g_sVersion = "1.1";		// version
 string g_sScriptName;
 string g_sAuthors = "Zopf";
 
-
 // Constants
-integer iCONSTANT;
+list MENU_MAIN = ["Centre", "Right", "Left", "Cam ON", "Cam OFF"]; // the main menu
+list MENU_2 = ["More...", "...Back"]; // menu 2
 
 //SCRIPT MESSAGE MAP
-
+integer CH; // dialog channel
 
 // Variables
 key g_kOwner;                      // object owner
 key g_kUser;                       // key of last avatar to touch object
 key g_kQuery = NULL_KEY;
 
-integer CHANNEL; // dialog channel
-list MENU_MAIN = ["Centre", "Right", "Left", "Cam ON", "Cam OFF"]; // the main menu
-list MENU_2 = ["More...", "...Back"]; // menu 2
-
-integer on = FALSE;
+integer g_iOn = FALSE;
 integer flying;
 integer falling;
 integer spaz = 0;
@@ -85,7 +76,6 @@ integer trap = 0;
 
 
 list LISTENERS; // list of hud channel handles we are listening for, for building lists
-integer verbose;
 
 
 //===============================================
@@ -120,22 +110,22 @@ SendCommand(key id)
 
 //most important function
 //-----------------------------------------------
-take_camera_control(key agent)
+take_camera_control(key id)
 {
 	llOwnerSay("take_camera_control"); // say function name for debugging
-	llOwnerSay( (string)agent);
-	llRequestPermissions(agent, PERMISSION_CONTROL_CAMERA);
+	llOwnerSay( (string)id);
+	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 	llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
-	on = TRUE;
+	g_iOn = TRUE;
 }
 
 
-release_camera_control(key agent)
+release_camera_control(key id)
 {
 	llOwnerSay("release_camera_control"); // say function name for debugging
 	llSetCameraParams([CAMERA_ACTIVE, 0]); // 1 is active, 0 is inactive
-	llReleaseCamera(agent);
-	on = FALSE;
+	llReleaseCamera(id);
+	g_iOn = FALSE;
 }
 
 
@@ -373,8 +363,8 @@ spin_cam()
 setup_listen()
 {
 	llListenRemove(1);
-	CHANNEL = -50000 -llRound(llFrand(1) * 100000);
-	integer x = llListen(CHANNEL, "", "", ""); // listen for dialog answers
+	CH = -50000 -llRound(llFrand(1) * 100000);
+	integer x = llListen(CH, "", "", ""); // listen for dialog answers
 }
 
 
@@ -475,7 +465,7 @@ default
 	{
 		if(str == "cam") {
 			integer perm = llGetPermissions();
-			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(id, "What do you want to do?", MENU_MAIN, CHANNEL); // present dialog on click
+			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
 		}
 	}
 
@@ -489,8 +479,8 @@ default
 //        if (~llListFindList(MENU_MAIN, [message]))  // verify dialog choice
 		{
 //            llOwnerSay(name + " picked the option '" + message + "'."); // output the answer
-			if (message == "More...") llDialog(id, "Pick an option!", MENU_2, CHANNEL); // present submenu on request
-			else if (message == "...Back") llDialog(id, "What do you want to do?", MENU_MAIN, CHANNEL); // present main menu on request to go back
+			if (message == "More...") llDialog(id, "Pick an option!", MENU_2, CH); // present submenu on request
+			else if (message == "...Back") llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if (message == "Cam ON") {
 				take_camera_control(id);
 			}
@@ -543,20 +533,20 @@ default
 	changed(integer change)
 	{
 		if (change & CHANGED_LINK) {
-			key agent = llAvatarOnSitTarget();
-			if (agent) {
+			key id = llAvatarOnSitTarget();
+			if (id) {
 				setup_listen();
-				llRequestPermissions(agent, PERMISSION_CONTROL_CAMERA);
+				llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 			}
 		}
 	}
 
 
-	attach(key agent)
+	attach(key id)
 	{
-		if (agent) {
+		if (id) {
 			setup_listen();
-			llRequestPermissions(agent, PERMISSION_CONTROL_CAMERA);
+			llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 			shoulder_cam();
 			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centre_cam(); to have the default view be centered behind your avatar!
 		}
