@@ -39,6 +39,7 @@
 //FIXME: ----
 
 //TODO: add notecard, so one can set up camera views per specific place
+//TODO: use fix listen channel, so that user can change options via chat
 //TODO: maybe use llDetectedTouchFace/llDetectedTouchPos/llDetectedLinkNumber/llDetectedTouchST instead of link messages
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +52,9 @@
 //-----------------------------------------------
 integer verbose;         // show more/less info during startup
 
+//SCRIPT MESSAGE MAP
+integer CH; // dialog channel
+
 
 //internal variables
 //-----------------------------------------------
@@ -60,11 +64,9 @@ string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["Centre", "Right", "Left", "Cam ON", "Cam OFF"]; // the main menu
-list MENU_2 = ["More...", "...Back"]; // menu 2
+list MENU_MAIN = ["More ...", "---", "CLOSE", "Centre", "Right", "Left", "Cam ON", "Cam OFF", "---"]; // the main menu
+list MENU_2 = ["...Back", "---", "CLOSE", "Worm Cam", "Drop Cam", "Spin Cam"]; // menu 2
 
-//SCRIPT MESSAGE MAP
-integer CH; // dialog channel
 
 // Variables
 key g_kOwner;                      // object owner
@@ -102,6 +104,7 @@ initExtension(integer conf)
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
+	llClearCameraParams(); // reset camera to default
 }
 
 
@@ -244,9 +247,10 @@ centreCam()
 }
 
 
-drop_camera_5_seconds()
+// pragma inline
+dropCam()
 {
-	llOwnerSay("drop_camera_5_seconds"); // say function name for debugging
+	llOwnerSay("drop camera 5 seconds"); // say function name for debugging
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -269,6 +273,7 @@ drop_camera_5_seconds()
 }
 
 
+// pragma inline
 wormCam()
 {
 	llOwnerSay("Worm Cam"); // say function name for debugging
@@ -324,7 +329,8 @@ spaz_cam()
 }
 
 
-spin_cam()
+// pragma inline
+spinCam()
 {
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
@@ -359,7 +365,7 @@ setupListen()
 {
 	llListenRemove(1);
 	llListenRemove(g_iHandle);
-	CH = -50000 -llRound(llFrand(1) * 100000);
+	//CH = -50000 -llRound(llFrand(1) * 100000);
 	g_iHandle = llListen(CH, "", g_kOwner, ""); // listen for dialog answers
 }
 
@@ -407,9 +413,11 @@ default
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
+		verbose = FALSE;
+		CH = -987444;
+		
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
-		verbose = FALSE;
 		
 		MemRestrict(24000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
@@ -464,7 +472,7 @@ default
 				shoulderCam();
 			}
 			else if (message == "Drop Cam") {
-				drop_camera_5_seconds();
+				dropCam();
 			}
 			else if (message == "Trap Toggle") {
 				trap = !trap;
@@ -474,7 +482,7 @@ default
 					llOwnerSay("trap is off");
 				}
 			} else if (message == "Spin Cam") {
-				spin_cam();
+				spinCam();
 			}
 		} else llOwnerSay(name + " picked invalid option '" + llToLower(message) + "'."); // not a valid dialog choice
 	}
