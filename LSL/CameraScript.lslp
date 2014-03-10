@@ -54,7 +54,7 @@ integer verbose;         // show more/less info during startup
 string g_sTitle = "CameraScript";     // title
 string g_sVersion = "1.21";            // version
 string g_sScriptName;
-string g_sAuthors = "Zopf";
+string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
 list MENU_MAIN = ["Centre", "Right", "Left", "Cam ON", "Cam OFF"]; // the main menu
