@@ -18,7 +18,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: when reusing some older code
 //10. Mrz. 2014
-//v1.2
+//v1.21
 //
 
 //Files:
@@ -52,7 +52,7 @@ integer verbose;         // show more/less info during startup
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.2";            // version
+string g_sVersion = "1.21";            // version
 string g_sScriptName;
 string g_sAuthors = "Zopf";
 

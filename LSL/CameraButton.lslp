@@ -1,7 +1,7 @@
 integer verbose = FALSE;
 
 string g_sTitle = "CameraScript-Button";     // title
-string g_sVersion = "1.1";            // version
+string g_sVersion = "1.11";            // version
 string g_sScriptName;
 
 
@@ -13,7 +13,7 @@ default
 {
 	state_entry()
 	{
-		g_sScriptName = llGetScriptName();
+		//g_sScriptName = llGetScriptName();
 		MemRestrict(8192, FALSE);
 	}
 

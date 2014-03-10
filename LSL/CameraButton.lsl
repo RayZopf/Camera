@@ -1,13 +1,11 @@
-// LSL script generated: Camera.LSL.CameraButton.lslp Mon Mar 10 18:17:43 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraButton.lslp Mon Mar 10 18:20:21 Mitteleuropäische Zeit 2014
 
-string g_sScriptName;
 
 
 
 default {
 
 	state_entry() {
-        (g_sScriptName = llGetScriptName());
         integer rc = 0;
         (rc = llSetMemoryLimit(8192));
         

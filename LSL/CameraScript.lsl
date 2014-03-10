@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 18:16:58 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 18:20:46 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: when reusing some older code
 //10. Mrz. 2014
-//v1.2
+//v1.21
 //
 
 //Files:
@@ -53,7 +53,7 @@ integer verbose;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.2";
+string g_sVersion = "1.21";
 string g_sScriptName;
 string g_sAuthors = "Zopf";
 
