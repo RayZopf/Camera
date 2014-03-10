@@ -17,8 +17,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: ----
-//10. Mrz. 2014
-//v1.3
+//11. Mrz. 2014
+//v1.31
 //
 
 //Files:
@@ -59,12 +59,12 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.3";            // version
+string g_sVersion = "1.31";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["More ...", "---", "CLOSE", "Centre", "Right", "Left", "Cam ON", "Cam OFF", "---"]; // the main menu
+list MENU_MAIN = ["More...", "---", "CLOSE", "Left", "Centre", "Right", "Cam ON", "Cam OFF", "---"]; // the main menu
 list MENU_2 = ["...Back", "---", "CLOSE", "Worm Cam", "Drop Cam", "Spin Cam"]; // menu 2
 
 

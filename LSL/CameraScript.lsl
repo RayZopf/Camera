@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:33:15 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:41:06 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -18,8 +18,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: ----
-//10. Mrz. 2014
-//v1.3
+//11. Mrz. 2014
+//v1.31
 //
 
 //Files:
@@ -60,12 +60,12 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.3";
+string g_sVersion = "1.31";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["More ...","---","CLOSE","Centre","Right","Left","Cam ON","Cam OFF","---"];
+list MENU_MAIN = ["More...","---","CLOSE","Left","Centre","Right","Cam ON","Cam OFF","---"];
 list MENU_2 = ["...Back","---","CLOSE","Worm Cam","Drop Cam","Spin Cam"];
 
 
