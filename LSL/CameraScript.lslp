@@ -111,18 +111,19 @@ SendCommand(key id)
 
 initExtension(integer conf)
 {
-	setup_listen();
+	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
 }
 
 
+// pragma inline 
 //most important function
 //-----------------------------------------------
-take_camera_control(key id)
+takeCamCtrl(key id)
 {
-	llOwnerSay("take_camera_control"); // say function name for debugging
+	llOwnerSay("takeCamCtrl"); // say function name for debugging
 	llOwnerSay( (string)id);
 	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 	llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
@@ -130,9 +131,10 @@ take_camera_control(key id)
 }
 
 
-release_camera_control(key id)
+// pragma inline
+releaseCamCtrl(key id)
 {
-	llOwnerSay("release_camera_control"); // say function name for debugging
+	llOwnerSay("releaseCamCtrl"); // say function name for debugging
 	llClearCameraParams();
 	g_iOn = FALSE;
 }
@@ -162,18 +164,19 @@ focus_on_me()
 }
 
 
-default_cam()
+defCam()
 {
-//    llOwnerSay("default_cam"); // say function name for debugging
+//    llOwnerSay("defCam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([CAMERA_ACTIVE, 1]);
 }
 
 
-shoulder_cam2()
+// pragma inline
+shoulderCamRight()
 {
 	llOwnerSay("Right Shoulder"); // say function name for debugging
-	default_cam();
+	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -193,10 +196,10 @@ shoulder_cam2()
 }
 
 
-shoulder_cam()
+shoulderCam()
 {
-	llOwnerSay("shoulder_cam"); // say function name for debugging
-	default_cam();
+	llOwnerSay("shoulderCam"); // say function name for debugging
+	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -216,10 +219,11 @@ shoulder_cam()
 }
 
 
-shoulder_cam3()
+// pragma inline
+shoulderCamLeft()
 {
 	llOwnerSay("Left Shoulder"); // say function name for debugging
-	default_cam();
+	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -238,11 +242,11 @@ shoulder_cam3()
 	]);
 }
 
-
-centre_cam()
+// pragma inline
+centreCam()
 {
-	llOwnerSay("centre_cam"); // say function name for debugging
-	default_cam();
+	llOwnerSay("centreCam"); // say function name for debugging
+	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -282,13 +286,13 @@ drop_camera_5_seconds()
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	llSleep(5);
-	default_cam();
+	defCam();
 }
 
 
-worm_cam()
+wormCam()
 {
-	llOwnerSay("worm_cam"); // say function name for debugging
+	llOwnerSay("wormCam"); // say function name for debugging
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -335,7 +339,7 @@ spaz_cam()
 		]);
 		llSleep(0.1);
 	}
-	default_cam();
+	defCam();
 }
 
 
@@ -365,11 +369,11 @@ spin_cam()
 		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
 		llSetCameraParams([CAMERA_POSITION, camera_position]);
 	}
-	default_cam();
+	defCam();
 }
 
-
-setup_listen()
+ // pragma inline
+setupListen()
 {
 	llListenRemove(1);
 	llListenRemove(g_iHandle);
@@ -481,28 +485,28 @@ default
 			if (message == "More...") llDialog(id, "Pick an option!", MENU_2, CH); // present submenu on request
 			else if (message == "...Back") llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if (message == "Cam ON") {
-				take_camera_control(id);
+				takeCamCtrl(id);
 			}
 			else if (message == "Cam OFF") {
-				release_camera_control(id);
+				releaseCamCtrl(id);
 			}
 			else if (message == "Default") {
-				default_cam();
+				defCam();
 			}
 			else if (message == "Right") {
-				shoulder_cam2();
+				shoulderCamRight();
 			}
 			else if (message == "Worm Cam") {
-				worm_cam();
+				wormCam();
 			}
 			else if (message == "Centre") {
-				centre_cam();
+				centreCam();
 			}
 			else if (message == "Left") {
-				shoulder_cam3();
+				shoulderCamLeft();
 			}
 			else if (message == "Shoulder") {
-				shoulder_cam();
+				shoulderCam();
 			}
 			else if (message == "Drop Cam") {
 				drop_camera_5_seconds();
@@ -545,8 +549,8 @@ default
 	{
 		if (id == g_kOwner) {
 			initExtension(TRUE);
-			shoulder_cam();
-			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centre_cam(); to have the default view be centered behind your avatar!
+			shoulderCam();
+			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
 		} else llResetScript();
 	}
 

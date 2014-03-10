@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 16:48:48 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 17:04:21 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -68,7 +68,10 @@ SendCommand(key id)
 */
 
 initExtension(integer conf){
-    setup_listen();
+    llListenRemove(1);
+    llListenRemove(g_iHandle);
+    (CH = (-50000 - llRound((llFrand(1) * 100000))));
+    (g_iHandle = llListen(CH,"",g_kOwner,""));
     if (conf) llRequestPermissions(g_kOwner,2048);
     llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") Enhancements by ") + g_sAuthors));
     {
@@ -78,55 +81,16 @@ initExtension(integer conf){
 }
 
 
-//most important function
-//-----------------------------------------------
-take_camera_control(key id){
-    llOwnerSay("take_camera_control");
-    llOwnerSay(((string)id));
-    llRequestPermissions(id,2048);
-    llSetCameraParams([12,1]);
-    (g_iOn = 1);
-}
-
-
-release_camera_control(key id){
-    llOwnerSay("release_camera_control");
-    llClearCameraParams();
-    (g_iOn = 0);
-}
-
-
-default_cam(){
+defCam(){
     llClearCameraParams();
     llSetCameraParams([12,1]);
 }
 
 
-shoulder_cam2(){
-    llOwnerSay("Right Shoulder");
-    default_cam();
-    llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
-}
-
-
-shoulder_cam(){
-    llOwnerSay("shoulder_cam");
-    default_cam();
+shoulderCam(){
+    llOwnerSay("shoulderCam");
+    defCam();
     llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
-}
-
-
-shoulder_cam3(){
-    llOwnerSay("Left Shoulder");
-    default_cam();
-    llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
-}
-
-
-centre_cam(){
-    llOwnerSay("centre_cam");
-    default_cam();
-    llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
 }
 
 
@@ -134,12 +98,12 @@ drop_camera_5_seconds(){
     llOwnerSay("drop_camera_5_seconds");
     llSetCameraParams([12,1,8,0.0,9,0.5,7,3.0,6,2.0,22,0,11,0.0,0,0.0,5,5.0e-2,21,1,10,0.0,1,<0.0,0.0,0.0>]);
     llSleep(5);
-    default_cam();
+    defCam();
 }
 
 
-worm_cam(){
-    llOwnerSay("worm_cam");
+wormCam(){
+    llOwnerSay("wormCam");
     llSetCameraParams([12,1,8,180.0,9,0.0,7,8.0,6,0.0,22,0,11,4.0,0,-45.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
 }
 
@@ -152,15 +116,7 @@ spin_cam(){
         (camera_position = (llGetPos() + (<0.0,4.0,0.0> * llEuler2Rot(<0.0,0.0,i>))));
         llSetCameraParams([13,camera_position]);
     }
-    default_cam();
-}
-
-
-setup_listen(){
-    llListenRemove(1);
-    llListenRemove(g_iHandle);
-    (CH = (-50000 - llRound((llFrand(1) * 100000))));
-    (g_iHandle = llListen(CH,"",g_kOwner,""));
+    defCam();
 }
 
 
@@ -264,28 +220,40 @@ default {
             if ((message == "More...")) llDialog(id,"Pick an option!",MENU_2,CH);
             else  if ((message == "...Back")) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
             else  if ((message == "Cam ON")) {
-                take_camera_control(id);
+                llOwnerSay("takeCamCtrl");
+                llOwnerSay(((string)id));
+                llRequestPermissions(id,2048);
+                llSetCameraParams([12,1]);
+                (g_iOn = 1);
             }
             else  if ((message == "Cam OFF")) {
-                release_camera_control(id);
+                llOwnerSay("releaseCamCtrl");
+                llClearCameraParams();
+                (g_iOn = 0);
             }
             else  if ((message == "Default")) {
-                default_cam();
+                defCam();
             }
             else  if ((message == "Right")) {
-                shoulder_cam2();
+                llOwnerSay("Right Shoulder");
+                defCam();
+                llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
             }
             else  if ((message == "Worm Cam")) {
-                worm_cam();
+                wormCam();
             }
             else  if ((message == "Centre")) {
-                centre_cam();
+                llOwnerSay("centreCam");
+                defCam();
+                llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
             }
             else  if ((message == "Left")) {
-                shoulder_cam3();
+                llOwnerSay("Left Shoulder");
+                defCam();
+                llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
             }
             else  if ((message == "Shoulder")) {
-                shoulder_cam();
+                shoulderCam();
             }
             else  if ((message == "Drop Cam")) {
                 drop_camera_5_seconds();
@@ -332,7 +300,7 @@ default {
 	attach(key id) {
         if ((id == g_kOwner)) {
             initExtension(1);
-            shoulder_cam();
+            shoulderCam();
         }
         else  llResetScript();
     }
