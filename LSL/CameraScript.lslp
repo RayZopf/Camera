@@ -417,13 +417,13 @@ default
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
-		verbose = FALSE;
+		verbose = TRUE;
 		CH = -987444;
 		
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 		
-		MemRestrict(30000, FALSE);
+		MemRestrict(24000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -444,7 +444,7 @@ default
 	touch_end(integer num_detected)
 	{
 		integer nr= llDetectedLinkNumber(0);
-		if (1 == nr) {
+		if (2 == nr) {
 			integer perm = llGetPermissions();
 			// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click

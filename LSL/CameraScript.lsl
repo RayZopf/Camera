@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:21:19 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:33:15 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -145,12 +145,12 @@ default {
 */
 
 	state_entry() {
-        (verbose = 0);
+        (verbose = 1);
         (CH = -987444);
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         integer rc = 0;
-        (rc = llSetMemoryLimit(30000));
+        (rc = llSetMemoryLimit(24000));
         if (verbose) if ((!rc)) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
@@ -173,7 +173,7 @@ default {
 
 	touch_end(integer num_detected) {
         integer nr = llDetectedLinkNumber(0);
-        if ((1 == nr)) {
+        if ((2 == nr)) {
             integer perm = llGetPermissions();
             if ((perm & 2048)) llDialog(g_kOwner,"What do you want to do?",MENU_MAIN,CH);
         }
