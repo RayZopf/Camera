@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 22:58:51 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 23:23:07 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -17,7 +17,7 @@
 // Version 1.0
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
-//Additions: when reusing some older code
+//Additions: ----
 //10. Mrz. 2014
 //v1.21
 //
@@ -34,10 +34,13 @@
 //
 //Changelog
 // Formatting
+// LSL Forge modules
+// code cleanup
 
-//FIXME: llListens() - too many listeners
+//FIXME: ----
 
-//TODO: ----
+//TODO: add notecard, so one can set up camera views per specific place
+//TODO: maybe use llDetectedTouchFace/llDetectedTouchPos/llDetectedLinkNumber/llDetectedTouchST instead of link messages
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -85,7 +88,7 @@ initExtension(integer conf){
     (CH = (-50000 - llRound((llFrand(1) * 100000))));
     (g_iHandle = llListen(CH,"",g_kOwner,""));
     if (conf) llRequestPermissions(g_kOwner,2048);
-    llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") Enhancements by ") + g_sAuthors));
+    llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
     if (verbose) {
         
         llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
@@ -100,7 +103,7 @@ defCam(){
 
 
 shoulderCam(){
-    llOwnerSay("shoulderCam");
+    llOwnerSay("Shoulder Cam");
     defCam();
     llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
 }
@@ -115,7 +118,7 @@ drop_camera_5_seconds(){
 
 
 wormCam(){
-    llOwnerSay("wormCam");
+    llOwnerSay("Worm Cam");
     llSetCameraParams([12,1,8,180.0,9,0.0,7,8.0,6,0.0,22,0,11,4.0,0,-45.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
 }
 
@@ -206,13 +209,13 @@ default {
             if ((message == "More...")) llDialog(id,"Pick an option!",MENU_2,CH);
             else  if ((message == "...Back")) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
             else  if ((message == "Cam ON")) {
-                llOwnerSay(("takeCamCtrl\n" + ((string)id)));
+                llOwnerSay(("take CamCtrl\n" + ((string)id)));
                 llRequestPermissions(id,2048);
                 llSetCameraParams([12,1]);
                 (g_iOn = 1);
             }
             else  if ((message == "Cam OFF")) {
-                llOwnerSay("releaseCamCtrl");
+                llOwnerSay("release CamCtrl");
                 llClearCameraParams();
                 (g_iOn = 0);
             }
@@ -228,7 +231,7 @@ default {
                 wormCam();
             }
             else  if ((message == "Centre")) {
-                llOwnerSay("centreCam");
+                llOwnerSay("Center Cam");
                 defCam();
                 llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
             }

@@ -16,7 +16,7 @@
 // Version 1.0
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
-//Additions: when reusing some older code
+//Additions: ----
 //10. Mrz. 2014
 //v1.21
 //
@@ -33,10 +33,13 @@
 //
 //Changelog
 // Formatting
+// LSL Forge modules
+// code cleanup
 
-//FIXME: llListens() - too many listeners
+//FIXME: ----
 
-//TODO: ----
+//TODO: add notecard, so one can set up camera views per specific place
+//TODO: maybe use llDetectedTouchFace/llDetectedTouchPos/llDetectedLinkNumber/llDetectedTouchST instead of link messages
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -97,7 +100,7 @@ initExtension(integer conf)
 {
 	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
-	llOwnerSay(g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
+	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
 }
 
@@ -107,7 +110,7 @@ initExtension(integer conf)
 //-----------------------------------------------
 takeCamCtrl(key id)
 {
-	llOwnerSay("takeCamCtrl\n"+(string)id); // say function name for debugging
+	llOwnerSay("take CamCtrl\n"+(string)id); // say function name for debugging
 	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 	llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 	g_iOn = TRUE;
@@ -117,7 +120,7 @@ takeCamCtrl(key id)
 // pragma inline
 releaseCamCtrl(key id)
 {
-	llOwnerSay("releaseCamCtrl"); // say function name for debugging
+	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
 	g_iOn = FALSE;
 }
@@ -181,7 +184,7 @@ shoulderCamRight()
 
 shoulderCam()
 {
-	llOwnerSay("shoulderCam"); // say function name for debugging
+	llOwnerSay("Shoulder Cam"); // say function name for debugging
 	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
@@ -228,7 +231,7 @@ shoulderCamLeft()
 // pragma inline
 centreCam()
 {
-	llOwnerSay("centreCam"); // say function name for debugging
+	llOwnerSay("Center Cam"); // say function name for debugging
 	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
@@ -275,7 +278,7 @@ drop_camera_5_seconds()
 
 wormCam()
 {
-	llOwnerSay("wormCam"); // say function name for debugging
+	llOwnerSay("Worm Cam"); // say function name for debugging
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
