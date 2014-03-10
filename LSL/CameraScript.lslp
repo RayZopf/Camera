@@ -410,7 +410,7 @@ default
 		//debug=TRUE; // set to TRUE to enable Debug messages
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
-		verbose = TRUE;
+		verbose = FALSE;
 		
 		MemRestrict(24000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
