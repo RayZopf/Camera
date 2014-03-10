@@ -18,7 +18,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: ----
 //10. Mrz. 2014
-//v1.21
+//v1.3
 //
 
 //Files:
@@ -59,7 +59,7 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.21";            // version
+string g_sVersion = "1.3";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -104,7 +104,6 @@ initExtension(integer conf)
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
-	llClearCameraParams(); // reset camera to default
 }
 
 
@@ -126,6 +125,12 @@ releaseCamCtrl(key id)
 	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
 	g_iOn = FALSE;
+}
+
+
+defCam()
+{
+	shoulderCamRight();
 }
 
 
@@ -177,6 +182,7 @@ shoulderCamRight()
 }
 
 
+// pragma inline
 shoulderCam()
 {
 	llOwnerSay("Shoulder Cam"); // say function name for debugging
@@ -268,8 +274,7 @@ dropCam()
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	llSleep(5);
-	llClearCameraParams(); // reset camera to default
-	llSetCameraParams([CAMERA_ACTIVE, 1]);
+	defCam();
 }
 
 
@@ -324,14 +329,14 @@ spaz_cam()
 		]);
 		llSleep(0.1);
 	}
-	llClearCameraParams(); // reset camera to default
-	llSetCameraParams([CAMERA_ACTIVE, 1]);
+	defCam();
 }
 
 
 // pragma inline
 spinCam()
 {
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -356,8 +361,7 @@ spinCam()
 		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
 		llSetCameraParams([CAMERA_POSITION, camera_position]);
 	}
-	llClearCameraParams(); // reset camera to default
-	llSetCameraParams([CAMERA_ACTIVE, 1]);
+	defCam();
 }
 
  // pragma inline
@@ -518,8 +522,9 @@ default
 	{
 		if (id == g_kOwner) {
 			initExtension(TRUE);
-			shoulderCamRight();
+			defCam();
 			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
+			// please go to defCam() function and change it there
 		} else llResetScript();
 	}
 

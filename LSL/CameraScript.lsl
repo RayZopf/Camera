@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:07:57 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:21:19 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: ----
 //10. Mrz. 2014
-//v1.21
+//v1.3
 //
 
 //Files:
@@ -60,7 +60,7 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.21";
+string g_sVersion = "1.3";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -94,14 +94,13 @@ initExtension(integer conf){
         
         llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
     }
-    llClearCameraParams();
 }
 
 
-shoulderCam(){
-    llOwnerSay("Shoulder Cam");
+defCam(){
+    llOwnerSay("Right Shoulder");
     llClearCameraParams();
-    llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
+    llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
 }
 
 
@@ -225,14 +224,15 @@ default {
                 llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
             }
             else  if ((message == "Shoulder")) {
-                shoulderCam();
+                llOwnerSay("Shoulder Cam");
+                llClearCameraParams();
+                llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
             }
             else  if ((message == "Drop Cam")) {
                 llOwnerSay("drop camera 5 seconds");
                 llSetCameraParams([12,1,8,0.0,9,0.5,7,3.0,6,2.0,22,0,11,0.0,0,0.0,5,5.0e-2,21,1,10,0.0,1,<0.0,0.0,0.0>]);
                 llSleep(5);
-                llClearCameraParams();
-                llSetCameraParams([12,1]);
+                defCam();
             }
             else  if ((message == "Trap Toggle")) {
                 (trap = (!trap));
@@ -244,6 +244,7 @@ default {
                 }
             }
             else  if ((message == "Spin Cam")) {
+                llClearCameraParams();
                 llSetCameraParams([12,1,8,180.0,9,0.5,6,5.0e-2,22,0,11,0.0,0,30.0,5,0.0,21,0,10,0.0,1,<0.0,0.0,0.0>]);
                 float i;
                 vector camera_position;
@@ -251,8 +252,7 @@ default {
                     (camera_position = (llGetPos() + (<0.0,4.0,0.0> * llEuler2Rot(<0.0,0.0,i>))));
                     llSetCameraParams([13,camera_position]);
                 }
-                llClearCameraParams();
-                llSetCameraParams([12,1]);
+                defCam();
             }
         }
         else  llOwnerSay((((name + " picked invalid option '") + llToLower(message)) + "'."));
@@ -278,9 +278,7 @@ default {
 	attach(key id) {
         if ((id == g_kOwner)) {
             initExtension(1);
-            llOwnerSay("Right Shoulder");
-            llClearCameraParams();
-            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
+            defCam();
         }
         else  llResetScript();
     }
