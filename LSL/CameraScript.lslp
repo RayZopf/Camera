@@ -52,7 +52,7 @@ integer verbose = TRUE;         // show more/less info during startup
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.1";            // version
+string g_sVersion = "1.2";            // version
 string g_sScriptName;
 string g_sAuthors = "Zopf";
 
@@ -113,8 +113,8 @@ initExtension(integer conf)
 {
 	setup_listen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
-	llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
-	if (verbose) MemInfo();
+	llOwnerSay(g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
+	if (debug) MemInfo();
 }
 
 
@@ -449,7 +449,7 @@ default
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
 		
-		MemRestrict(40000);
+		MemRestrict(24000);
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 		if (debug) Debug("state_entry", TRUE, TRUE);

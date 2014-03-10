@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 13:14:58 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 13:26:39 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -28,7 +28,7 @@
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.1";
+string g_sVersion = "1.2";
 string g_sScriptName;
 string g_sAuthors = "Zopf";
 
@@ -70,8 +70,8 @@ SendCommand(key id)
 initExtension(integer conf){
     setup_listen();
     if (conf) llRequestPermissions(g_kOwner,2048);
-    llWhisper(0,((((g_sTitle + " (") + g_sVersion) + ") Enhancements by ") + g_sAuthors));
-    llWhisper(0,((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
+    llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") Enhancements by ") + g_sAuthors));
+    
 }
 
 
@@ -230,7 +230,7 @@ default {
 
 	state_entry() {
         integer rc = 0;
-        (rc = llSetMemoryLimit(40000));
+        (rc = llSetMemoryLimit(24000));
         if ((1 && (!rc))) llWhisper(0,(((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
