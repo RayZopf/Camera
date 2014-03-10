@@ -17,8 +17,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: when reusing some older code
-//09. Mrz. 2014
-//v1.1
+//10. Mrz. 2014
+//v1.21
 //
 
 //Files:
@@ -46,13 +46,13 @@
 
 //user changeable variables
 //-----------------------------------------------
-integer verbose = TRUE;         // show more/less info during startup
+integer verbose;         // show more/less info during startup
 
 
 //internal variables
 //-----------------------------------------------
-string g_sTitle = "CameraScript";			// title
-string g_sVersion = "1.1";		// version
+string g_sTitle = "CameraScript";     // title
+string g_sVersion = "1.21";            // version
 string g_sScriptName;
 string g_sAuthors = "Zopf";
 
@@ -76,9 +76,6 @@ integer spaz = 0;
 integer trap = 0;
 
 
-list LISTENERS; // list of hud channel handles we are listening for, for building lists
-
-
 //===============================================
 //LSLForge MODULES
 //===============================================
@@ -86,7 +83,7 @@ list LISTENERS; // list of hud channel handles we are listening for, for buildin
 //general modules
 //-----------------------------------------------
 $import Debug2.lslm(m_sScriptName=g_sScriptName);
-$import MemoryManagement.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_iVerbose=verbose);
+$import MemoryManagement2.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_iVerbose=verbose);
 
 //project specific modules
 //-----------------------------------------------
@@ -95,37 +92,33 @@ $import MemoryManagement.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_
 //===============================================
 //PREDEFINED FUNCTIONS
 //===============================================
-/*
-//XXX
-//NG lets send pings here and listen for pong replys
-SendCommand(key id)
+
+initExtension(integer conf)
 {
-	if (llGetListLength(LISTENERS) >= 60) return;  // lets not cause "too many listen" error
-
-	integer channel = getPersonalChannel(id, 1111);
-	llRegionSayTo(id, channel, (string)id+ ":ping");
-	LISTENERS += [ llListen(channel, "", NULL_KEY, "" )] ;// if we have a reply on the channel lets see what it is.
-	llSetTimerEvent(5.0);// no reply by now, lets kick off the timer
+	setupListen();
+	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
+	llOwnerSay(g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
+	if (verbose) MemInfo(FALSE);
 }
-*/
 
+
+// pragma inline 
 //most important function
 //-----------------------------------------------
-take_camera_control(key id)
+takeCamCtrl(key id)
 {
-	llOwnerSay("take_camera_control"); // say function name for debugging
-	llOwnerSay( (string)id);
+	llOwnerSay("takeCamCtrl\n"+(string)id); // say function name for debugging
 	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 	llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 	g_iOn = TRUE;
 }
 
 
-release_camera_control(key id)
+// pragma inline
+releaseCamCtrl(key id)
 {
-	llOwnerSay("release_camera_control"); // say function name for debugging
-	llSetCameraParams([CAMERA_ACTIVE, 0]); // 1 is active, 0 is inactive
-	llReleaseCamera(id);
+	llOwnerSay("releaseCamCtrl"); // say function name for debugging
+	llClearCameraParams();
 	g_iOn = FALSE;
 }
 
@@ -154,18 +147,19 @@ focus_on_me()
 }
 
 
-default_cam()
+defCam()
 {
-//    llOwnerSay("default_cam"); // say function name for debugging
-llClearCameraParams(); // reset camera to default
+//    llOwnerSay("defCam"); // say function name for debugging
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([CAMERA_ACTIVE, 1]);
 }
 
 
-shoulder_cam2()
+// pragma inline
+shoulderCamRight()
 {
 	llOwnerSay("Right Shoulder"); // say function name for debugging
-	default_cam();
+	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -185,10 +179,10 @@ shoulder_cam2()
 }
 
 
-shoulder_cam()
+shoulderCam()
 {
-	llOwnerSay("shoulder_cam"); // say function name for debugging
-	default_cam();
+	llOwnerSay("shoulderCam"); // say function name for debugging
+	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -208,10 +202,11 @@ shoulder_cam()
 }
 
 
-shoulder_cam3()
+// pragma inline
+shoulderCamLeft()
 {
 	llOwnerSay("Left Shoulder"); // say function name for debugging
-	default_cam();
+	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -230,11 +225,11 @@ shoulder_cam3()
 	]);
 }
 
-
-centre_cam()
+// pragma inline
+centreCam()
 {
-	llOwnerSay("centre_cam"); // say function name for debugging
-	default_cam();
+	llOwnerSay("centreCam"); // say function name for debugging
+	defCam();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -274,13 +269,13 @@ drop_camera_5_seconds()
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	llSleep(5);
-	default_cam();
+	defCam();
 }
 
 
-worm_cam()
+wormCam()
 {
-	llOwnerSay("worm_cam"); // say function name for debugging
+	llOwnerSay("wormCam"); // say function name for debugging
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -327,7 +322,7 @@ spaz_cam()
 		]);
 		llSleep(0.1);
 	}
-	default_cam();
+	defCam();
 }
 
 
@@ -357,16 +352,16 @@ spin_cam()
 		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
 		llSetCameraParams([CAMERA_POSITION, camera_position]);
 	}
-	default_cam();
+	defCam();
 }
 
-
-setup_listen()
+ // pragma inline
+setupListen()
 {
 	llListenRemove(1);
 	llListenRemove(g_iHandle);
 	CH = -50000 -llRound(llFrand(1) * 100000);
-	g_iHandle = llListen(CH, "", "", ""); // listen for dialog answers
+	g_iHandle = llListen(CH, "", g_kOwner, ""); // listen for dialog answers
 }
 
 
@@ -382,49 +377,6 @@ setup_listen()
 default
 {
 /*
-//XXX
-	state_entry()
-	{
-		//debug=TRUE; // set to TRUE to enable Debug messages
-		
-		g_kOwner = llGetOwner();
-		g_sScriptName = llGetScriptName();
-
-		if (debug) Debug((string)llGetFreeMemory() + " bytes free", FALSE, FALSE);
-		llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
-		llWhisper(0, "INSTRUCTIONS");
-		if (verbose) llWhisper(0, "Loading notecard...");
-		;
-		//listener=llListen(getPersonalChannel(wearer,1111),"","",""); //lets listen here
-	}
-
-//XXX
-	timer()//clear things after ping
-	{
-		llSetTimerEvent(0);
-		AGENTS = [];
-		integer n = llGetListLength(LISTENERS) - 1;
-		for (; n >= 0; n--)
-		{
-			llListenRemove(llList2Integer(LISTENERS,n));
-		}
-		LISTENERS = [];
-	}
-
-//XXX
-	on_rez(integer i)
-	{
-		;
-	}
-
-//XXX
-	changed(integer change)
-	{
-		if(change & CHANGED_INVENTORY) ;
-		if(change & CHANGED_REGION) ;
-		if(change & CHANGED_OWNER) llResetScript();
-	}
-
 //XXX
 //let it run in noscript areas
 //-----------------------------------------------
@@ -455,9 +407,15 @@ default
 
 	state_entry()
 	{
-		llSitTarget(<0.0, 0.0, 0.1>, ZERO_ROTATION);
-		setup_listen();
-		llSetTimerEvent(2.0);
+		//debug=TRUE; // set to TRUE to enable Debug messages
+		g_kOwner = llGetOwner();
+		g_sScriptName = llGetScriptName();
+		verbose = FALSE;
+		
+		MemRestrict(24000, FALSE);
+		if (debug) Debug("state_entry", TRUE, TRUE);
+
+		initExtension(FALSE);
 	}
 
 
@@ -478,34 +436,32 @@ default
 	listen(integer channel, string name, key id, string message)
 	{
 		if (~llListFindList(MENU_MAIN + MENU_2, [message]))  // verify dialog choice
-//        if (~llListFindList(MENU_MAIN, [message]))  // verify dialog choice
 		{
-//            llOwnerSay(name + " picked the option '" + message + "'."); // output the answer
 			if (message == "More...") llDialog(id, "Pick an option!", MENU_2, CH); // present submenu on request
 			else if (message == "...Back") llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if (message == "Cam ON") {
-				take_camera_control(id);
+				takeCamCtrl(id);
 			}
 			else if (message == "Cam OFF") {
-				release_camera_control(id);
+				releaseCamCtrl(id);
 			}
 			else if (message == "Default") {
-				default_cam();
+				defCam();
 			}
 			else if (message == "Right") {
-				shoulder_cam2();
+				shoulderCamRight();
 			}
 			else if (message == "Worm Cam") {
-				worm_cam();
+				wormCam();
 			}
 			else if (message == "Centre") {
-				centre_cam();
+				centreCam();
 			}
 			else if (message == "Left") {
-				shoulder_cam3();
+				shoulderCamLeft();
 			}
 			else if (message == "Shoulder") {
-				shoulder_cam();
+				shoulderCam();
 			}
 			else if (message == "Drop Cam") {
 				drop_camera_5_seconds();
@@ -524,7 +480,8 @@ default
 	}
 
 
-	run_time_permissions(integer perm) {
+	run_time_permissions(integer perm)
+	{
 		if (perm & PERMISSION_CONTROL_CAMERA) {
 			llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 			llOwnerSay("Camera permissions have been taken");
@@ -537,29 +494,20 @@ default
 		if (change & CHANGED_LINK) {
 			key id = llAvatarOnSitTarget();
 			if (id) {
-				setup_listen();
-				llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
+			initExtension(TRUE);
 			}
 		}
+		if (change & CHANGED_OWNER) llResetScript();
 	}
 
 
 	attach(key id)
 	{
-		if (id) {
-			setup_listen();
-			llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
-			shoulder_cam();
-			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centre_cam(); to have the default view be centered behind your avatar!
-		}
-	}
-
-
-	timer()
-	{
-		if (trap == 1) {
-			focus_on_me();
-		}
+		if (id == g_kOwner) {
+			initExtension(TRUE);
+			shoulderCamRight();
+			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
+		} else llResetScript();
 	}
 
 //-----------------------------------------------
