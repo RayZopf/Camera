@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraButton.lslp Mon Mar 10 18:20:21 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraButton.lslp Mon Mar 10 18:58:27 Mitteleuropäische Zeit 2014
 
 
 

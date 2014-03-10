@@ -8,3 +8,5 @@ Mrz.2014
 ----------------
  - reformatted code
  - bugfix
+ - use LSL Forge modules
+ - restrict memory usage
