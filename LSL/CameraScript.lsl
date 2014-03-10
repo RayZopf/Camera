@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:41:06 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:43:08 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -37,7 +37,7 @@
 // LSL Forge modules
 // code cleanup
 
-//FIXME: ----
+//FIXME: on script changes, one need toreattach HUD to get workinh cam menu
 
 //TODO: add notecard, so one can set up camera views per specific place
 //TODO: use fix listen channel, so that user can change options via chat

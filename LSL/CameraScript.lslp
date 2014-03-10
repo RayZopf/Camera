@@ -36,7 +36,7 @@
 // LSL Forge modules
 // code cleanup
 
-//FIXME: ----
+//FIXME: on script changes, one need toreattach HUD to get workinh cam menu
 
 //TODO: add notecard, so one can set up camera views per specific place
 //TODO: use fix listen channel, so that user can change options via chat
