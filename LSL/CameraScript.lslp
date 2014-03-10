@@ -68,7 +68,7 @@ integer CH; // dialog channel
 
 // Variables
 key g_kOwner;                      // object owner
-key g_kUser;                       // key of last avatar to touch object
+//key g_kUser;                       // key of last avatar to touch object
 key g_kQuery = NULL_KEY;
 
 integer g_iHandle = 0;
@@ -129,7 +129,7 @@ releaseCamCtrl(key id)
 focus_on_me()
 {
 	llOwnerSay("focus_on_me"); // say function name for debugging
-	//    llClearCameraParams(); // reset camera to default
+	llClearCameraParams(); // reset camera to default
 	vector here = llGetPos();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
@@ -150,19 +150,11 @@ focus_on_me()
 }
 
 
-defCam()
-{
-//    llOwnerSay("defCam"); // say function name for debugging
-	llClearCameraParams(); // reset camera to default
-	llSetCameraParams([CAMERA_ACTIVE, 1]);
-}
-
-
 // pragma inline
 shoulderCamRight()
 {
 	llOwnerSay("Right Shoulder"); // say function name for debugging
-	defCam();
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -185,7 +177,7 @@ shoulderCamRight()
 shoulderCam()
 {
 	llOwnerSay("Shoulder Cam"); // say function name for debugging
-	defCam();
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -209,7 +201,7 @@ shoulderCam()
 shoulderCamLeft()
 {
 	llOwnerSay("Left Shoulder"); // say function name for debugging
-	defCam();
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -232,7 +224,7 @@ shoulderCamLeft()
 centreCam()
 {
 	llOwnerSay("Center Cam"); // say function name for debugging
-	defCam();
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -272,13 +264,15 @@ drop_camera_5_seconds()
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	llSleep(5);
-	defCam();
+	llClearCameraParams(); // reset camera to default
+	llSetCameraParams([CAMERA_ACTIVE, 1]);
 }
 
 
 wormCam()
 {
 	llOwnerSay("Worm Cam"); // say function name for debugging
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -325,7 +319,8 @@ spaz_cam()
 		]);
 		llSleep(0.1);
 	}
-	defCam();
+	llClearCameraParams(); // reset camera to default
+	llSetCameraParams([CAMERA_ACTIVE, 1]);
 }
 
 
@@ -355,7 +350,8 @@ spin_cam()
 		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
 		llSetCameraParams([CAMERA_POSITION, camera_position]);
 	}
-	defCam();
+	llClearCameraParams(); // reset camera to default
+	llSetCameraParams([CAMERA_ACTIVE, 1]);
 }
 
  // pragma inline
@@ -449,7 +445,8 @@ default
 				releaseCamCtrl(id);
 			}
 			else if (message == "Default") {
-				defCam();
+				llClearCameraParams(); // reset camera to default
+				llSetCameraParams([CAMERA_ACTIVE, 1]);
 			}
 			else if (message == "Right") {
 				shoulderCamRight();
@@ -494,12 +491,6 @@ default
 
 	changed(integer change)
 	{
-		if (change & CHANGED_LINK) {
-			key id = llAvatarOnSitTarget();
-			if (id) {
-			initExtension(TRUE);
-			}
-		}
 		if (change & CHANGED_OWNER) llResetScript();
 	}
 
