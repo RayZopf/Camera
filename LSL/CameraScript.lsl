@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 23:57:51 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:07:57 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -151,7 +151,7 @@ default {
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         integer rc = 0;
-        (rc = llSetMemoryLimit(24000));
+        (rc = llSetMemoryLimit(30000));
         if (verbose) if ((!rc)) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
@@ -160,13 +160,23 @@ default {
     }
 
 
-
+/*
 //listen for linked messages from other scripts and devices
 //-----------------------------------------------
-	link_message(integer sender_num,integer num,string str,key id) {
-        if ((str == "cam")) {
+	link_message(integer sender_num, integer num, string str, key id)
+	{
+		if(str == "cam") {
+			integer perm = llGetPermissions();
+			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+		}
+	}
+*/
+
+	touch_end(integer num_detected) {
+        integer nr = llDetectedLinkNumber(0);
+        if ((1 == nr)) {
             integer perm = llGetPermissions();
-            if ((perm & 2048)) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
+            if ((perm & 2048)) llDialog(g_kOwner,"What do you want to do?",MENU_MAIN,CH);
         }
     }
 

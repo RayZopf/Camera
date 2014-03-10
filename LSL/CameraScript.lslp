@@ -419,13 +419,13 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 		
-		MemRestrict(24000, FALSE);
+		MemRestrict(30000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
 	}
 
-
+/*
 //listen for linked messages from other scripts and devices
 //-----------------------------------------------
 	link_message(integer sender_num, integer num, string str, key id)
@@ -433,6 +433,17 @@ default
 		if(str == "cam") {
 			integer perm = llGetPermissions();
 			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+		}
+	}
+*/
+
+	touch_end(integer num_detected)
+	{
+		integer nr= llDetectedLinkNumber(0);
+		if (1 == nr) {
+			integer perm = llGetPermissions();
+			// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
+			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
 		}
 	}
 
