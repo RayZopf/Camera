@@ -17,8 +17,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: when reusing some older code
-//09. Mrz. 2014
-//v1.1
+//10. Mrz. 2014
+//v1.2
 //
 
 //Files:
@@ -51,8 +51,8 @@ integer verbose = TRUE;         // show more/less info during startup
 
 //internal variables
 //-----------------------------------------------
-string g_sTitle = "CameraScript";			// title
-string g_sVersion = "1.1";		// version
+string g_sTitle = "CameraScript";     // title
+string g_sVersion = "1.1";            // version
 string g_sScriptName;
 string g_sAuthors = "Zopf";
 
@@ -108,6 +108,15 @@ SendCommand(key id)
 	llSetTimerEvent(5.0);// no reply by now, lets kick off the timer
 }
 */
+
+initExtension(integer conf)
+{
+	setup_listen();
+	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
+	llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
+	if (verbose) MemInfo();
+}
+
 
 //most important function
 //-----------------------------------------------
@@ -366,7 +375,7 @@ setup_listen()
 	llListenRemove(1);
 	llListenRemove(g_iHandle);
 	CH = -50000 -llRound(llFrand(1) * 100000);
-	g_iHandle = llListen(CH, "", "", ""); // listen for dialog answers
+	g_iHandle = llListen(CH, "", g_kOwner, ""); // listen for dialog answers
 }
 
 
@@ -382,22 +391,6 @@ setup_listen()
 default
 {
 /*
-//XXX
-	state_entry()
-	{
-		//debug=TRUE; // set to TRUE to enable Debug messages
-		
-		g_kOwner = llGetOwner();
-		g_sScriptName = llGetScriptName();
-
-		if (debug) Debug((string)llGetFreeMemory() + " bytes free", FALSE, FALSE);
-		llWhisper(0, g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
-		llWhisper(0, "INSTRUCTIONS");
-		if (verbose) llWhisper(0, "Loading notecard...");
-		;
-		//listener=llListen(getPersonalChannel(wearer,1111),"","",""); //lets listen here
-	}
-
 //XXX
 	timer()//clear things after ping
 	{
@@ -455,8 +448,16 @@ default
 
 	state_entry()
 	{
+		//debug=TRUE; // set to TRUE to enable Debug messages
+		
+		MemRestrict(40000);
+		g_kOwner = llGetOwner();
+		g_sScriptName = llGetScriptName();
+		if (debug) Debug("state_entry", TRUE, TRUE);
+
 		llSitTarget(<0.0, 0.0, 0.1>, ZERO_ROTATION);
-		setup_listen();
+		initExtension(FALSE);
+
 		llSetTimerEvent(2.0);
 	}
 
@@ -537,21 +538,20 @@ default
 		if (change & CHANGED_LINK) {
 			key id = llAvatarOnSitTarget();
 			if (id) {
-				setup_listen();
-				llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
+			initExtension(TRUE);
 			}
 		}
+		if (change & CHANGED_OWNER) llResetScript();
 	}
 
 
 	attach(key id)
 	{
-		if (id) {
-			setup_listen();
-			llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
+		if (id == g_kOwner) {
+			initExtension(TRUE);
 			shoulder_cam();
 			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centre_cam(); to have the default view be centered behind your avatar!
-		}
+		} else llResetScript();
 	}
 
 
