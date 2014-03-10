@@ -86,7 +86,7 @@ list LISTENERS; // list of hud channel handles we are listening for, for buildin
 //general modules
 //-----------------------------------------------
 $import Debug2.lslm(m_sScriptName=g_sScriptName);
-$import MemoryManagement.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_iVerbose=verbose);
+$import MemoryManagement2.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_iVerbose=verbose);
 
 //project specific modules
 //-----------------------------------------------
@@ -114,7 +114,7 @@ initExtension(integer conf)
 	setup_listen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
-	if (debug) MemInfo();
+	if (verbose) MemInfo(FALSE);
 }
 
 
@@ -449,7 +449,7 @@ default
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
 		
-		MemRestrict(24000);
+		MemRestrict(24000, FALSE);
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 		if (debug) Debug("state_entry", TRUE, TRUE);

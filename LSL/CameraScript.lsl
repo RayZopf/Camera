@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 13:26:39 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 16:48:48 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -71,7 +71,10 @@ initExtension(integer conf){
     setup_listen();
     if (conf) llRequestPermissions(g_kOwner,2048);
     llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") Enhancements by ") + g_sAuthors));
-    
+    {
+        
+        llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
+    }
 }
 
 
@@ -231,7 +234,9 @@ default {
 	state_entry() {
         integer rc = 0;
         (rc = llSetMemoryLimit(24000));
-        if ((1 && (!rc))) llWhisper(0,(((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
+        if ((1 && (!rc))) {
+            llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
+        }
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         
