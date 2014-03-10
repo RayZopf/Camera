@@ -133,8 +133,7 @@ take_camera_control(key id)
 release_camera_control(key id)
 {
 	llOwnerSay("release_camera_control"); // say function name for debugging
-	llSetCameraParams([CAMERA_ACTIVE, 0]); // 1 is active, 0 is inactive
-	llReleaseCamera(id);
+	llClearCameraParams();
 	g_iOn = FALSE;
 }
 
@@ -166,7 +165,7 @@ focus_on_me()
 default_cam()
 {
 //    llOwnerSay("default_cam"); // say function name for debugging
-llClearCameraParams(); // reset camera to default
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([CAMERA_ACTIVE, 1]);
 }
 

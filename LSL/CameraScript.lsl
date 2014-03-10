@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 13:10:18 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 13:14:58 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -88,8 +88,7 @@ take_camera_control(key id){
 
 release_camera_control(key id){
     llOwnerSay("release_camera_control");
-    llSetCameraParams([12,0]);
-    llReleaseCamera(id);
+    llClearCameraParams();
     (g_iOn = 0);
 }
 
