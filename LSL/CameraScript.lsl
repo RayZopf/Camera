@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 17:36:32 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 18:06:42 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -148,13 +148,13 @@ default {
 */
 
 	state_entry() {
+        (g_kOwner = llGetOwner());
+        (g_sScriptName = llGetScriptName());
         integer rc = 0;
         (rc = llSetMemoryLimit(24000));
         if ((1 && (!rc))) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
-        (g_kOwner = llGetOwner());
-        (g_sScriptName = llGetScriptName());
         
         initExtension(0);
     }

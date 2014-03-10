@@ -408,10 +408,10 @@ default
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
-		
-		MemRestrict(24000, FALSE);
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
+		
+		MemRestrict(24000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
