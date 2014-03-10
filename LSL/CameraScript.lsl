@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 18:10:52 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 18:16:58 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -22,7 +22,32 @@
 //v1.2
 //
 
+//Files:
+//CameraScript.lsl
+//
+//NAME OF NOTEDACRD
+//
+//
+//Prequisites: ----
+//Notecard format: ----
+//basic help: ----
+//
+//Changelog
+// Formatting
 
+//FIXME: llListens() - too many listeners
+
+//TODO: ----
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//===============================================
+//GLOBAL VARIABLES
+//===============================================
+
+//user changeable variables
+//-----------------------------------------------
+integer verbose;
 
 
 //internal variables
@@ -61,7 +86,7 @@ initExtension(integer conf){
     (g_iHandle = llListen(CH,"",g_kOwner,""));
     if (conf) llRequestPermissions(g_kOwner,2048);
     llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") Enhancements by ") + g_sAuthors));
-    {
+    if (verbose) {
         
         llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
     }
@@ -150,9 +175,10 @@ default {
 	state_entry() {
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
+        (verbose = 1);
         integer rc = 0;
         (rc = llSetMemoryLimit(24000));
-        if ((!rc)) {
+        if (verbose) if ((!rc)) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
         

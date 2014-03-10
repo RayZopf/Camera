@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraButton.lslp Mon Mar 10 18:10:52 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraButton.lslp Mon Mar 10 18:17:43 Mitteleuropäische Zeit 2014
 
 string g_sScriptName;
 
@@ -13,8 +13,8 @@ default {
         
     }
 
-	
-	
+
+
 	touch_start(integer num_detected) {
         llMessageLinked(1,0,"cam",llDetectedKey(0));
     }

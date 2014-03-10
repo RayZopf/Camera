@@ -46,7 +46,7 @@
 
 //user changeable variables
 //-----------------------------------------------
-integer verbose = TRUE;         // show more/less info during startup
+integer verbose;         // show more/less info during startup
 
 
 //internal variables
@@ -410,6 +410,7 @@ default
 		//debug=TRUE; // set to TRUE to enable Debug messages
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
+		verbose = TRUE;
 		
 		MemRestrict(24000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);

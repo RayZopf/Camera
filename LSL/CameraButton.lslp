@@ -16,8 +16,8 @@ default
 		g_sScriptName = llGetScriptName();
 		MemRestrict(8192, FALSE);
 	}
-	
-	
+
+
 	touch_start(integer num_detected)
 	{
 		llMessageLinked(LINK_ROOT, 0, "cam", llDetectedKey(0));
