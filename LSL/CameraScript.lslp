@@ -76,9 +76,6 @@ integer spaz = 0;
 integer trap = 0;
 
 
-list LISTENERS; // list of hud channel handles we are listening for, for building lists
-
-
 //===============================================
 //LSLForge MODULES
 //===============================================
@@ -95,19 +92,6 @@ $import MemoryManagement2.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m
 //===============================================
 //PREDEFINED FUNCTIONS
 //===============================================
-/*
-//XXX
-//NG lets send pings here and listen for pong replys
-SendCommand(key id)
-{
-	if (llGetListLength(LISTENERS) >= 60) return;  // lets not cause "too many listen" error
-
-	integer channel = getPersonalChannel(id, 1111);
-	llRegionSayTo(id, channel, (string)id+ ":ping");
-	LISTENERS += [ llListen(channel, "", NULL_KEY, "" )] ;// if we have a reply on the channel lets see what it is.
-	llSetTimerEvent(5.0);// no reply by now, lets kick off the timer
-}
-*/
 
 initExtension(integer conf)
 {
@@ -123,8 +107,7 @@ initExtension(integer conf)
 //-----------------------------------------------
 takeCamCtrl(key id)
 {
-	llOwnerSay("takeCamCtrl"); // say function name for debugging
-	llOwnerSay( (string)id);
+	llOwnerSay("takeCamCtrl\n"+(string)id); // say function name for debugging
 	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 	llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 	g_iOn = TRUE;
@@ -395,33 +378,6 @@ default
 {
 /*
 //XXX
-	timer()//clear things after ping
-	{
-		llSetTimerEvent(0);
-		AGENTS = [];
-		integer n = llGetListLength(LISTENERS) - 1;
-		for (; n >= 0; n--)
-		{
-			llListenRemove(llList2Integer(LISTENERS,n));
-		}
-		LISTENERS = [];
-	}
-
-//XXX
-	on_rez(integer i)
-	{
-		;
-	}
-
-//XXX
-	changed(integer change)
-	{
-		if(change & CHANGED_INVENTORY) ;
-		if(change & CHANGED_REGION) ;
-		if(change & CHANGED_OWNER) llResetScript();
-	}
-
-//XXX
 //let it run in noscript areas
 //-----------------------------------------------
 	run_time_permissions(integer perms)
@@ -479,9 +435,7 @@ default
 	listen(integer channel, string name, key id, string message)
 	{
 		if (~llListFindList(MENU_MAIN + MENU_2, [message]))  // verify dialog choice
-//        if (~llListFindList(MENU_MAIN, [message]))  // verify dialog choice
 		{
-//            llOwnerSay(name + " picked the option '" + message + "'."); // output the answer
 			if (message == "More...") llDialog(id, "Pick an option!", MENU_2, CH); // present submenu on request
 			else if (message == "...Back") llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if (message == "Cam ON") {
@@ -525,7 +479,8 @@ default
 	}
 
 
-	run_time_permissions(integer perm) {
+	run_time_permissions(integer perm)
+	{
 		if (perm & PERMISSION_CONTROL_CAMERA) {
 			llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 			llOwnerSay("Camera permissions have been taken");
@@ -549,7 +504,7 @@ default
 	{
 		if (id == g_kOwner) {
 			initExtension(TRUE);
-			shoulderCam();
+			shoulderCamRight();
 			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
 		} else llResetScript();
 	}

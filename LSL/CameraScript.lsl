@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 17:04:21 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 17:36:32 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -53,19 +53,6 @@ integer trap = 0;
 //===============================================
 //PREDEFINED FUNCTIONS
 //===============================================
-/*
-//XXX
-//NG lets send pings here and listen for pong replys
-SendCommand(key id)
-{
-	if (llGetListLength(LISTENERS) >= 60) return;  // lets not cause "too many listen" error
-
-	integer channel = getPersonalChannel(id, 1111);
-	llRegionSayTo(id, channel, (string)id+ ":ping");
-	LISTENERS += [ llListen(channel, "", NULL_KEY, "" )] ;// if we have a reply on the channel lets see what it is.
-	llSetTimerEvent(5.0);// no reply by now, lets kick off the timer
-}
-*/
 
 initExtension(integer conf){
     llListenRemove(1);
@@ -133,33 +120,6 @@ default {
 
 /*
 //XXX
-	timer()//clear things after ping
-	{
-		llSetTimerEvent(0);
-		AGENTS = [];
-		integer n = llGetListLength(LISTENERS) - 1;
-		for (; n >= 0; n--)
-		{
-			llListenRemove(llList2Integer(LISTENERS,n));
-		}
-		LISTENERS = [];
-	}
-
-//XXX
-	on_rez(integer i)
-	{
-		;
-	}
-
-//XXX
-	changed(integer change)
-	{
-		if(change & CHANGED_INVENTORY) ;
-		if(change & CHANGED_REGION) ;
-		if(change & CHANGED_OWNER) llResetScript();
-	}
-
-//XXX
 //let it run in noscript areas
 //-----------------------------------------------
 	run_time_permissions(integer perms)
@@ -220,8 +180,7 @@ default {
             if ((message == "More...")) llDialog(id,"Pick an option!",MENU_2,CH);
             else  if ((message == "...Back")) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
             else  if ((message == "Cam ON")) {
-                llOwnerSay("takeCamCtrl");
-                llOwnerSay(((string)id));
+                llOwnerSay(("takeCamCtrl\n" + ((string)id)));
                 llRequestPermissions(id,2048);
                 llSetCameraParams([12,1]);
                 (g_iOn = 1);
@@ -300,7 +259,9 @@ default {
 	attach(key id) {
         if ((id == g_kOwner)) {
             initExtension(1);
-            shoulderCam();
+            llOwnerSay("Right Shoulder");
+            defCam();
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
         }
         else  llResetScript();
     }
