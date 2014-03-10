@@ -455,10 +455,7 @@ default
 		g_sScriptName = llGetScriptName();
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
-		llSitTarget(<0.0, 0.0, 0.1>, ZERO_ROTATION);
 		initExtension(FALSE);
-
-		llSetTimerEvent(2.0);
 	}
 
 
@@ -552,14 +549,6 @@ default
 			shoulder_cam();
 			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centre_cam(); to have the default view be centered behind your avatar!
 		} else llResetScript();
-	}
-
-
-	timer()
-	{
-		if (trap == 1) {
-			focus_on_me();
-		}
 	}
 
 //-----------------------------------------------

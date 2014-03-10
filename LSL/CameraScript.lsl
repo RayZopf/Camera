@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 12:45:53 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Mon Mar 10 13:10:18 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -91,13 +91,6 @@ release_camera_control(key id){
     llSetCameraParams([12,0]);
     llReleaseCamera(id);
     (g_iOn = 0);
-}
-
-
-focus_on_me(){
-    llOwnerSay("focus_on_me");
-    vector here = llGetPos();
-    llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <4.0,4.0,4.0>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
 }
 
 
@@ -243,9 +236,7 @@ default {
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         
-        llSitTarget(<0.0,0.0,0.1>,ZERO_ROTATION);
         initExtension(0);
-        llSetTimerEvent(2.0);
     }
 
 
@@ -340,13 +331,5 @@ default {
             shoulder_cam();
         }
         else  llResetScript();
-    }
-
-
-
-	timer() {
-        if ((trap == 1)) {
-            focus_on_me();
-        }
     }
 }
