@@ -885,6 +885,15 @@ default
 		} else {
 			if (verbose) status = "on";
 			dialogPerms(status);
+
+/*
+		integer nr= llDetectedLinkNumber(0);
+		if (2 == nr) {
+			integer perm = llGetPermissions();
+			// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
+			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+			// is the above line causing the bug that menu is not shown?
+*/
 		}
 	}
 

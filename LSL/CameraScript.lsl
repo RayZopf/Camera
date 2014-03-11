@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 00:50:50 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 01:40:30 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
