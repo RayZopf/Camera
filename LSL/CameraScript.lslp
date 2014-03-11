@@ -16,9 +16,9 @@
 // Version 1.0
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
-//Additions: when reusing some older code
-//10. Mrz. 2014
-//v1.21
+//Additions: ----
+//11. Mrz. 2014
+//v1.33
 //
 
 //Files:
@@ -33,10 +33,15 @@
 //
 //Changelog
 // Formatting
+// LSL Forge modules
+// code cleanup
 
-//FIXME: llListens() - too many listeners
+//FIXME: on script changes, one need toreattach HUD to get workinh cam menu
+//FIXME: on first start, using "off" throws script error: Script trying to clear camera parameters but PERMISSION_CONTROL_CAMERA permission not set!
 
-//TODO: ----
+//TODO: add notecard, so one can set up camera views per specific place
+//TODO: use fix listen channel, so that user can change options via chat
+//TODO: maybe use llDetectedTouchFace/llDetectedTouchPos/llDetectedLinkNumber/llDetectedTouchST instead of link messages
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -48,24 +53,27 @@
 //-----------------------------------------------
 integer verbose;         // show more/less info during startup
 
+//SCRIPT MESSAGE MAP
+integer CH; // dialog channel
+
 
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.21";            // version
+string g_sVersion = "1.33";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["Centre", "Right", "Left", "Cam ON", "Cam OFF"]; // the main menu
-list MENU_2 = ["More...", "...Back"]; // menu 2
+list MENU_MAIN = ["More...", "---", "CLOSE",
+	"Left", "Centre", "Right",
+	"ON", "OFF", "---"]; // the main menu
+//list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
 
-//SCRIPT MESSAGE MAP
-integer CH; // dialog channel
 
 // Variables
 key g_kOwner;                      // object owner
-key g_kUser;                       // key of last avatar to touch object
+//key g_kUser;                       // key of last avatar to touch object
 key g_kQuery = NULL_KEY;
 
 integer g_iHandle = 0;
@@ -97,7 +105,7 @@ initExtension(integer conf)
 {
 	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
-	llOwnerSay(g_sTitle +" ("+ g_sVersion +") Enhancements by "+g_sAuthors);
+	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors+"\nHUD listens on channel: "+(string)CH);
 	if (verbose) MemInfo(FALSE);
 }
 
@@ -107,7 +115,7 @@ initExtension(integer conf)
 //-----------------------------------------------
 takeCamCtrl(key id)
 {
-	llOwnerSay("takeCamCtrl\n"+(string)id); // say function name for debugging
+	llOwnerSay("take CamCtrl\nAvatar key: "+(string)id); // say function name for debugging
 	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 	llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 	g_iOn = TRUE;
@@ -117,16 +125,23 @@ takeCamCtrl(key id)
 // pragma inline
 releaseCamCtrl(key id)
 {
-	llOwnerSay("releaseCamCtrl"); // say function name for debugging
+	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
 	g_iOn = FALSE;
+}
+
+
+defCam()
+{
+	shoulderCamRight();
+	//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
 }
 
 
 focus_on_me()
 {
 	llOwnerSay("focus_on_me"); // say function name for debugging
-	//    llClearCameraParams(); // reset camera to default
+	llClearCameraParams(); // reset camera to default
 	vector here = llGetPos();
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
@@ -147,19 +162,11 @@ focus_on_me()
 }
 
 
-defCam()
-{
-//    llOwnerSay("defCam"); // say function name for debugging
-	llClearCameraParams(); // reset camera to default
-	llSetCameraParams([CAMERA_ACTIVE, 1]);
-}
-
-
 // pragma inline
 shoulderCamRight()
 {
 	llOwnerSay("Right Shoulder"); // say function name for debugging
-	defCam();
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -179,10 +186,11 @@ shoulderCamRight()
 }
 
 
+// pragma inline
 shoulderCam()
 {
-	llOwnerSay("shoulderCam"); // say function name for debugging
-	defCam();
+	llOwnerSay("Shoulder Cam"); // say function name for debugging
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -206,7 +214,7 @@ shoulderCam()
 shoulderCamLeft()
 {
 	llOwnerSay("Left Shoulder"); // say function name for debugging
-	defCam();
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -228,8 +236,8 @@ shoulderCamLeft()
 // pragma inline
 centreCam()
 {
-	llOwnerSay("centreCam"); // say function name for debugging
-	defCam();
+	llOwnerSay("Center Cam"); // say function name for debugging
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -249,9 +257,10 @@ centreCam()
 }
 
 
-drop_camera_5_seconds()
+// pragma inline
+dropCam()
 {
-	llOwnerSay("drop_camera_5_seconds"); // say function name for debugging
+	llOwnerSay("drop camera 5 seconds"); // say function name for debugging
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -273,9 +282,11 @@ drop_camera_5_seconds()
 }
 
 
+// pragma inline
 wormCam()
 {
-	llOwnerSay("wormCam"); // say function name for debugging
+	llOwnerSay("Worm Cam"); // say function name for debugging
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -326,8 +337,10 @@ spaz_cam()
 }
 
 
-spin_cam()
+// pragma inline
+spinCam()
 {
+	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -360,7 +373,7 @@ setupListen()
 {
 	llListenRemove(1);
 	llListenRemove(g_iHandle);
-	CH = -50000 -llRound(llFrand(1) * 100000);
+	//CH = -50000 -llRound(llFrand(1) * 100000);
 	g_iHandle = llListen(CH, "", g_kOwner, ""); // listen for dialog answers
 }
 
@@ -408,9 +421,11 @@ default
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
+		verbose = TRUE;
+		CH = -987444;
+		
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
-		verbose = FALSE;
 		
 		MemRestrict(24000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
@@ -418,7 +433,7 @@ default
 		initExtension(FALSE);
 	}
 
-
+/*
 //listen for linked messages from other scripts and devices
 //-----------------------------------------------
 	link_message(integer sender_num, integer num, string str, key id)
@@ -428,6 +443,17 @@ default
 			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
 		}
 	}
+*/
+
+	touch_end(integer num_detected)
+	{
+		integer nr= llDetectedLinkNumber(0);
+		if (2 == nr) {
+			integer perm = llGetPermissions();
+			// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
+			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+		}
+	}
 
 
 //user interaction
@@ -435,36 +461,37 @@ default
 //-----------------------------------------------
 	listen(integer channel, string name, key id, string message)
 	{
-		if (~llListFindList(MENU_MAIN + MENU_2, [message]))  // verify dialog choice
-		{
-			if (message == "More...") llDialog(id, "Pick an option!", MENU_2, CH); // present submenu on request
-			else if (message == "...Back") llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
-			else if (message == "Cam ON") {
+			message = llToLower(message);
+			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "---", "CLOSE",
+				"Worm", "Drop", "Spin"], CH); // present submenu on request
+			else if ("...back" == message) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
+			else if ("on" == message) {
 				takeCamCtrl(id);
 			}
-			else if (message == "Cam OFF") {
+			else if ("off" == message) {
 				releaseCamCtrl(id);
 			}
-			else if (message == "Default") {
-				defCam();
+			else if ("default" == message) {
+				llClearCameraParams(); // reset camera to default
+				llSetCameraParams([CAMERA_ACTIVE, 1]);
 			}
-			else if (message == "Right") {
+			else if ("right" == message) {
 				shoulderCamRight();
 			}
-			else if (message == "Worm Cam") {
+			else if ("worm" == message) {
 				wormCam();
 			}
-			else if (message == "Centre") {
+			else if ("centre" == message) {
 				centreCam();
 			}
-			else if (message == "Left") {
+			else if ("left" == message) {
 				shoulderCamLeft();
 			}
-			else if (message == "Shoulder") {
+			else if ("shoulder" == message) {
 				shoulderCam();
 			}
-			else if (message == "Drop Cam") {
-				drop_camera_5_seconds();
+			else if ("drop" == message) {
+				dropCam();
 			}
 			else if (message == "Trap Toggle") {
 				trap = !trap;
@@ -473,10 +500,10 @@ default
 				} else {
 					llOwnerSay("trap is off");
 				}
-			} else if (message == "Spin Cam") {
-				spin_cam();
+			} else if ("spin" == message) {
+				spinCam();
 			}
-		} else llOwnerSay(name + " picked invalid option '" + llToLower(message) + "'."); // not a valid dialog choice
+			else llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
 
 
@@ -485,18 +512,13 @@ default
 		if (perm & PERMISSION_CONTROL_CAMERA) {
 			llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 			llOwnerSay("Camera permissions have been taken");
+			defCam();
 		}
 	}
 
 
 	changed(integer change)
 	{
-		if (change & CHANGED_LINK) {
-			key id = llAvatarOnSitTarget();
-			if (id) {
-			initExtension(TRUE);
-			}
-		}
 		if (change & CHANGED_OWNER) llResetScript();
 	}
 
@@ -505,8 +527,6 @@ default
 	{
 		if (id == g_kOwner) {
 			initExtension(TRUE);
-			shoulderCamRight();
-			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
 		} else llResetScript();
 	}
 
