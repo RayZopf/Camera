@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 02:41:40 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 04:13:32 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -77,6 +77,38 @@ integer g_iHandle = 0;
 integer g_iOn = 0;
 integer trap = 0;
 
+vector g_vPos1;
+rotation g_rRot1;
+vector g_vPos2;
+rotation g_rRot2;
+integer debug;
+
+
+//###
+//Debug2.lslm
+//0.32 - 21Feb2014
+
+//===============================================================================
+//= parameters   :    string    sMsg    message string received
+//                    integer   iMem    yes/no to get script memory info
+//                    integer   iDeep   yes/no to get object (script) info
+//=
+//= return        :    none
+//=
+//= description  :    output debug messages
+//=
+//===============================================================================
+
+Debug(string sMsg,integer iMem,integer iDeep){
+    llOwnerSay(((((((string)llGetTime()) + " - DEBUG: ") + g_sScriptName) + "; ") + sMsg));
+    if ((iMem || iDeep)) llSleep(0.5);
+    if (iMem) llOwnerSay((((((("DEBUG_MEMORY: " + g_sScriptName) + " -- used/free = ") + ((string)llGetUsedMemory())) + "/") + ((string)llGetFreeMemory())) + " --"));
+    if (iDeep) {
+        list details = llGetObjectDetails(llGetKey(),[1,9,10,11,12]);
+        llOwnerSay((((((((((("DEBUG_OBJECT: " + llList2String(details,0)) + " -- running/total scripts = ") + llList2String(details,1)) + "/") + llList2String(details,2)) + ", script memory = ") + llList2String(details,3)) + ", script time = ") + llList2String(details,4)) + " --"));
+    }
+}
+
 //project specific modules
 //-----------------------------------------------
 
@@ -89,7 +121,7 @@ initExtension(integer conf){
     llListenRemove(1);
     llListenRemove(g_iHandle);
     (g_iHandle = llListen(CH,"",g_kOwner,""));
-    if (conf) llRequestPermissions(g_kOwner,2048);
+    if (conf) llRequestPermissions(g_kOwner,3072);
     llOwnerSay(((((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors) + "\nHUD listens on channel: ") + ((string)CH)));
     if (verbose) {
         
@@ -146,16 +178,17 @@ default {
 */
 
 	state_entry() {
+        (debug = 1);
         (verbose = 1);
         (CH = -987444);
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         integer rc = 0;
-        (rc = llSetMemoryLimit(24000));
+        (rc = llSetMemoryLimit(32000));
         if (verbose) if ((!rc)) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
-        
+        if (debug) Debug("state_entry",1,1);
         initExtension(0);
     }
 
@@ -179,22 +212,38 @@ default {
 
 	touch_end(integer num_detected) {
         integer nr = llDetectedLinkNumber(0);
-        if ((llGetTime() < 1.3)) {
-            if ((2 == nr)) {
-                integer perm = llGetPermissions();
-                if ((perm & 2048)) llDialog(g_kOwner,"What do you want to do?",MENU_MAIN,CH);
+        if (debug) Debug(("prim/link number: " + ((string)nr)),0,0);
+        integer perm = llGetPermissions();
+        if ((perm & 2048)) {
+            if ((llGetTime() < 1.3)) {
+                if ((2 == nr)) {
+                    llDialog(g_kOwner,"What do you want to do?",MENU_MAIN,CH);
+                }
+                else  if ((3 == nr)) {
+                    llClearCameraParams();
+                    llSetCameraParams([12,1,17,g_vPos1,6,0.0,22,0,13,(g_vPos1 + (ZERO_VECTOR * g_rRot1)),5,0.0,21,0]);
+                }
+                else  if ((4 == nr)) {
+                    llClearCameraParams();
+                    llSetCameraParams([12,1,17,g_vPos2,6,0.0,22,0,13,(g_vPos2 + (ZERO_VECTOR * g_rRot2)),5,0.0,21,0]);
+                }
+                else  if ((5 == nr)) defCam();
             }
-            else  if ((3 == nr)) {
-            }
-            else  if ((4 == nr)) {
-            }
-        }
-        else  {
-            if ((3 == nr)) {
-            }
-            else  if ((4 == nr)) {
-            }
-            else  if ((5 == nr)) {
+            else  {
+                if ((3 == nr)) {
+                    (g_vPos1 = llGetCameraPos());
+                    (g_rRot1 = llGetCameraRot());
+                }
+                else  if ((4 == nr)) {
+                    (g_vPos2 = llGetCameraPos());
+                    (g_rRot2 = llGetCameraRot());
+                }
+                else  if ((5 == nr)) {
+                    (g_vPos1 = ZERO_VECTOR);
+                    (g_rRot1 = ZERO_ROTATION);
+                    (g_vPos2 = ZERO_VECTOR);
+                    (g_rRot2 = ZERO_ROTATION);
+                }
             }
         }
     }
@@ -210,7 +259,7 @@ default {
         else  if (("...back" == message)) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
         else  if (("on" == message)) {
             llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)id)));
-            llRequestPermissions(id,2048);
+            llRequestPermissions(id,3072);
             llSetCameraParams([12,1]);
             (g_iOn = 1);
         }
