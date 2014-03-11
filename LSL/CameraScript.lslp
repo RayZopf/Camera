@@ -112,7 +112,7 @@ initExtension(integer conf)
 //-----------------------------------------------
 takeCamCtrl(key id)
 {
-	llOwnerSay("take CamCtrl\n"+(string)id); // say function name for debugging
+	llOwnerSay("take CamCtrl\nAvatar key: "+(string)id); // say function name for debugging
 	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
 	llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 	g_iOn = TRUE;
@@ -131,6 +131,7 @@ releaseCamCtrl(key id)
 defCam()
 {
 	shoulderCamRight();
+	//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
 }
 
 
@@ -508,6 +509,7 @@ default
 		if (perm & PERMISSION_CONTROL_CAMERA) {
 			llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
 			llOwnerSay("Camera permissions have been taken");
+			defCam();
 		}
 	}
 
@@ -522,9 +524,6 @@ default
 	{
 		if (id == g_kOwner) {
 			initExtension(TRUE);
-			defCam();
-			//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
-			// please go to defCam() function and change it there
 		} else llResetScript();
 	}
 

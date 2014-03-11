@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 00:43:08 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 01:01:26 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -189,7 +189,7 @@ default {
             if ((message == "More...")) llDialog(id,"Pick an option!",MENU_2,CH);
             else  if ((message == "...Back")) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
             else  if ((message == "Cam ON")) {
-                llOwnerSay(("take CamCtrl\n" + ((string)id)));
+                llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)id)));
                 llRequestPermissions(id,2048);
                 llSetCameraParams([12,1]);
                 (g_iOn = 1);
@@ -264,6 +264,7 @@ default {
         if ((perm & 2048)) {
             llSetCameraParams([12,1]);
             llOwnerSay("Camera permissions have been taken");
+            defCam();
         }
     }
 
@@ -278,7 +279,6 @@ default {
 	attach(key id) {
         if ((id == g_kOwner)) {
             initExtension(1);
-            defCam();
         }
         else  llResetScript();
     }
