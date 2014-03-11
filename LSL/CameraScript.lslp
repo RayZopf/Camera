@@ -18,7 +18,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: ----
 //11. Mrz. 2014
-//v1.32
+//v1.33
 //
 
 //Files:
@@ -59,13 +59,15 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.32";            // version
+string g_sVersion = "1.33";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["More...", "---", "CLOSE", "Left", "Centre", "Right", "ON", "OFF", "---"]; // the main menu
-list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2
+list MENU_MAIN = ["More...", "---", "CLOSE",
+	"Left", "Centre", "Right",
+	"ON", "OFF", "---"]; // the main menu
+//list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
 
 
 // Variables
@@ -458,10 +460,9 @@ default
 //-----------------------------------------------
 	listen(integer channel, string name, key id, string message)
 	{
-		if (~llListFindList(MENU_MAIN + MENU_2, [message]))  // verify dialog choice
-		{
 			message = llToLower(message);
-			if ("more..." == message) llDialog(id, "Pick an option!", MENU_2, CH); // present submenu on request
+			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "---", "CLOSE",
+				"Worm", "Drop", "Spin"], CH); // present submenu on request
 			else if ("...back" == message) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if ("on" == message) {
 				takeCamCtrl(id);
@@ -501,7 +502,7 @@ default
 			} else if ("spin" == message) {
 				spinCam();
 			}
-		} else llOwnerSay(name + " picked invalid option '" + message + "'."); // not a valid dialog choice
+			else llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
 
 
