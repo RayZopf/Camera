@@ -503,7 +503,7 @@ default
 			} else if ("spin" == message) {
 				spinCam();
 			}
-			else llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
+			else if (!("---" == message || "close" == message)) llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
 
 
