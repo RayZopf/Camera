@@ -18,7 +18,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //11. Mrz. 2014
-//v1.43
+//v1.44
 //
 
 //Files:
@@ -36,14 +36,11 @@
 // LSL Forge modules
 // code cleanup
 
-//FIXME: on script changes, one need toreattach HUD to get workinh cam menu
+//FIXME: on script changes, one need to reattach HUD to get workinh cam menu
 //FIXME: on first start, using "off" throws script error: Script trying to clear camera parameters but PERMISSION_CONTROL_CAMERA permission not set!
 
 //TODO: add notecard, so one can set up camera views per specific place
-//TODO: use fix listen channel, so that user can change options via chat
-//TODO: maybe use llDetectedTouchFace/llDetectedTouchPos/llDetectedLinkNumber/llDetectedTouchST instead of link messages
-//TODO: reset view on teleport if it is on a presaved one
-//TODO: less message spamming
+//TODO: reset view on teleport if it is on a presaved one - save positions as strided list together with SIM to make more persistent
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -62,7 +59,7 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.43";            // version
+string g_sVersion = "1.44";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -125,7 +122,7 @@ initExtension(integer conf)
 //-----------------------------------------------
 takeCamCtrl(key id)
 {
-	llOwnerSay("take CamCtrl\nAvatar key: "+(string)id); // say function name for debugging
+	if (verbose) llOwnerSay("take CamCtrl\nAvatar key: "+(string)id); // say function name for debugging
 	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
 	llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
 	g_iOn = TRUE;
@@ -161,7 +158,7 @@ defCam()
 
 focus_on_me()
 {
-	llOwnerSay("focus_on_me"); // say function name for debugging
+	if (verbose) llOwnerSay("focus_on_me"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	vector here = llGetPos();
 	llSetCameraParams([
@@ -186,7 +183,7 @@ focus_on_me()
 // pragma inline
 shoulderCamRight()
 {
-	llOwnerSay("Right Shoulder"); // say function name for debugging
+	if (verbose) llOwnerSay("Right Shoulder"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
@@ -210,7 +207,7 @@ shoulderCamRight()
 // pragma inline
 shoulderCam()
 {
-	llOwnerSay("Shoulder Cam"); // say function name for debugging
+	if (verbose) llOwnerSay("Shoulder Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
@@ -234,7 +231,7 @@ shoulderCam()
 // pragma inline
 shoulderCamLeft()
 {
-	llOwnerSay("Left Shoulder"); // say function name for debugging
+	if (verbose) llOwnerSay("Left Shoulder"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
@@ -257,7 +254,7 @@ shoulderCamLeft()
 // pragma inline
 centreCam()
 {
-	llOwnerSay("Center Cam"); // say function name for debugging
+	if (verbose) llOwnerSay("Center Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
@@ -281,7 +278,7 @@ centreCam()
 // pragma inline
 dropCam()
 {
-	llOwnerSay("drop camera 5 seconds"); // say function name for debugging
+	if (verbose) llOwnerSay("drop camera 5 seconds"); // say function name for debugging
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -306,7 +303,7 @@ dropCam()
 // pragma inline
 wormCam()
 {
-	llOwnerSay("Worm Cam"); // say function name for debugging
+	if (verbose) llOwnerSay("Worm Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
@@ -329,7 +326,7 @@ wormCam()
 
 spaz_cam()
 {
-	llOwnerSay("spaz_cam for 5 seconds"); // say function name for debugging
+	if (verbose) llOwnerSay("spaz_cam for 5 seconds"); // say function name for debugging
 	float i;
 	for (i=0; i< 50; i+=1)
 	{
@@ -468,7 +465,7 @@ default
 
 	touch_start(integer num_detected)
 	{
-		llOwnerSay("*Long touch on colored buttons, to save current view*");
+		if (verbose) llOwnerSay("*Long touch on colored buttons, to save current view*");
 		llResetTime();
 		g_iNr= llDetectedLinkNumber(0);
 		if (debug) Debug("prim/link number: "+ (string)g_iNr, FALSE, FALSE);
