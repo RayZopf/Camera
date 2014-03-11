@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 01:23:55 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 01:27:34 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -38,6 +38,7 @@
 // code cleanup
 
 //FIXME: on script changes, one need toreattach HUD to get workinh cam menu
+//FIXME: on first start, using "off" throws script error: Script trying to clear camera parameters but PERMISSION_CONTROL_CAMERA permission not set!
 
 //TODO: add notecard, so one can set up camera views per specific place
 //TODO: use fix listen channel, so that user can change options via chat
