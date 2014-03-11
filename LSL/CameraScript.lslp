@@ -487,6 +487,7 @@ default
 		g_iMsg = TRUE;
 		integer perm = llGetPermissions();
 		if (perm & PERMISSION_CONTROL_CAMERA) {
+			// is the above line causing the bug that menu is not shown?
 			if (llGetTime() < g_fTouchTimer) {
 				if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
