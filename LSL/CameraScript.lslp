@@ -440,7 +440,7 @@ default
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
-		verbose = TRUE;
+		verbose = FALSE;
 		CH = -987444;
 		
 		g_kOwner = llGetOwner();
