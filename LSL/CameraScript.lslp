@@ -84,9 +84,9 @@ integer spaz = 0;
 integer trap = 0;
 
 vector g_vPos1;
-rotation g_rRot1;
+vector g_vFoc1;
 vector g_vPos2;
-rotation g_rRot2;
+vector g_vFoc2;
 
 
 //===============================================
@@ -473,13 +473,13 @@ default
 						//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
 						//CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
 						//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
-						CAMERA_FOCUS, g_vPos1, // region relative position
+						CAMERA_FOCUS, g_vFoc2, // region relative position
 						CAMERA_FOCUS_LAG, 0.0, // (0 to 3) seconds
 						CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
 						//CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0>, // <-10,-10,-10> to <10,10,10> meters
 						//CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
 						//CAMERA_PITCH, 30.0, // (-45 to 80) degrees
-						CAMERA_POSITION, g_vPos1 + ZERO_VECTOR* g_rRot1, // region relative position
+						CAMERA_POSITION, g_vPos1, // region relative position
 						CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
 						CAMERA_POSITION_LOCKED, FALSE // (TRUE or FALSE)
 						//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
@@ -492,13 +492,13 @@ default
 						//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
 						//CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
 						//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
-						CAMERA_FOCUS, g_vPos2, // region relative position
+						CAMERA_FOCUS, g_vFoc2, // region relative position
 						CAMERA_FOCUS_LAG, 0.0, // (0 to 3) seconds
 						CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
 						//CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0>, // <-10,-10,-10> to <10,10,10> meters
 						//CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
 						//CAMERA_PITCH, 30.0, // (-45 to 80) degrees
-						CAMERA_POSITION, g_vPos2 + ZERO_VECTOR* g_rRot2, // region relative position
+						CAMERA_POSITION, g_vPos2, // region relative position
 						CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
 						CAMERA_POSITION_LOCKED, FALSE // (TRUE or FALSE)
 						//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
@@ -508,17 +508,17 @@ default
 			} else {
 				if (3 ==nr) {
 					g_vPos1 = llGetCameraPos();
-					g_rRot1 = llGetCameraRot();
+					g_vFoc1 = llRot2Fwd(llGetCameraRot());
 				}
 				else if (4 == nr) {
 					g_vPos2 = llGetCameraPos();
-					g_rRot2 = llGetCameraRot();
+					g_vFoc2 = llRot2Fwd(llGetCameraRot());
 				}
 				else if (5 == nr) {
 					g_vPos1 = ZERO_VECTOR;
-					g_rRot1 = ZERO_ROTATION;
+					g_vFoc1 = ZERO_VECTOR;
 					g_vPos2 = ZERO_VECTOR;
-					g_rRot2 = ZERO_ROTATION;
+					g_vFoc2 = ZERO_VECTOR;
 					
 				}
 			}

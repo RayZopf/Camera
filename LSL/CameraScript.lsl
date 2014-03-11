@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 04:13:32 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 04:25:08 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -78,9 +78,9 @@ integer g_iOn = 0;
 integer trap = 0;
 
 vector g_vPos1;
-rotation g_rRot1;
+vector g_vFoc1;
 vector g_vPos2;
-rotation g_rRot2;
+vector g_vFoc2;
 integer debug;
 
 
@@ -221,28 +221,28 @@ default {
                 }
                 else  if ((3 == nr)) {
                     llClearCameraParams();
-                    llSetCameraParams([12,1,17,g_vPos1,6,0.0,22,0,13,(g_vPos1 + (ZERO_VECTOR * g_rRot1)),5,0.0,21,0]);
+                    llSetCameraParams([12,1,17,g_vFoc2,6,0.0,22,0,13,g_vPos1,5,0.0,21,0]);
                 }
                 else  if ((4 == nr)) {
                     llClearCameraParams();
-                    llSetCameraParams([12,1,17,g_vPos2,6,0.0,22,0,13,(g_vPos2 + (ZERO_VECTOR * g_rRot2)),5,0.0,21,0]);
+                    llSetCameraParams([12,1,17,g_vFoc2,6,0.0,22,0,13,g_vPos2,5,0.0,21,0]);
                 }
                 else  if ((5 == nr)) defCam();
             }
             else  {
                 if ((3 == nr)) {
                     (g_vPos1 = llGetCameraPos());
-                    (g_rRot1 = llGetCameraRot());
+                    (g_vFoc1 = llRot2Fwd(llGetCameraRot()));
                 }
                 else  if ((4 == nr)) {
                     (g_vPos2 = llGetCameraPos());
-                    (g_rRot2 = llGetCameraRot());
+                    (g_vFoc2 = llRot2Fwd(llGetCameraRot()));
                 }
                 else  if ((5 == nr)) {
                     (g_vPos1 = ZERO_VECTOR);
-                    (g_rRot1 = ZERO_ROTATION);
+                    (g_vFoc1 = ZERO_VECTOR);
                     (g_vPos2 = ZERO_VECTOR);
-                    (g_rRot2 = ZERO_ROTATION);
+                    (g_vFoc2 = ZERO_VECTOR);
                 }
             }
         }
