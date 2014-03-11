@@ -446,7 +446,7 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 		
-		MemRestrict(32000, FALSE);
+		MemRestrict(24000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
