@@ -18,7 +18,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: ----
 //11. Mrz. 2014
-//v1.31
+//v1.32
 //
 
 //Files:
@@ -59,13 +59,13 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.31";            // version
+string g_sVersion = "1.32";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["More...", "---", "CLOSE", "Left", "Centre", "Right", "Cam ON", "Cam OFF", "---"]; // the main menu
-list MENU_2 = ["...Back", "---", "CLOSE", "Worm Cam", "Drop Cam", "Spin Cam"]; // menu 2
+list MENU_MAIN = ["More...", "---", "CLOSE", "Left", "Centre", "Right", "ON", "OFF", "---"]; // the main menu
+list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2
 
 
 // Variables
@@ -102,7 +102,7 @@ initExtension(integer conf)
 {
 	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
-	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
+	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors+"\nHUD listens on channel: "+(string)CH);
 	if (verbose) MemInfo(FALSE);
 }
 
@@ -460,34 +460,35 @@ default
 	{
 		if (~llListFindList(MENU_MAIN + MENU_2, [message]))  // verify dialog choice
 		{
-			if (message == "More...") llDialog(id, "Pick an option!", MENU_2, CH); // present submenu on request
-			else if (message == "...Back") llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
-			else if (message == "Cam ON") {
+			message = llToLower(message);
+			if ("more..." == message) llDialog(id, "Pick an option!", MENU_2, CH); // present submenu on request
+			else if ("...back" == message) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
+			else if ("on" == message) {
 				takeCamCtrl(id);
 			}
-			else if (message == "Cam OFF") {
+			else if ("off" == message) {
 				releaseCamCtrl(id);
 			}
-			else if (message == "Default") {
+			else if ("default" == message) {
 				llClearCameraParams(); // reset camera to default
 				llSetCameraParams([CAMERA_ACTIVE, 1]);
 			}
-			else if (message == "Right") {
+			else if ("right" == message) {
 				shoulderCamRight();
 			}
-			else if (message == "Worm Cam") {
+			else if ("worm" == message) {
 				wormCam();
 			}
-			else if (message == "Centre") {
+			else if ("centre" == message) {
 				centreCam();
 			}
-			else if (message == "Left") {
+			else if ("left" == message) {
 				shoulderCamLeft();
 			}
-			else if (message == "Shoulder") {
+			else if ("shoulder" == message) {
 				shoulderCam();
 			}
-			else if (message == "Drop Cam") {
+			else if ("drop" == message) {
 				dropCam();
 			}
 			else if (message == "Trap Toggle") {
@@ -497,10 +498,10 @@ default
 				} else {
 					llOwnerSay("trap is off");
 				}
-			} else if (message == "Spin Cam") {
+			} else if ("spin" == message) {
 				spinCam();
 			}
-		} else llOwnerSay(name + " picked invalid option '" + llToLower(message) + "'."); // not a valid dialog choice
+		} else llOwnerSay(name + " picked invalid option '" + message + "'."); // not a valid dialog choice
 	}
 
 
