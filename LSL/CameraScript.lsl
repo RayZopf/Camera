@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 04:25:08 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 14:06:57 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: ----
 //11. Mrz. 2014
-//v1.33
+//v1.42
 //
 
 //Files:
@@ -61,7 +61,7 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.33";
+string g_sVersion = "1.42";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -77,6 +77,8 @@ integer g_iHandle = 0;
 integer g_iOn = 0;
 integer trap = 0;
 
+integer g_iNr;
+integer g_iMsg = 1;
 vector g_vPos1;
 vector g_vFoc1;
 vector g_vPos2;
@@ -208,37 +210,53 @@ default {
 	touch_start(integer num_detected) {
         llOwnerSay("*Long touch on colored buttons, to save current view*");
         llResetTime();
+        (g_iNr = llDetectedLinkNumber(0));
+        if (debug) Debug(("prim/link number: " + ((string)g_iNr)),0,0);
     }
 
+
+
+	touch(integer num_detected) {
+        if ((g_iMsg && (llGetTime() > 1.3))) {
+            if (((3 == g_iNr) || (4 == g_iNr))) llOwnerSay("Cam position saved");
+            else  if ((5 == g_iNr)) llOwnerSay("Saved cam position deleted");
+            (g_iMsg = 0);
+        }
+    }
+
+
 	touch_end(integer num_detected) {
-        integer nr = llDetectedLinkNumber(0);
-        if (debug) Debug(("prim/link number: " + ((string)nr)),0,0);
+        (g_iMsg = 1);
         integer perm = llGetPermissions();
         if ((perm & 2048)) {
             if ((llGetTime() < 1.3)) {
-                if ((2 == nr)) {
+                if ((2 == g_iNr)) {
                     llDialog(g_kOwner,"What do you want to do?",MENU_MAIN,CH);
                 }
-                else  if ((3 == nr)) {
+                else  if ((3 == g_iNr)) {
                     llClearCameraParams();
-                    llSetCameraParams([12,1,17,g_vFoc2,6,0.0,22,0,13,g_vPos1,5,0.0,21,0]);
+                    llSetCameraParams([12,1,17,g_vFoc1,6,0.0,22,1,13,g_vPos1,5,0.0,21,1]);
+                    if (debug) Debug(((("restored pos: " + ((string)g_vPos1)) + " foc: ") + ((string)g_vFoc1)),0,0);
                 }
-                else  if ((4 == nr)) {
+                else  if ((4 == g_iNr)) {
                     llClearCameraParams();
-                    llSetCameraParams([12,1,17,g_vFoc2,6,0.0,22,0,13,g_vPos2,5,0.0,21,0]);
+                    llSetCameraParams([12,1,17,g_vFoc2,6,0.0,22,1,13,g_vPos2,5,0.0,21,1]);
+                    if (debug) Debug(((("restored pos: " + ((string)g_vPos2)) + " foc: ") + ((string)g_vFoc2)),0,0);
                 }
-                else  if ((5 == nr)) defCam();
+                else  if ((5 == g_iNr)) defCam();
             }
             else  {
-                if ((3 == nr)) {
+                if ((3 == g_iNr)) {
                     (g_vPos1 = llGetCameraPos());
-                    (g_vFoc1 = llRot2Fwd(llGetCameraRot()));
+                    (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
+                    if (debug) Debug(((("save pos: " + ((string)g_vPos1)) + " foc: ") + ((string)g_vFoc1)),0,0);
                 }
-                else  if ((4 == nr)) {
+                else  if ((4 == g_iNr)) {
                     (g_vPos2 = llGetCameraPos());
-                    (g_vFoc2 = llRot2Fwd(llGetCameraRot()));
+                    (g_vFoc2 = (g_vPos2 + llRot2Fwd(llGetCameraRot())));
+                    if (debug) Debug(((("save pos: " + ((string)g_vPos1)) + " foc: ") + ((string)g_vFoc1)),0,0);
                 }
-                else  if ((5 == nr)) {
+                else  if ((5 == g_iNr)) {
                     (g_vPos1 = ZERO_VECTOR);
                     (g_vFoc1 = ZERO_VECTOR);
                     (g_vPos2 = ZERO_VECTOR);
