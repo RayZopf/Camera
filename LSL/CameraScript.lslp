@@ -16,9 +16,9 @@
 // Version 1.0
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
-//Additions: ----
+//Additions: Abillity to save cam positions
 //11. Mrz. 2014
-//v1.33
+//v1.44
 //
 
 //Files:
@@ -36,12 +36,11 @@
 // LSL Forge modules
 // code cleanup
 
-//FIXME: on script changes, one need toreattach HUD to get workinh cam menu
+//FIXME: on script changes, one need to reattach HUD to get workinh cam menu
 //FIXME: on first start, using "off" throws script error: Script trying to clear camera parameters but PERMISSION_CONTROL_CAMERA permission not set!
 
 //TODO: add notecard, so one can set up camera views per specific place
-//TODO: use fix listen channel, so that user can change options via chat
-//TODO: maybe use llDetectedTouchFace/llDetectedTouchPos/llDetectedLinkNumber/llDetectedTouchST instead of link messages
+//TODO: reset view on teleport if it is on a presaved one - save positions as strided list together with SIM to make more persistent
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -60,7 +59,7 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.33";            // version
+string g_sVersion = "1.44";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -74,7 +73,8 @@ list MENU_MAIN = ["More...", "---", "CLOSE",
 // Variables
 key g_kOwner;                      // object owner
 //key g_kUser;                       // key of last avatar to touch object
-key g_kQuery = NULL_KEY;
+//key g_kQuery = NULL_KEY;
+float g_fTouchTimer = 1.3;
 
 integer g_iHandle = 0;
 integer g_iOn = FALSE;
@@ -82,6 +82,14 @@ integer flying;
 integer falling;
 integer spaz = 0;
 integer trap = 0;
+
+integer g_iNr;
+integer g_iMsg = TRUE;
+vector g_vPos1;
+vector g_vFoc1;
+vector g_vPos2;
+vector g_vFoc2;
+integer g_iCamPos = FALSE;
 
 
 //===============================================
@@ -104,7 +112,7 @@ $import MemoryManagement2.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m
 initExtension(integer conf)
 {
 	setupListen();
-	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA);
+	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors+"\nHUD listens on channel: "+(string)CH);
 	if (verbose) MemInfo(FALSE);
 }
@@ -115,9 +123,9 @@ initExtension(integer conf)
 //-----------------------------------------------
 takeCamCtrl(key id)
 {
-	llOwnerSay("take CamCtrl\nAvatar key: "+(string)id); // say function name for debugging
-	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA);
-	llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
+	if (verbose) llOwnerSay("take CamCtrl\nAvatar key: "+(string)id); // say function name for debugging
+	llRequestPermissions(id, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
+	llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
 	g_iOn = TRUE;
 }
 
@@ -131,6 +139,17 @@ releaseCamCtrl(key id)
 }
 
 
+resetCamPos()
+{
+	g_vPos1 = ZERO_VECTOR;
+	g_vFoc1 = ZERO_VECTOR;
+	g_vPos2 = ZERO_VECTOR;
+	g_vFoc2 = ZERO_VECTOR;
+	g_iCamPos = FALSE;
+	defCam();
+}
+
+
 defCam()
 {
 	shoulderCamRight();
@@ -140,11 +159,11 @@ defCam()
 
 focus_on_me()
 {
-	llOwnerSay("focus_on_me"); // say function name for debugging
+	if (verbose) llOwnerSay("focus_on_me"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	vector here = llGetPos();
 	llSetCameraParams([
-		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_DISTANCE, 0.0, // ( 0.5 to 10) meters
@@ -165,10 +184,10 @@ focus_on_me()
 // pragma inline
 shoulderCamRight()
 {
-	llOwnerSay("Right Shoulder"); // say function name for debugging
+	if (verbose) llOwnerSay("Right Shoulder"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
-		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_DISTANCE, 0.5, // ( 0.5 to 10) meters
@@ -189,10 +208,10 @@ shoulderCamRight()
 // pragma inline
 shoulderCam()
 {
-	llOwnerSay("Shoulder Cam"); // say function name for debugging
+	if (verbose) llOwnerSay("Shoulder Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
-		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_DISTANCE, 0.5, // ( 0.5 to 10) meters
@@ -213,10 +232,10 @@ shoulderCam()
 // pragma inline
 shoulderCamLeft()
 {
-	llOwnerSay("Left Shoulder"); // say function name for debugging
+	if (verbose) llOwnerSay("Left Shoulder"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
-		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_DISTANCE, 0.5, // ( 0.5 to 10) meters
@@ -236,10 +255,10 @@ shoulderCamLeft()
 // pragma inline
 centreCam()
 {
-	llOwnerSay("Center Cam"); // say function name for debugging
+	if (verbose) llOwnerSay("Center Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
-		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_DISTANCE, 0.5, // ( 0.5 to 10) meters
@@ -260,9 +279,9 @@ centreCam()
 // pragma inline
 dropCam()
 {
-	llOwnerSay("drop camera 5 seconds"); // say function name for debugging
+	if (verbose) llOwnerSay("drop camera 5 seconds"); // say function name for debugging
 	llSetCameraParams([
-		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
 		CAMERA_DISTANCE, 3.0, // ( 0.5 to 10) meters
@@ -285,10 +304,10 @@ dropCam()
 // pragma inline
 wormCam()
 {
-	llOwnerSay("Worm Cam"); // say function name for debugging
+	if (verbose) llOwnerSay("Worm Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
-		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_DISTANCE, 8.0, // ( 0.5 to 10) meters
@@ -308,7 +327,7 @@ wormCam()
 
 spaz_cam()
 {
-	llOwnerSay("spaz_cam for 5 seconds"); // say function name for debugging
+	if (verbose) llOwnerSay("spaz_cam for 5 seconds"); // say function name for debugging
 	float i;
 	for (i=0; i< 50; i+=1)
 	{
@@ -316,7 +335,7 @@ spaz_cam()
 		//        llOwnerSay((string)xyz);
 		vector xyz2 = llGetPos() + <llFrand(80.0) - 40, llFrand(80.0) - 40, llFrand(10.0)>;
 		llSetCameraParams([
-			CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+			CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 			CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
 			CAMERA_BEHINDNESS_LAG, llFrand(3.0), // (0 to 3) seconds
 			CAMERA_DISTANCE, llFrand(10.0), // ( 0.5 to 10) meters
@@ -342,7 +361,7 @@ spinCam()
 {
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
-		CAMERA_ACTIVE, 1, // 1 is active, 0 is inactive
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
 		//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
@@ -445,13 +464,91 @@ default
 	}
 */
 
+	touch_start(integer num_detected)
+	{
+		if (verbose) llOwnerSay("*Long touch on colored buttons, to save current view*");
+		llResetTime();
+		g_iNr= llDetectedLinkNumber(0);
+		if (debug) Debug("prim/link number: "+ (string)g_iNr, FALSE, FALSE);
+	}
+
+
+	touch(integer num_detected)
+	{
+		if (g_iMsg && llGetTime() > g_fTouchTimer) {
+			if (3 == g_iNr || 4 == g_iNr) llOwnerSay("Cam position saved");
+				else if (5 == g_iNr) llOwnerSay("Saved cam position deleted");
+			g_iMsg = FALSE;
+		}
+	}
+
 	touch_end(integer num_detected)
 	{
-		integer nr= llDetectedLinkNumber(0);
-		if (2 == nr) {
-			integer perm = llGetPermissions();
-			// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
-			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+		g_iMsg = TRUE;
+		integer perm = llGetPermissions();
+		if (perm & PERMISSION_CONTROL_CAMERA) {
+			// is the above line causing the bug that menu is not shown?
+			if (llGetTime() < g_fTouchTimer) {
+				if (2 == g_iNr) {
+					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
+					llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+				}
+				else if (3 == g_iNr) {
+					llClearCameraParams(); // reset camera to default
+					llSetCameraParams([
+						CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
+						//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
+						//CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
+						//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
+						CAMERA_FOCUS, g_vFoc1, // region relative position
+						CAMERA_FOCUS_LAG, 0.0, // (0 to 3) seconds
+						CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
+						//CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0>, // <-10,-10,-10> to <10,10,10> meters
+						//CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
+						//CAMERA_PITCH, 30.0, // (-45 to 80) degrees
+						CAMERA_POSITION, g_vPos1, // region relative position
+						CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
+						CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
+						//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
+					]);
+					g_iCamPos = TRUE;
+					if (debug) Debug("restored pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
+				}
+				else if (4 == g_iNr) {
+					llClearCameraParams(); // reset camera to default
+					llSetCameraParams([
+						CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
+						//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
+						//CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
+						//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
+						CAMERA_FOCUS, g_vFoc2, // region relative position
+						CAMERA_FOCUS_LAG, 0.0, // (0 to 3) seconds
+						CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
+						//CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0>, // <-10,-10,-10> to <10,10,10> meters
+						//CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
+						//CAMERA_PITCH, 30.0, // (-45 to 80) degrees
+						CAMERA_POSITION, g_vPos2, // region relative position
+						CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
+						CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
+						//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
+					]);
+					g_iCamPos = TRUE;
+					if (debug) Debug("restored pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
+				}
+				else if (5 == g_iNr) defCam();
+			} else {
+				if (3 ==g_iNr) {
+					g_vPos1 = llGetCameraPos();
+					g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
+					if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
+				}
+				else if (4 == g_iNr) {
+					g_vPos2 = llGetCameraPos();
+					g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
+					if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
+				}
+				else if (5 == g_iNr) resetCamPos();
+			}
 		}
 	}
 
@@ -473,7 +570,7 @@ default
 			}
 			else if ("default" == message) {
 				llClearCameraParams(); // reset camera to default
-				llSetCameraParams([CAMERA_ACTIVE, 1]);
+				llSetCameraParams([CAMERA_ACTIVE, TRUE]);
 			}
 			else if ("right" == message) {
 				shoulderCamRight();
@@ -503,14 +600,14 @@ default
 			} else if ("spin" == message) {
 				spinCam();
 			}
-			else llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
+			else if (!("---" == message || "close" == message)) llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
 
 
 	run_time_permissions(integer perm)
 	{
 		if (perm & PERMISSION_CONTROL_CAMERA) {
-			llSetCameraParams([CAMERA_ACTIVE, 1]); // 1 is active, 0 is inactive
+			llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
 			llOwnerSay("Camera permissions have been taken");
 			defCam();
 		}
@@ -519,6 +616,7 @@ default
 
 	changed(integer change)
 	{
+		if (change & CHANGED_REGION) if (g_iCamPos) resetCamPos();
 		if (change & CHANGED_OWNER) llResetScript();
 	}
 
