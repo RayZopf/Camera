@@ -73,7 +73,8 @@ list MENU_MAIN = ["More...", "---", "CLOSE",
 // Variables
 key g_kOwner;                      // object owner
 //key g_kUser;                       // key of last avatar to touch object
-key g_kQuery = NULL_KEY;
+//key g_kQuery = NULL_KEY;
+float g_fTouchTimer = 1.3;
 
 integer g_iHandle = 0;
 integer g_iOn = FALSE;
@@ -474,7 +475,7 @@ default
 
 	touch(integer num_detected)
 	{
-		if (g_iMsg && llGetTime() > 1.3) {
+		if (g_iMsg && llGetTime() > g_fTouchTimer) {
 			if (3 == g_iNr || 4 == g_iNr) llOwnerSay("Cam position saved");
 				else if (5 == g_iNr) llOwnerSay("Saved cam position deleted");
 			g_iMsg = FALSE;
@@ -486,7 +487,7 @@ default
 		g_iMsg = TRUE;
 		integer perm = llGetPermissions();
 		if (perm & PERMISSION_CONTROL_CAMERA) {
-			if (llGetTime() < 1.3) {
+			if (llGetTime() < g_fTouchTimer) {
 				if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 					llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
