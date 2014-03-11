@@ -445,13 +445,36 @@ default
 	}
 */
 
+	touch_start(integer num_detected)
+	{
+		llOwnerSay("*Long touch on colored buttons, to save current view*");
+		llResetTime();
+	}
 	touch_end(integer num_detected)
 	{
 		integer nr= llDetectedLinkNumber(0);
-		if (2 == nr) {
-			integer perm = llGetPermissions();
-			// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
-			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+		if (llGetTime() < 1.3) {
+			if (2 == nr) {
+				integer perm = llGetPermissions();
+				// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
+				if (perm & PERMISSION_CONTROL_CAMERA) llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+			}
+			else if (3 == nr) {
+				
+			}
+			else if (4 == nr) {
+				
+			}
+		} else {
+			if (3 ==nr) {
+				
+			}
+			else if (4 == nr) {
+				
+			}
+			else if (5 == nr) {
+				
+			}
 		}
 	}
 

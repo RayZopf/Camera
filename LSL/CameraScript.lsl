@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 01:27:34 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 02:41:40 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -172,11 +172,30 @@ default {
 	}
 */
 
+	touch_start(integer num_detected) {
+        llOwnerSay("*Long touch on colored buttons, to save current view*");
+        llResetTime();
+    }
+
 	touch_end(integer num_detected) {
         integer nr = llDetectedLinkNumber(0);
-        if ((2 == nr)) {
-            integer perm = llGetPermissions();
-            if ((perm & 2048)) llDialog(g_kOwner,"What do you want to do?",MENU_MAIN,CH);
+        if ((llGetTime() < 1.3)) {
+            if ((2 == nr)) {
+                integer perm = llGetPermissions();
+                if ((perm & 2048)) llDialog(g_kOwner,"What do you want to do?",MENU_MAIN,CH);
+            }
+            else  if ((3 == nr)) {
+            }
+            else  if ((4 == nr)) {
+            }
+        }
+        else  {
+            if ((3 == nr)) {
+            }
+            else  if ((4 == nr)) {
+            }
+            else  if ((5 == nr)) {
+            }
         }
     }
 
