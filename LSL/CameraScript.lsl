@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 14:12:30 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 15:51:57 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -17,9 +17,9 @@
 // Version 1.0
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
-//Additions: ----
+//Additions: Abillity to save cam positions
 //11. Mrz. 2014
-//v1.42
+//v1.43
 //
 
 //Files:
@@ -43,6 +43,8 @@
 //TODO: add notecard, so one can set up camera views per specific place
 //TODO: use fix listen channel, so that user can change options via chat
 //TODO: maybe use llDetectedTouchFace/llDetectedTouchPos/llDetectedLinkNumber/llDetectedTouchST instead of link messages
+//TODO: reset view on teleport if it is on a presaved one
+//TODO: less message spamming
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -61,7 +63,7 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.42";
+string g_sVersion = "1.43";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -83,33 +85,7 @@ vector g_vPos1;
 vector g_vFoc1;
 vector g_vPos2;
 vector g_vFoc2;
-integer debug;
-
-
-//###
-//Debug2.lslm
-//0.32 - 21Feb2014
-
-//===============================================================================
-//= parameters   :    string    sMsg    message string received
-//                    integer   iMem    yes/no to get script memory info
-//                    integer   iDeep   yes/no to get object (script) info
-//=
-//= return        :    none
-//=
-//= description  :    output debug messages
-//=
-//===============================================================================
-
-Debug(string sMsg,integer iMem,integer iDeep){
-    llOwnerSay(((((((string)llGetTime()) + " - DEBUG: ") + g_sScriptName) + "; ") + sMsg));
-    if ((iMem || iDeep)) llSleep(0.5);
-    if (iMem) llOwnerSay((((((("DEBUG_MEMORY: " + g_sScriptName) + " -- used/free = ") + ((string)llGetUsedMemory())) + "/") + ((string)llGetFreeMemory())) + " --"));
-    if (iDeep) {
-        list details = llGetObjectDetails(llGetKey(),[1,9,10,11,12]);
-        llOwnerSay((((((((((("DEBUG_OBJECT: " + llList2String(details,0)) + " -- running/total scripts = ") + llList2String(details,1)) + "/") + llList2String(details,2)) + ", script memory = ") + llList2String(details,3)) + ", script time = ") + llList2String(details,4)) + " --"));
-    }
-}
+integer g_iCamPos = 0;
 
 //project specific modules
 //-----------------------------------------------
@@ -129,6 +105,16 @@ initExtension(integer conf){
         
         llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
     }
+}
+
+
+resetCamPos(){
+    (g_vPos1 = ZERO_VECTOR);
+    (g_vFoc1 = ZERO_VECTOR);
+    (g_vPos2 = ZERO_VECTOR);
+    (g_vFoc2 = ZERO_VECTOR);
+    (g_iCamPos = 0);
+    defCam();
 }
 
 
@@ -180,7 +166,6 @@ default {
 */
 
 	state_entry() {
-        (debug = 1);
         (verbose = 1);
         (CH = -987444);
         (g_kOwner = llGetOwner());
@@ -190,7 +175,7 @@ default {
         if (verbose) if ((!rc)) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
-        if (debug) Debug("state_entry",1,1);
+        
         initExtension(0);
     }
 
@@ -211,7 +196,7 @@ default {
         llOwnerSay("*Long touch on colored buttons, to save current view*");
         llResetTime();
         (g_iNr = llDetectedLinkNumber(0));
-        if (debug) Debug(("prim/link number: " + ((string)g_iNr)),0,0);
+        
     }
 
 
@@ -236,12 +221,14 @@ default {
                 else  if ((3 == g_iNr)) {
                     llClearCameraParams();
                     llSetCameraParams([12,1,17,g_vFoc1,6,0.0,22,1,13,g_vPos1,5,0.0,21,1]);
-                    if (debug) Debug(((("restored pos: " + ((string)g_vPos1)) + " foc: ") + ((string)g_vFoc1)),0,0);
+                    (g_iCamPos = 1);
+                    
                 }
                 else  if ((4 == g_iNr)) {
                     llClearCameraParams();
                     llSetCameraParams([12,1,17,g_vFoc2,6,0.0,22,1,13,g_vPos2,5,0.0,21,1]);
-                    if (debug) Debug(((("restored pos: " + ((string)g_vPos2)) + " foc: ") + ((string)g_vFoc2)),0,0);
+                    (g_iCamPos = 1);
+                    
                 }
                 else  if ((5 == g_iNr)) defCam();
             }
@@ -249,19 +236,14 @@ default {
                 if ((3 == g_iNr)) {
                     (g_vPos1 = llGetCameraPos());
                     (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
-                    if (debug) Debug(((("save pos: " + ((string)g_vPos1)) + " foc: ") + ((string)g_vFoc1)),0,0);
+                    
                 }
                 else  if ((4 == g_iNr)) {
                     (g_vPos2 = llGetCameraPos());
                     (g_vFoc2 = (g_vPos2 + llRot2Fwd(llGetCameraRot())));
-                    if (debug) Debug(((("save pos: " + ((string)g_vPos1)) + " foc: ") + ((string)g_vFoc1)),0,0);
+                    
                 }
-                else  if ((5 == g_iNr)) {
-                    (g_vPos1 = ZERO_VECTOR);
-                    (g_vFoc1 = ZERO_VECTOR);
-                    (g_vPos2 = ZERO_VECTOR);
-                    (g_vFoc2 = ZERO_VECTOR);
-                }
+                else  if ((5 == g_iNr)) resetCamPos();
             }
         }
     }
@@ -357,6 +339,7 @@ default {
 
 
 	changed(integer change) {
+        if ((change & 256)) if (g_iCamPos) resetCamPos();
         if ((change & 128)) llResetScript();
     }
 

@@ -16,9 +16,9 @@
 // Version 1.0
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
-//Additions: ----
+//Additions: Abillity to save cam positions
 //11. Mrz. 2014
-//v1.42
+//v1.43
 //
 
 //Files:
@@ -42,6 +42,8 @@
 //TODO: add notecard, so one can set up camera views per specific place
 //TODO: use fix listen channel, so that user can change options via chat
 //TODO: maybe use llDetectedTouchFace/llDetectedTouchPos/llDetectedLinkNumber/llDetectedTouchST instead of link messages
+//TODO: reset view on teleport if it is on a presaved one
+//TODO: less message spamming
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -60,7 +62,7 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.42";            // version
+string g_sVersion = "1.43";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -89,6 +91,7 @@ vector g_vPos1;
 vector g_vFoc1;
 vector g_vPos2;
 vector g_vFoc2;
+integer g_iCamPos = FALSE;
 
 
 //===============================================
@@ -135,6 +138,17 @@ releaseCamCtrl(key id)
 	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
 	g_iOn = FALSE;
+}
+
+
+resetCamPos()
+{
+	g_vPos1 = ZERO_VECTOR;
+	g_vFoc1 = ZERO_VECTOR;
+	g_vPos2 = ZERO_VECTOR;
+	g_vFoc2 = ZERO_VECTOR;
+	g_iCamPos = FALSE;
+	defCam();
 }
 
 
@@ -427,7 +441,7 @@ default
 
 	state_entry()
 	{
-		debug=TRUE; // set to TRUE to enable Debug messages
+		//debug=TRUE; // set to TRUE to enable Debug messages
 		verbose = TRUE;
 		CH = -987444;
 		
@@ -498,6 +512,7 @@ default
 						CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
 						//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 					]);
+					g_iCamPos = TRUE;
 					if (debug) Debug("restored pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
 				}
 				else if (4 == g_iNr) {
@@ -518,6 +533,7 @@ default
 						CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
 						//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 					]);
+					g_iCamPos = TRUE;
 					if (debug) Debug("restored pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
 				}
 				else if (5 == g_iNr) defCam();
@@ -532,13 +548,7 @@ default
 					g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
 					if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
 				}
-				else if (5 == g_iNr) {
-					g_vPos1 = ZERO_VECTOR;
-					g_vFoc1 = ZERO_VECTOR;
-					g_vPos2 = ZERO_VECTOR;
-					g_vFoc2 = ZERO_VECTOR;
-					
-				}
+				else if (5 == g_iNr) resetCamPos();
 			}
 		}
 	}
@@ -607,6 +617,7 @@ default
 
 	changed(integer change)
 	{
+		if (change & CHANGED_REGION) if (g_iCamPos) resetCamPos();
 		if (change & CHANGED_OWNER) llResetScript();
 	}
 
