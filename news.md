@@ -1,6 +1,7 @@
 Current News
 ====
-fixed "too many listens"
+fixed "too many listens"  
+abbility to save two camera positions
 
 Changes
 ====
@@ -10,3 +11,4 @@ Mrz.2014
  - bugfix
  - use LSL Forge modules
  - restrict memory usage
+ - keep saved camera position till next teleport
