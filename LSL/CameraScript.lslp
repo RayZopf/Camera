@@ -115,6 +115,14 @@ initExtension(integer conf)
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors+"\nHUD listens on channel: "+(string)CH);
 	if (verbose) MemInfo(FALSE);
+	infoLines();
+}
+
+
+// pragma inline
+infoLines()
+{
+	llOwnerSay("*Long touch on colored buttons, to save current view*");
 }
 
 
@@ -379,10 +387,11 @@ spinCam()
 
 	float i;
 	vector camera_position;
-	for (i=0; i< 2*TWO_PI; i+=.05)
+	for (i=0; i< 2*TWO_PI; i+=.025)
 	{
 		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
 		llSetCameraParams([CAMERA_POSITION, camera_position]);
+		llSleep(0.025);
 	}
 	defCam();
 }

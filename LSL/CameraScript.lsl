@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Tue Mar 11 16:14:04 Mitteleuropäische Zeit 2014
+// LSL script generated: Camera.LSL.CameraScript.lslp Wed Mar 12 01:00:17 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -102,6 +102,7 @@ initExtension(integer conf){
         
         llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
     }
+    llOwnerSay("*Long touch on colored buttons, to save current view*");
 }
 
 
@@ -314,9 +315,10 @@ default {
             llSetCameraParams([12,1,8,180.0,9,0.5,6,5.0e-2,22,0,11,0.0,0,30.0,5,0.0,21,0,10,0.0,1,<0.0,0.0,0.0>]);
             float i;
             vector camera_position;
-            for ((i = 0); (i < 12.5663706); (i += 5.0e-2)) {
+            for ((i = 0); (i < 12.5663706); (i += 2.5e-2)) {
                 (camera_position = (llGetPos() + (<0.0,4.0,0.0> * llEuler2Rot(<0.0,0.0,i>))));
                 llSetCameraParams([13,camera_position]);
+                llSleep(2.5e-2);
             }
             defCam();
         }
