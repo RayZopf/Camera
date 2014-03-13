@@ -36,8 +36,7 @@
 // LSL Forge modules
 // code cleanup
 
-//FIXME: on script changes, one need to reattach HUD to get workinh cam menu
-//FIXME: on first start, using "off" throws script error: Script trying to clear camera parameters but PERMISSION_CONTROL_CAMERA permission not set!
+//FIXME: ---
 
 //TODO: add notecard, so one can set up camera views per specific place
 //TODO: reset view on teleport if it is on a presaved one - save positions as strided list together with SIM to make more persistent
@@ -452,13 +451,13 @@ default
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
-		verbose = FALSE;
+		verbose = TRUE;
 		CH = 987444;
 
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		MemRestrict(28000, FALSE);
+		MemRestrict(30000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -561,7 +560,7 @@ default
 				}
 				else if (5 == g_iNr) resetCamPos();
 			}
-		}
+		} else llDialog(g_kOwner, "Do you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
 	}
 
 

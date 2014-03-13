@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 17:05:49 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 17:15:46 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -37,8 +37,7 @@
 // LSL Forge modules
 // code cleanup
 
-//FIXME: on script changes, one need to reattach HUD to get workinh cam menu
-//FIXME: on first start, using "off" throws script error: Script trying to clear camera parameters but PERMISSION_CONTROL_CAMERA permission not set!
+//FIXME: ---
 
 //TODO: add notecard, so one can set up camera views per specific place
 //TODO: reset view on teleport if it is on a presaved one - save positions as strided list together with SIM to make more persistent
@@ -164,12 +163,12 @@ default {
 */
 
 	state_entry() {
-        (verbose = 0);
+        (verbose = 1);
         (CH = 987444);
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         integer rc = 0;
-        (rc = llSetMemoryLimit(28000));
+        (rc = llSetMemoryLimit(30000));
         if ((verbose && (!rc))) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
@@ -244,6 +243,7 @@ default {
                 else  if ((5 == g_iNr)) resetCamPos();
             }
         }
+        else  llDialog(g_kOwner,"Do you want to enable CameraControl?",["---","help","CLOSE","ON"],CH);
     }
 
 
