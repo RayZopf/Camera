@@ -18,7 +18,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //13. Mrz. 2014
-//v1.45
+//v1.46
 //
 
 //Files:
@@ -58,7 +58,7 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.45";            // version
+string g_sVersion = "1.46";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -277,7 +277,7 @@ focusCamMe()
 		CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
 		CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
 //        CAMERA_PITCH, 80.0, // (-45 to 80) degrees
-		CAMERA_POSITION, here + <4.0,4.0,4.0>, // region relative position
+		CAMERA_POSITION, here + <3.0,3.0,3.0>, // region relative position
 		CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_POSITION_LOCKED, TRUE, // (TRUE or FALSE)
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
@@ -299,8 +299,8 @@ wormCam()
 		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
 		CAMERA_FOCUS_LAG, 0.0 , // (0 to 3) seconds
 		CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
-		CAMERA_FOCUS_THRESHOLD, 4.0, // (0 to 4) meters
-		CAMERA_PITCH, -45.0, // (-45 to 80) degrees
+		CAMERA_FOCUS_THRESHOLD, 2.5, // (0 to 4) meters
+		CAMERA_PITCH, -35.0, // (-45 to 80) degrees
 		//CAMERA_POSITION, <0.0,0.0,0.0>, // region relative position
 		CAMERA_POSITION_LAG, 1.0, // (0 to 3) seconds
 		CAMERA_POSITION_LOCKED, FALSE, // (TRUE or FALSE)
@@ -502,7 +502,7 @@ default
 			if (llGetTime() < g_fTouchTimer) {
 				if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
-					llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+					llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present dialog on click
 				}
 				else if (3 == g_iNr) {
 					llClearCameraParams(); // reset camera to default
@@ -560,7 +560,7 @@ default
 				}
 				else if (5 == g_iNr) resetCamPos();
 			}
-		} else llDialog(g_kOwner, "Do you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
+		} else llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
 	}
 
 
@@ -572,7 +572,7 @@ default
 			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "help", "CLOSE",
 				"Me", "Worm", "Drop",
 				"Spin", "Spaz", "DEFAULT"], CH); // present submenu on request
-			else if ("...back" == message) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
+			else if ("...back" == message) llDialog(id, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if ("help" == message) {
 				infoLines(TRUE);
 			}
@@ -591,7 +591,7 @@ default
 			else if ("right" == message) {
 				shoulderCamRight();
 			}
-			else if ("centre" == message) {
+			else if ("center" == message) {
 				centreCam();
 			}
 			else if ("default" == message) {
