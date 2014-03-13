@@ -17,8 +17,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//11. Mrz. 2014
-//v1.44
+//13. Mrz. 2014
+//v1.46
 //
 
 //Files:
@@ -36,8 +36,7 @@
 // LSL Forge modules
 // code cleanup
 
-//FIXME: on script changes, one need to reattach HUD to get workinh cam menu
-//FIXME: on first start, using "off" throws script error: Script trying to clear camera parameters but PERMISSION_CONTROL_CAMERA permission not set!
+//FIXME: ---
 
 //TODO: add notecard, so one can set up camera views per specific place
 //TODO: reset view on teleport if it is on a presaved one - save positions as strided list together with SIM to make more persistent
@@ -59,14 +58,14 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.44";            // version
+string g_sVersion = "1.46";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["More...", "---", "CLOSE",
-	"Left", "Centre", "Right",
-	"ON", "OFF", "---"]; // the main menu
+list MENU_MAIN = ["More...", "help", "CLOSE",
+	"Left", "Shoulder", "Right",
+	"ON", "Center", "OFF"]; // the main menu
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
 
 
@@ -113,12 +112,21 @@ initExtension(integer conf)
 {
 	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
-	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors+"\nHUD listens on channel: "+(string)CH);
+	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
+	infoLines(FALSE);
 }
 
 
-// pragma inline 
+// pragma inline
+infoLines(integer help)
+{
+	llOwnerSay("HUD listens on channel: "+(string)CH);
+	if (verbose || help) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
+}
+
+
+// pragma inline
 //most important function
 //-----------------------------------------------
 takeCamCtrl(key id)
@@ -157,38 +165,14 @@ defCam()
 }
 
 
-focus_on_me()
-{
-	if (verbose) llOwnerSay("focus_on_me"); // say function name for debugging
-	llClearCameraParams(); // reset camera to default
-	vector here = llGetPos();
-	llSetCameraParams([
-		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
-		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
-		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
-		CAMERA_DISTANCE, 0.0, // ( 0.5 to 10) meters
-		CAMERA_FOCUS, here, // region relative position
-		CAMERA_FOCUS_LAG, 0.0 , // (0 to 3) seconds
-		CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
-		CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
-//        CAMERA_PITCH, 80.0, // (-45 to 80) degrees
-		CAMERA_POSITION, here + <4.0,4.0,4.0>, // region relative position
-		CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
-		CAMERA_POSITION_LOCKED, TRUE, // (TRUE or FALSE)
-		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
-		CAMERA_FOCUS_OFFSET, ZERO_VECTOR // <-10,-10,-10> to <10,10,10> meters
-	]);
-}
-
-
 // pragma inline
-shoulderCamRight()
+shoulderCamLeft()
 {
-	if (verbose) llOwnerSay("Right Shoulder"); // say function name for debugging
+	if (verbose) llOwnerSay("Left Shoulder"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
-		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
+		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_DISTANCE, 0.5, // ( 0.5 to 10) meters
 		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
@@ -200,7 +184,7 @@ shoulderCamRight()
 		CAMERA_POSITION_LAG, 0.1, // (0 to 3) seconds
 		CAMERA_POSITION_LOCKED, FALSE, // (TRUE or FALSE)
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
-		CAMERA_FOCUS_OFFSET, <-0.5,-0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
+		CAMERA_FOCUS_OFFSET, <-0.5,0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
 }
 
@@ -230,13 +214,13 @@ shoulderCam()
 
 
 // pragma inline
-shoulderCamLeft()
+shoulderCamRight()
 {
-	if (verbose) llOwnerSay("Left Shoulder"); // say function name for debugging
+	if (verbose) llOwnerSay("Right Shoulder"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
-		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
+		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_DISTANCE, 0.5, // ( 0.5 to 10) meters
 		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
@@ -248,9 +232,10 @@ shoulderCamLeft()
 		CAMERA_POSITION_LAG, 0.1, // (0 to 3) seconds
 		CAMERA_POSITION_LOCKED, FALSE, // (TRUE or FALSE)
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
-		CAMERA_FOCUS_OFFSET, <-0.5,0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
+		CAMERA_FOCUS_OFFSET, <-0.5,-0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
 }
+
 
 // pragma inline
 centreCam()
@@ -277,27 +262,27 @@ centreCam()
 
 
 // pragma inline
-dropCam()
+focusCamMe()
 {
-	if (verbose) llOwnerSay("drop camera 5 seconds"); // say function name for debugging
+	if (verbose) llOwnerSay("Focussing on yourself"); // say function name for debugging
+	llClearCameraParams(); // reset camera to default
+	vector here = llGetPos();
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
-		CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
-		CAMERA_DISTANCE, 3.0, // ( 0.5 to 10) meters
-		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
-		CAMERA_FOCUS_LAG, 2.0, // (0 to 3) seconds
-		CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
+		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
+		CAMERA_DISTANCE, 0.0, // ( 0.5 to 10) meters
+		CAMERA_FOCUS, here, // region relative position
+		CAMERA_FOCUS_LAG, 0.0 , // (0 to 3) seconds
+		CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
 		CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
-		CAMERA_PITCH, 0.0, // (-45 to 80) degrees
-		//CAMERA_POSITION, <0.0,0.0,0.0>, // region relative position
-		CAMERA_POSITION_LAG, 0.05, // (0 to 3) seconds
+//        CAMERA_PITCH, 80.0, // (-45 to 80) degrees
+		CAMERA_POSITION, here + <3.0,3.0,3.0>, // region relative position
+		CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_POSITION_LOCKED, TRUE, // (TRUE or FALSE)
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
-		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
+		CAMERA_FOCUS_OFFSET, ZERO_VECTOR // <-10,-10,-10> to <10,10,10> meters
 	]);
-	llSleep(5);
-	defCam();
 }
 
 
@@ -314,8 +299,8 @@ wormCam()
 		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
 		CAMERA_FOCUS_LAG, 0.0 , // (0 to 3) seconds
 		CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
-		CAMERA_FOCUS_THRESHOLD, 4.0, // (0 to 4) meters
-		CAMERA_PITCH, -45.0, // (-45 to 80) degrees
+		CAMERA_FOCUS_THRESHOLD, 2.5, // (0 to 4) meters
+		CAMERA_PITCH, -35.0, // (-45 to 80) degrees
 		//CAMERA_POSITION, <0.0,0.0,0.0>, // region relative position
 		CAMERA_POSITION_LAG, 1.0, // (0 to 3) seconds
 		CAMERA_POSITION_LOCKED, FALSE, // (TRUE or FALSE)
@@ -325,11 +310,68 @@ wormCam()
 }
 
 
-spaz_cam()
+// pragma inline
+dropCam()
 {
-	if (verbose) llOwnerSay("spaz_cam for 5 seconds"); // say function name for debugging
+	if (verbose) llOwnerSay("Dropping camera"); // say function name for debugging
+	llSetCameraParams([
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
+		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
+		CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
+		CAMERA_DISTANCE, 3.0, // ( 0.5 to 10) meters
+		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
+		CAMERA_FOCUS_LAG, 2.0, // (0 to 3) seconds
+		CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
+		CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
+		CAMERA_PITCH, 0.0, // (-45 to 80) degrees
+		//CAMERA_POSITION, <0.0,0.0,0.0>, // region relative position
+		CAMERA_POSITION_LAG, 0.05, // (0 to 3) seconds
+		CAMERA_POSITION_LOCKED, TRUE, // (TRUE or FALSE)
+		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
+		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
+	]);
+}
+
+
+// pragma inline
+spinCam()
+{
+	llClearCameraParams(); // reset camera to default
+	llSetCameraParams([
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
+		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
+		CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
+		//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
+		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
+		CAMERA_FOCUS_LAG, 0.05 , // (0 to 3) seconds
+		CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
+		CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
+		CAMERA_PITCH, 30.0, // (-45 to 80) degrees
+		//CAMERA_POSITION, <0.0,0.0,0.0>, // region relative position
+		CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
+		CAMERA_POSITION_LOCKED, FALSE, // (TRUE or FALSE)
+		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
+		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
+	]);
+
 	float i;
-	for (i=0; i< 50; i+=1)
+	vector camera_position;
+	for (i=0; i< 2*TWO_PI; i+=.025)
+	{
+		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
+		llSetCameraParams([CAMERA_POSITION, camera_position]);
+		llSleep(0.020);
+	}
+	defCam();
+}
+
+
+// pragma inline
+spazCam()
+{
+	if (verbose) llOwnerSay("Spaz cam for 7 seconds"); // say function name for debugging
+	float i;
+	for (i=0; i< 70; i+=1)
 	{
 		vector xyz = llGetPos() + <llFrand(80.0) - 40, llFrand(80.0) - 40, llFrand(10.0)>;
 		//        llOwnerSay((string)xyz);
@@ -357,37 +399,6 @@ spaz_cam()
 
 
 // pragma inline
-spinCam()
-{
-	llClearCameraParams(); // reset camera to default
-	llSetCameraParams([
-		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
-		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
-		CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
-		//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
-		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
-		CAMERA_FOCUS_LAG, 0.05 , // (0 to 3) seconds
-		CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
-		CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
-		CAMERA_PITCH, 30.0, // (-45 to 80) degrees
-		//CAMERA_POSITION, <0.0,0.0,0.0>, // region relative position
-		CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
-		CAMERA_POSITION_LOCKED, FALSE, // (TRUE or FALSE)
-		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
-		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
-	]);
-
-	float i;
-	vector camera_position;
-	for (i=0; i< 2*TWO_PI; i+=.05)
-	{
-		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
-		llSetCameraParams([CAMERA_POSITION, camera_position]);
-	}
-	defCam();
-}
-
- // pragma inline
 setupListen()
 {
 	llListenRemove(1);
@@ -440,13 +451,13 @@ default
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
-		verbose = FALSE;
-		CH = -987444;
-		
+		verbose = TRUE;
+		CH = 987444;
+
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
-		
-		MemRestrict(24000, FALSE);
+
+		MemRestrict(30000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -466,7 +477,7 @@ default
 
 	touch_start(integer num_detected)
 	{
-		if (verbose) llOwnerSay("*Long touch on colored buttons, to save current view*");
+		if (verbose) llOwnerSay("*Long touch to save/delete*");
 		llResetTime();
 		g_iNr= llDetectedLinkNumber(0);
 		if (debug) Debug("prim/link number: "+ (string)g_iNr, FALSE, FALSE);
@@ -477,7 +488,7 @@ default
 	{
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
 			if (3 == g_iNr || 4 == g_iNr) llOwnerSay("Cam position saved");
-				else if (5 == g_iNr) llOwnerSay("Saved cam position deleted");
+				else if (5 == g_iNr) llOwnerSay("Saved cam positions deleted");
 			g_iMsg = FALSE;
 		}
 	}
@@ -491,7 +502,7 @@ default
 			if (llGetTime() < g_fTouchTimer) {
 				if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
-					llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
+					llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present dialog on click
 				}
 				else if (3 == g_iNr) {
 					llClearCameraParams(); // reset camera to default
@@ -549,37 +560,27 @@ default
 				}
 				else if (5 == g_iNr) resetCamPos();
 			}
-		}
+		} else llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
 	}
 
 
-//user interaction
 //listen to usercommands
 //-----------------------------------------------
 	listen(integer channel, string name, key id, string message)
 	{
 			message = llToLower(message);
-			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "---", "CLOSE",
-				"Worm", "Drop", "Spin"], CH); // present submenu on request
-			else if ("...back" == message) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
+			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "help", "CLOSE",
+				"Me", "Worm", "Drop",
+				"Spin", "Spaz", "DEFAULT"], CH); // present submenu on request
+			else if ("...back" == message) llDialog(id, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
+			else if ("help" == message) {
+				infoLines(TRUE);
+			}
 			else if ("on" == message) {
 				takeCamCtrl(id);
 			}
 			else if ("off" == message) {
 				releaseCamCtrl(id);
-			}
-			else if ("default" == message) {
-				llClearCameraParams(); // reset camera to default
-				llSetCameraParams([CAMERA_ACTIVE, TRUE]);
-			}
-			else if ("right" == message) {
-				shoulderCamRight();
-			}
-			else if ("worm" == message) {
-				wormCam();
-			}
-			else if ("centre" == message) {
-				centreCam();
 			}
 			else if ("left" == message) {
 				shoulderCamLeft();
@@ -587,18 +588,38 @@ default
 			else if ("shoulder" == message) {
 				shoulderCam();
 			}
+			else if ("right" == message) {
+				shoulderCamRight();
+			}
+			else if ("center" == message) {
+				centreCam();
+			}
+			else if ("default" == message) {
+				llClearCameraParams(); // reset camera to default
+				llSetCameraParams([CAMERA_ACTIVE, TRUE]);
+			}
+			else if ("me" == message) {
+				focusCamMe();
+			}
+			else if ("worm" == message) {
+				wormCam();
+			}
 			else if ("drop" == message) {
 				dropCam();
 			}
-			else if (message == "Trap Toggle") {
+			/*else if (message == "Trap Toggle") {
 				trap = !trap;
 				if (trap == 1) {
 					llOwnerSay("trap is on");
 				} else {
 					llOwnerSay("trap is off");
 				}
-			} else if ("spin" == message) {
+			}*/
+			else if ("spin" == message) {
 				spinCam();
+			}
+			else if ("spaz" == message) {
+				spazCam();
 			}
 			else if (!("---" == message || "close" == message)) llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
