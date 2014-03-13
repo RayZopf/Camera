@@ -2,20 +2,20 @@ Slightly improve CameraScript
 =====================================================================
 Aims
 ----
-bugfix, improve  
-and maybe add new features - e.g. ability to store specific views
+bugfixes, general improvements, new features  
 
 Todo
 ----
-code cleanup  
+further code cleanup  
 modularize  
-
+let HUD save camera positions per SIM  
 
 
 Components
 ==========
 Script-base
 -------
+see script header  
 
 Objects
 -------
