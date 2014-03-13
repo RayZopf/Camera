@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 17:51:28 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 18:36:01 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -163,7 +163,7 @@ default {
 */
 
 	state_entry() {
-        (verbose = 1);
+        (verbose = 0);
         (CH = 987444);
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
