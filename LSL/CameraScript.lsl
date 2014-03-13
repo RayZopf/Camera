@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 16:51:00 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 17:05:49 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -65,7 +65,7 @@ string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["More...","help","CLOSE","Left","Centre","Right","ON","OFF","---"];
+list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","ON","Center","OFF"];
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
 
 
@@ -74,7 +74,6 @@ key g_kOwner;
 
 integer g_iHandle = 0;
 integer g_iOn = 0;
-integer trap = 0;
 
 integer g_iNr;
 integer g_iMsg = 1;
@@ -253,8 +252,12 @@ default {
 //-----------------------------------------------
 	listen(integer channel,string name,key id,string message) {
         (message = llToLower(message));
-        if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Worm","Drop","Spin","Me","Spaz"],CH);
+        if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Me","Worm","Drop","Spin","Spaz","DEFAULT"],CH);
         else  if (("...back" == message)) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
+        else  if (("help" == message)) {
+            llOwnerSay(("HUD listens on channel: " + ((string)CH)));
+            if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
+        }
         else  if (("on" == message)) {
             if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)id)));
             llRequestPermissions(id,3072);
@@ -266,25 +269,6 @@ default {
             llClearCameraParams();
             (g_iOn = 0);
         }
-        else  if (("default" == message)) {
-            llClearCameraParams();
-            llSetCameraParams([12,1]);
-        }
-        else  if (("right" == message)) {
-            if (verbose) llOwnerSay("Right Shoulder");
-            llClearCameraParams();
-            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
-        }
-        else  if (("worm" == message)) {
-            if (verbose) llOwnerSay("Worm Cam");
-            llClearCameraParams();
-            llSetCameraParams([12,1,8,180.0,9,0.0,7,8.0,6,0.0,22,0,11,4.0,0,-45.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
-        }
-        else  if (("centre" == message)) {
-            if (verbose) llOwnerSay("Center Cam");
-            llClearCameraParams();
-            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
-        }
         else  if (("left" == message)) {
             if (verbose) llOwnerSay("Left Shoulder");
             llClearCameraParams();
@@ -295,18 +279,34 @@ default {
             llClearCameraParams();
             llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
         }
+        else  if (("right" == message)) {
+            if (verbose) llOwnerSay("Right Shoulder");
+            llClearCameraParams();
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
+        }
+        else  if (("centre" == message)) {
+            if (verbose) llOwnerSay("Center Cam");
+            llClearCameraParams();
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
+        }
+        else  if (("default" == message)) {
+            llClearCameraParams();
+            llSetCameraParams([12,1]);
+        }
+        else  if (("me" == message)) {
+            if (verbose) llOwnerSay("Focussing on yourself");
+            llClearCameraParams();
+            vector here = llGetPos();
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <4.0,4.0,4.0>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+        }
+        else  if (("worm" == message)) {
+            if (verbose) llOwnerSay("Worm Cam");
+            llClearCameraParams();
+            llSetCameraParams([12,1,8,180.0,9,0.0,7,8.0,6,0.0,22,0,11,4.0,0,-45.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
+        }
         else  if (("drop" == message)) {
             if (verbose) llOwnerSay("Dropping camera");
             llSetCameraParams([12,1,8,0.0,9,0.5,7,3.0,6,2.0,22,0,11,0.0,0,0.0,5,5.0e-2,21,1,10,0.0,1,<0.0,0.0,0.0>]);
-        }
-        else  if ((message == "Trap Toggle")) {
-            (trap = (!trap));
-            if ((trap == 1)) {
-                llOwnerSay("trap is on");
-            }
-            else  {
-                llOwnerSay("trap is off");
-            }
         }
         else  if (("spin" == message)) {
             llClearCameraParams();
@@ -320,26 +320,16 @@ default {
             }
             defCam();
         }
-        else  if (("me" == message)) {
-            if (verbose) llOwnerSay("Focussing on yourself");
-            llClearCameraParams();
-            vector here = llGetPos();
-            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <4.0,4.0,4.0>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
-        }
         else  if (("spaz" == message)) {
             if (verbose) llOwnerSay("Spaz cam for 7 seconds");
-            float _i11;
-            for ((_i11 = 0); (_i11 < 70); (_i11 += 1)) {
+            float _i12;
+            for ((_i12 = 0); (_i12 < 70); (_i12 += 1)) {
                 vector xyz = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                 vector xyz2 = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                 llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,(llFrand(125.0) - 45),13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<(llFrand(20.0) - 10),(llFrand(20.0) - 10),(llFrand(20) - 10)>]);
                 llSleep(0.1);
             }
             defCam();
-        }
-        else  if (("help" == message)) {
-            llOwnerSay(("HUD listens on channel: " + ((string)CH)));
-            if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
         }
         else  if ((!(("---" == message) || ("close" == message)))) llOwnerSay((((name + " picked invalid option '") + message) + "'.\n"));
     }
