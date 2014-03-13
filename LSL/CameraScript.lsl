@@ -1,4 +1,4 @@
-// LSL script generated: Camera.LSL.CameraScript.lslp Wed Mar 12 01:00:17 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 16:20:59 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -18,8 +18,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//11. Mrz. 2014
-//v1.44
+//13. Mrz. 2014
+//v1.45
 //
 
 //Files:
@@ -60,12 +60,12 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.44";
+string g_sVersion = "1.45";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["More...","---","CLOSE","Left","Centre","Right","ON","OFF","---"];
+list MENU_MAIN = ["More...","help","CLOSE","Left","Centre","Right","ON","OFF","---"];
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
 
 
@@ -97,12 +97,13 @@ initExtension(integer conf){
     llListenRemove(g_iHandle);
     (g_iHandle = llListen(CH,"",g_kOwner,""));
     if (conf) llRequestPermissions(g_kOwner,3072);
-    llOwnerSay(((((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors) + "\nHUD listens on channel: ") + ((string)CH)));
+    llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
     if (verbose) {
         
         llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
     }
-    llOwnerSay("*Long touch on colored buttons, to save current view*");
+    llOwnerSay(("HUD listens on channel: " + ((string)CH)));
+    if ((verbose || 0)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
 }
 
 
@@ -165,12 +166,12 @@ default {
 
 	state_entry() {
         (verbose = 0);
-        (CH = -987444);
+        (CH = 987444);
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         integer rc = 0;
-        (rc = llSetMemoryLimit(24000));
-        if (verbose) if ((!rc)) {
+        (rc = llSetMemoryLimit(28000));
+        if ((verbose && (!rc))) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
         
@@ -191,7 +192,7 @@ default {
 */
 
 	touch_start(integer num_detected) {
-        if (verbose) llOwnerSay("*Long touch on colored buttons, to save current view*");
+        if (verbose) llOwnerSay("*Long touch to save/delete*");
         llResetTime();
         (g_iNr = llDetectedLinkNumber(0));
         
@@ -202,7 +203,7 @@ default {
 	touch(integer num_detected) {
         if ((g_iMsg && (llGetTime() > 1.3))) {
             if (((3 == g_iNr) || (4 == g_iNr))) llOwnerSay("Cam position saved");
-            else  if ((5 == g_iNr)) llOwnerSay("Saved cam position deleted");
+            else  if ((5 == g_iNr)) llOwnerSay("Saved cam positions deleted");
             (g_iMsg = 0);
         }
     }
@@ -248,12 +249,11 @@ default {
 
 
 
-//user interaction
 //listen to usercommands
 //-----------------------------------------------
 	listen(integer channel,string name,key id,string message) {
         (message = llToLower(message));
-        if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","---","CLOSE","Worm","Drop","Spin"],CH);
+        if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Worm","Drop","Spin"],CH);
         else  if (("...back" == message)) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
         else  if (("on" == message)) {
             if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)id)));
@@ -321,6 +321,10 @@ default {
                 llSleep(2.5e-2);
             }
             defCam();
+        }
+        else  if (("help" == message)) {
+            llOwnerSay(("HUD listens on channel: " + ((string)CH)));
+            if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
         }
         else  if ((!(("---" == message) || ("close" == message)))) llOwnerSay((((name + " picked invalid option '") + message) + "'.\n"));
     }

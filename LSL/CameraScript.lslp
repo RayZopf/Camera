@@ -17,8 +17,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//11. Mrz. 2014
-//v1.44
+//13. Mrz. 2014
+//v1.45
 //
 
 //Files:
@@ -59,12 +59,12 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.44";            // version
+string g_sVersion = "1.45";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
 // Constants
-list MENU_MAIN = ["More...", "---", "CLOSE",
+list MENU_MAIN = ["More...", "help", "CLOSE",
 	"Left", "Centre", "Right",
 	"ON", "OFF", "---"]; // the main menu
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
@@ -113,20 +113,21 @@ initExtension(integer conf)
 {
 	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
-	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors+"\nHUD listens on channel: "+(string)CH);
+	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
-	infoLines();
+	infoLines(FALSE);
 }
 
 
 // pragma inline
-infoLines()
+infoLines(integer help)
 {
-	llOwnerSay("*Long touch on colored buttons, to save current view*");
+	llOwnerSay("HUD listens on channel: "+(string)CH);
+	if (verbose || help) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
 }
 
 
-// pragma inline 
+// pragma inline
 //most important function
 //-----------------------------------------------
 takeCamCtrl(key id)
@@ -396,7 +397,7 @@ spinCam()
 	defCam();
 }
 
- // pragma inline
+// pragma inline
 setupListen()
 {
 	llListenRemove(1);
@@ -450,12 +451,12 @@ default
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
 		verbose = FALSE;
-		CH = -987444;
-		
+		CH = 987444;
+
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
-		
-		MemRestrict(24000, FALSE);
+
+		MemRestrict(28000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -475,7 +476,7 @@ default
 
 	touch_start(integer num_detected)
 	{
-		if (verbose) llOwnerSay("*Long touch on colored buttons, to save current view*");
+		if (verbose) llOwnerSay("*Long touch to save/delete*");
 		llResetTime();
 		g_iNr= llDetectedLinkNumber(0);
 		if (debug) Debug("prim/link number: "+ (string)g_iNr, FALSE, FALSE);
@@ -486,7 +487,7 @@ default
 	{
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
 			if (3 == g_iNr || 4 == g_iNr) llOwnerSay("Cam position saved");
-				else if (5 == g_iNr) llOwnerSay("Saved cam position deleted");
+				else if (5 == g_iNr) llOwnerSay("Saved cam positions deleted");
 			g_iMsg = FALSE;
 		}
 	}
@@ -562,13 +563,12 @@ default
 	}
 
 
-//user interaction
 //listen to usercommands
 //-----------------------------------------------
 	listen(integer channel, string name, key id, string message)
 	{
 			message = llToLower(message);
-			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "---", "CLOSE",
+			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "help", "CLOSE",
 				"Worm", "Drop", "Spin"], CH); // present submenu on request
 			else if ("...back" == message) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if ("on" == message) {
@@ -608,7 +608,7 @@ default
 				}
 			} else if ("spin" == message) {
 				spinCam();
-			}
+			} else if ("help" == message) infoLines(TRUE);
 			else if (!("---" == message || "close" == message)) llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
 
