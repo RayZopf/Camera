@@ -166,9 +166,10 @@ defCam()
 }
 
 
-focus_on_me()
+// pragma inline
+focusMe()
 {
-	if (verbose) llOwnerSay("focus_on_me"); // say function name for debugging
+	if (verbose) llOwnerSay("Focussing on yourself"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
 	vector here = llGetPos();
 	llSetCameraParams([
@@ -288,7 +289,7 @@ centreCam()
 // pragma inline
 dropCam()
 {
-	if (verbose) llOwnerSay("drop camera 5 seconds"); // say function name for debugging
+	if (verbose) llOwnerSay("Dropping camera"); // say function name for debugging
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -305,8 +306,6 @@ dropCam()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
-	llSleep(5);
-	defCam();
 }
 
 
@@ -334,11 +333,12 @@ wormCam()
 }
 
 
-spaz_cam()
+// pragma inline
+spazCam()
 {
-	if (verbose) llOwnerSay("spaz_cam for 5 seconds"); // say function name for debugging
+	if (verbose) llOwnerSay("Spaz cam for 7 seconds"); // say function name for debugging
 	float i;
-	for (i=0; i< 50; i+=1)
+	for (i=0; i< 70; i+=1)
 	{
 		vector xyz = llGetPos() + <llFrand(80.0) - 40, llFrand(80.0) - 40, llFrand(10.0)>;
 		//        llOwnerSay((string)xyz);
@@ -392,7 +392,7 @@ spinCam()
 	{
 		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
 		llSetCameraParams([CAMERA_POSITION, camera_position]);
-		llSleep(0.025);
+		llSleep(0.020);
 	}
 	defCam();
 }
@@ -569,7 +569,8 @@ default
 	{
 			message = llToLower(message);
 			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "help", "CLOSE",
-				"Worm", "Drop", "Spin"], CH); // present submenu on request
+				"Worm", "Drop", "Spin",
+				"Me", "Spaz"], CH); // present submenu on request
 			else if ("...back" == message) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if ("on" == message) {
 				takeCamCtrl(id);
@@ -606,9 +607,17 @@ default
 				} else {
 					llOwnerSay("trap is off");
 				}
-			} else if ("spin" == message) {
+			}
+			else if ("spin" == message) {
 				spinCam();
-			} else if ("help" == message) infoLines(TRUE);
+			}
+			else if ("me" == message) {
+				focusMe();
+			}
+			else if ("spaz" == message) {
+				spazCam();
+			}
+			else if ("help" == message) infoLines(TRUE);
 			else if (!("---" == message || "close" == message)) llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
 

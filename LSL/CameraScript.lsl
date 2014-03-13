@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 16:20:59 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 16:51:00 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -253,7 +253,7 @@ default {
 //-----------------------------------------------
 	listen(integer channel,string name,key id,string message) {
         (message = llToLower(message));
-        if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Worm","Drop","Spin"],CH);
+        if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Worm","Drop","Spin","Me","Spaz"],CH);
         else  if (("...back" == message)) llDialog(id,"What do you want to do?",MENU_MAIN,CH);
         else  if (("on" == message)) {
             if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)id)));
@@ -296,10 +296,8 @@ default {
             llSetCameraParams([12,1,8,5.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
         }
         else  if (("drop" == message)) {
-            if (verbose) llOwnerSay("drop camera 5 seconds");
+            if (verbose) llOwnerSay("Dropping camera");
             llSetCameraParams([12,1,8,0.0,9,0.5,7,3.0,6,2.0,22,0,11,0.0,0,0.0,5,5.0e-2,21,1,10,0.0,1,<0.0,0.0,0.0>]);
-            llSleep(5);
-            defCam();
         }
         else  if ((message == "Trap Toggle")) {
             (trap = (!trap));
@@ -318,7 +316,24 @@ default {
             for ((i = 0); (i < 12.5663706); (i += 2.5e-2)) {
                 (camera_position = (llGetPos() + (<0.0,4.0,0.0> * llEuler2Rot(<0.0,0.0,i>))));
                 llSetCameraParams([13,camera_position]);
-                llSleep(2.5e-2);
+                llSleep(2.0e-2);
+            }
+            defCam();
+        }
+        else  if (("me" == message)) {
+            if (verbose) llOwnerSay("Focussing on yourself");
+            llClearCameraParams();
+            vector here = llGetPos();
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <4.0,4.0,4.0>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+        }
+        else  if (("spaz" == message)) {
+            if (verbose) llOwnerSay("Spaz cam for 7 seconds");
+            float _i11;
+            for ((_i11 = 0); (_i11 < 70); (_i11 += 1)) {
+                vector xyz = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
+                vector xyz2 = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
+                llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,(llFrand(125.0) - 45),13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<(llFrand(20.0) - 10),(llFrand(20.0) - 10),(llFrand(20) - 10)>]);
+                llSleep(0.1);
             }
             defCam();
         }
