@@ -528,8 +528,8 @@ default
 	touch(integer num_detected)
 	{
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
-			if (3 == g_iNr || 4 == g_iNr) llOwnerSay("Cam position saved");
-				else if (5 == g_iNr) llOwnerSay("Saved cam positions deleted");
+			if (4 == g_iNr || 5 == g_iNr || 6 == g_iNr || 7 == g_iNr) llOwnerSay("Cam position saved");
+				else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
 			g_iMsg = FALSE;
 		}
 	}
@@ -538,9 +538,32 @@ default
 	{
 		g_iMsg = TRUE;
 		integer perm = llGetPermissions();
+		float time = llGetTime(); 
+		if (time > g_fTouchTimer) {
+			if (4 == g_iNr) {
+				g_vPos1 = llGetCameraPos();
+				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
+				if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
+			}
+			else if (5 == g_iNr) {
+				g_vPos2 = llGetCameraPos();
+				g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
+				if (debug) Debug("save pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
+			}
+			else if (6 == g_iNr) {
+				g_vPos3 = llGetCameraPos();
+				g_vFoc3 = g_vPos3 + llRot2Fwd(llGetCameraRot());
+				if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
+			}
+			else if (7 == g_iNr) {
+				g_vPos4 = llGetCameraPos();
+				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
+				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
+			} 
+		}
 		if (perm & PERMISSION_CONTROL_CAMERA) {
 			// is the above line causing the bug that menu is not shown?
-			if (llGetTime() < g_fTouchTimer) {
+			if (time < g_fTouchTimer) {
 				if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 					llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present dialog on click
@@ -550,29 +573,7 @@ default
 				else if (6 == g_iNr) savedCam(g_vFoc3, g_vPos3);
 				else if (7 == g_iNr) savedCam(g_vFoc4, g_vPos4);
 				else if (3 == g_iNr) defCam();
-			} else {
-				if (4 == g_iNr) {
-					g_vPos1 = llGetCameraPos();
-					g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
-					if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
-				}
-				else if (5 == g_iNr) {
-					g_vPos2 = llGetCameraPos();
-					g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
-					if (debug) Debug("save pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
-				}
-				else if (6 == g_iNr) {
-					g_vPos3 = llGetCameraPos();
-					g_vFoc3 = g_vPos3 + llRot2Fwd(llGetCameraRot());
-					if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
-				}
-				else if (7 == g_iNr) {
-					g_vPos4 = llGetCameraPos();
-					g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
-					if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
-				}
-				else if (3 == g_iNr) resetCamPos();
-			}
+			} else if (3 == g_iNr) resetCamPos();
 		} else llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
 	}
 

@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sat Mar 15 19:48:02 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sat Mar 15 20:24:31 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -217,8 +217,8 @@ default {
 
 	touch(integer num_detected) {
         if ((g_iMsg && (llGetTime() > 1.3))) {
-            if (((3 == g_iNr) || (4 == g_iNr))) llOwnerSay("Cam position saved");
-            else  if ((5 == g_iNr)) llOwnerSay("Saved cam positions deleted");
+            if (((((4 == g_iNr) || (5 == g_iNr)) || (6 == g_iNr)) || (7 == g_iNr))) llOwnerSay("Cam position saved");
+            else  if ((3 == g_iNr)) llOwnerSay("Saved cam positions deleted");
             (g_iMsg = 0);
         }
     }
@@ -227,8 +227,31 @@ default {
 	touch_end(integer num_detected) {
         (g_iMsg = 1);
         integer perm = llGetPermissions();
+        float time = llGetTime();
+        if ((time > 1.3)) {
+            if ((4 == g_iNr)) {
+                (g_vPos1 = llGetCameraPos());
+                (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
+                
+            }
+            else  if ((5 == g_iNr)) {
+                (g_vPos2 = llGetCameraPos());
+                (g_vFoc2 = (g_vPos2 + llRot2Fwd(llGetCameraRot())));
+                
+            }
+            else  if ((6 == g_iNr)) {
+                (g_vPos3 = llGetCameraPos());
+                (g_vFoc3 = (g_vPos3 + llRot2Fwd(llGetCameraRot())));
+                
+            }
+            else  if ((7 == g_iNr)) {
+                (g_vPos4 = llGetCameraPos());
+                (g_vFoc4 = (g_vPos4 + llRot2Fwd(llGetCameraRot())));
+                
+            }
+        }
         if ((perm & 2048)) {
-            if ((llGetTime() < 1.3)) {
+            if ((time < 1.3)) {
                 if ((2 == g_iNr)) {
                     llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);
                 }
@@ -238,29 +261,7 @@ default {
                 else  if ((7 == g_iNr)) savedCam(g_vFoc4,g_vPos4);
                 else  if ((3 == g_iNr)) defCam();
             }
-            else  {
-                if ((4 == g_iNr)) {
-                    (g_vPos1 = llGetCameraPos());
-                    (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
-                    
-                }
-                else  if ((5 == g_iNr)) {
-                    (g_vPos2 = llGetCameraPos());
-                    (g_vFoc2 = (g_vPos2 + llRot2Fwd(llGetCameraRot())));
-                    
-                }
-                else  if ((6 == g_iNr)) {
-                    (g_vPos3 = llGetCameraPos());
-                    (g_vFoc3 = (g_vPos3 + llRot2Fwd(llGetCameraRot())));
-                    
-                }
-                else  if ((7 == g_iNr)) {
-                    (g_vPos4 = llGetCameraPos());
-                    (g_vFoc4 = (g_vPos4 + llRot2Fwd(llGetCameraRot())));
-                    
-                }
-                else  if ((3 == g_iNr)) resetCamPos();
-            }
+            else  if ((3 == g_iNr)) resetCamPos();
         }
         else  llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?"),["---","help","CLOSE","ON"],CH);
     }
