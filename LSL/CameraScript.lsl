@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Thu Mar 13 18:36:01 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sat Mar 15 19:48:02 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -18,8 +18,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//13. Mrz. 2014
-//v1.46
+//15. Mrz. 2014
+//v1.47
 //
 
 //Files:
@@ -59,7 +59,7 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.46";
+string g_sVersion = "1.47";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -80,6 +80,10 @@ vector g_vPos1;
 vector g_vFoc1;
 vector g_vPos2;
 vector g_vFoc2;
+vector g_vPos3;
+vector g_vFoc3;
+vector g_vPos4;
+vector g_vFoc4;
 integer g_iCamPos = 0;
 
 //project specific modules
@@ -102,6 +106,7 @@ initExtension(integer conf){
     }
     llOwnerSay(("HUD listens on channel: " + ((string)CH)));
     if ((verbose || 0)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
+    if ((verbose || 0)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n'default', 'delete', 'help' and all other menu entries");
 }
 
 
@@ -110,6 +115,10 @@ resetCamPos(){
     (g_vFoc1 = ZERO_VECTOR);
     (g_vPos2 = ZERO_VECTOR);
     (g_vFoc2 = ZERO_VECTOR);
+    (g_vPos3 = ZERO_VECTOR);
+    (g_vFoc3 = ZERO_VECTOR);
+    (g_vPos4 = ZERO_VECTOR);
+    (g_vFoc4 = ZERO_VECTOR);
     (g_iCamPos = 0);
     defCam();
 }
@@ -119,6 +128,14 @@ defCam(){
     if (verbose) llOwnerSay("Right Shoulder");
     llClearCameraParams();
     llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
+}
+
+
+savedCam(vector foc,vector pos){
+    llClearCameraParams();
+    llSetCameraParams([12,1,17,foc,6,0.0,22,1,13,pos,5,0.0,21,1]);
+    (g_iCamPos = 1);
+    
 }
 
 
@@ -190,7 +207,7 @@ default {
 */
 
 	touch_start(integer num_detected) {
-        if (verbose) llOwnerSay("*Long touch to save/delete*");
+        if (verbose) llOwnerSay("*Long touch to save/delete/reset*");
         llResetTime();
         (g_iNr = llDetectedLinkNumber(0));
         
@@ -215,32 +232,34 @@ default {
                 if ((2 == g_iNr)) {
                     llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);
                 }
-                else  if ((3 == g_iNr)) {
-                    llClearCameraParams();
-                    llSetCameraParams([12,1,17,g_vFoc1,6,0.0,22,1,13,g_vPos1,5,0.0,21,1]);
-                    (g_iCamPos = 1);
-                    
-                }
-                else  if ((4 == g_iNr)) {
-                    llClearCameraParams();
-                    llSetCameraParams([12,1,17,g_vFoc2,6,0.0,22,1,13,g_vPos2,5,0.0,21,1]);
-                    (g_iCamPos = 1);
-                    
-                }
-                else  if ((5 == g_iNr)) defCam();
+                else  if ((4 == g_iNr)) savedCam(g_vFoc1,g_vPos1);
+                else  if ((5 == g_iNr)) savedCam(g_vFoc2,g_vPos2);
+                else  if ((6 == g_iNr)) savedCam(g_vFoc3,g_vPos3);
+                else  if ((7 == g_iNr)) savedCam(g_vFoc4,g_vPos4);
+                else  if ((3 == g_iNr)) defCam();
             }
             else  {
-                if ((3 == g_iNr)) {
+                if ((4 == g_iNr)) {
                     (g_vPos1 = llGetCameraPos());
                     (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
                     
                 }
-                else  if ((4 == g_iNr)) {
+                else  if ((5 == g_iNr)) {
                     (g_vPos2 = llGetCameraPos());
                     (g_vFoc2 = (g_vPos2 + llRot2Fwd(llGetCameraRot())));
                     
                 }
-                else  if ((5 == g_iNr)) resetCamPos();
+                else  if ((6 == g_iNr)) {
+                    (g_vPos3 = llGetCameraPos());
+                    (g_vFoc3 = (g_vPos3 + llRot2Fwd(llGetCameraRot())));
+                    
+                }
+                else  if ((7 == g_iNr)) {
+                    (g_vPos4 = llGetCameraPos());
+                    (g_vFoc4 = (g_vPos4 + llRot2Fwd(llGetCameraRot())));
+                    
+                }
+                else  if ((3 == g_iNr)) resetCamPos();
             }
         }
         else  llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?"),["---","help","CLOSE","ON"],CH);
@@ -252,11 +271,12 @@ default {
 //-----------------------------------------------
 	listen(integer channel,string name,key id,string message) {
         (message = llToLower(message));
-        if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Me","Worm","Drop","Spin","Spaz","DEFAULT"],CH);
+        if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Me","Worm","Drop","Spin","Spaz","STANDARD"],CH);
         else  if (("...back" == message)) llDialog(id,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);
         else  if (("help" == message)) {
             llOwnerSay(("HUD listens on channel: " + ((string)CH)));
             if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
+            if ((verbose || 1)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n'default', 'delete', 'help' and all other menu entries");
         }
         else  if (("on" == message)) {
             if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)id)));
@@ -289,7 +309,7 @@ default {
             llClearCameraParams();
             llSetCameraParams([12,1,8,0.0,9,0.0,7,0.5,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
         }
-        else  if (("default" == message)) {
+        else  if (("standard" == message)) {
             llClearCameraParams();
             llSetCameraParams([12,1]);
         }
@@ -322,14 +342,32 @@ default {
         }
         else  if (("spaz" == message)) {
             if (verbose) llOwnerSay("Spaz cam for 7 seconds");
-            float _i12;
-            for ((_i12 = 0); (_i12 < 70); (_i12 += 1)) {
+            float _i13;
+            for ((_i13 = 0); (_i13 < 70); (_i13 += 1)) {
                 vector xyz = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                 vector xyz2 = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                 llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,(llFrand(125.0) - 45),13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<(llFrand(20.0) - 10),(llFrand(20.0) - 10),(llFrand(20) - 10)>]);
                 llSleep(0.1);
             }
             defCam();
+        }
+        else  if (("cam1" == message)) {
+            savedCam(g_vFoc1,g_vPos1);
+        }
+        else  if (("cam2" == message)) {
+            savedCam(g_vFoc2,g_vPos2);
+        }
+        else  if (("cam3" == message)) {
+            savedCam(g_vFoc3,g_vPos3);
+        }
+        else  if (("cam4" == message)) {
+            savedCam(g_vFoc4,g_vPos4);
+        }
+        else  if (("default" == message)) {
+            defCam();
+        }
+        else  if (("delete" == message)) {
+            resetCamPos();
         }
         else  if ((!(("---" == message) || ("close" == message)))) llOwnerSay((((name + " picked invalid option '") + message) + "'.\n"));
     }
