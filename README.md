@@ -13,7 +13,7 @@ let HUD save camera positions per SIM
 Comparison
 ----
 ***|Phototools camera -- Advanced phototools camera controls|CameraControl HUD
-:-----------------:|------------------------|-------------------
+:-----------------:|----------------|----------------------
 _Speed_|fast|slow, depending on server load and lag even slower
 _Script count_|none, Firestrom function, works everywhere - same as FS AO|1 (one), currently around 32kB - needs to use workaround for noscript areas
 _Saved positions_|1 (one) as of Firestorm 4.6.1, persisting relog|4 (four) reseting on region change (e.g. teleport)
