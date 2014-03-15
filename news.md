@@ -2,7 +2,7 @@ Current News
 ====
 fixed "too many listens"  
 fixed permissions stuff on script reset  
-ability to save two camera positions  
+ability to save camera positions  
 
 Changes
 ====
@@ -13,3 +13,4 @@ Mrz.2014
  - use LSL Forge modules
  - restrict memory usage
  - keep saved camera position till next teleport
+ - comparison of HUD and Firestorm's Advanced phototools
