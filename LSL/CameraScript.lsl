@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 22:36:22 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Mon Mar 17 00:00:54 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -387,10 +387,18 @@ default {
                 if ((2 == g_iNr)) {
                     llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);
                 }
-                else  if ((4 == g_iNr)) if (g_iCam1) savedCam(g_vFoc1,g_vPos1);
-                else  if ((5 == g_iNr)) if (g_iCam2) savedCam(g_vFoc2,g_vPos2);
-                else  if ((6 == g_iNr)) if (g_iCam3) savedCam(g_vFoc3,g_vPos3);
-                else  if ((7 == g_iNr)) if (g_iCam4) savedCam(g_vFoc4,g_vPos4);
+                else  if ((4 == g_iNr)) {
+                    if (g_iCam1) savedCam(g_vFoc1,g_vPos1);
+                }
+                else  if ((5 == g_iNr)) {
+                    if (g_iCam2) savedCam(g_vFoc2,g_vPos2);
+                }
+                else  if ((6 == g_iNr)) {
+                    if (g_iCam3) savedCam(g_vFoc3,g_vPos3);
+                }
+                else  if ((7 == g_iNr)) {
+                    if (g_iCam4) savedCam(g_vFoc4,g_vPos4);
+                }
                 else  if ((3 == g_iNr)) slCam();
             }
             else  if ((3 == g_iNr)) {
@@ -444,11 +452,11 @@ default {
             if (g_iFar) {
                 (g_iOn = 0);
                 (g_iFar = 0);
-                releaseCamCtrl(llGetOwner());
+                releaseCamCtrl(g_kOwner);
             }
             else  if ((!g_iOn)) {
                 (g_iOn = 1);
-                key _id5 = llGetOwner();
+                key _id5 = g_kOwner;
                 if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)_id5)));
                 llRequestPermissions(_id5,3072);
                 llSetCameraParams([12,1]);

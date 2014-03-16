@@ -181,13 +181,13 @@ setColor(integer on)
 		llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.7,1,1>, 1]);
 	} else {
 		llSetLinkPrimitiveParamsFast(2, [PRIM_COLOR, ALL_SIDES, <0.5,0.5,0.5>, 0.85]);
-		llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);		
+		llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
 	}
 }
 
 
 setButtonCol()
-{	
+{
 	integer i = 4;
 	do
 		llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
@@ -488,7 +488,7 @@ toggleCam()
 {
 	++g_iCamNr;
 	if (g_iCamNr > 4) g_iCamNr = 1;
-	
+
 	setCam((string)g_iCamNr);
 }
 
@@ -516,10 +516,10 @@ toggleDist()
 	if (g_iFar) {
 		g_iOn = FALSE;
 		g_iFar = FALSE;
-		releaseCamCtrl(llGetOwner());
+		releaseCamCtrl(g_kOwner);
 	} else if (!g_iOn) {
 		g_iOn = TRUE;
-		takeCamCtrl(llGetOwner());
+		takeCamCtrl(g_kOwner);
 	} else g_iFar = TRUE;
 
 	if (g_iFar) g_fDist = DIST_FAR;
@@ -672,7 +672,7 @@ default
 	touch_end(integer num_detected)
 	{
 		g_iMsg = TRUE;
-		float time = llGetTime(); 
+		float time = llGetTime();
 		if (time > g_fTouchTimer && 4 <= g_iNr && (perm & PERMISSION_TRACK_CAMERA)) {
 			if (4 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
@@ -706,10 +706,10 @@ default
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 					llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present dialog on click
 				}
-				else if (4 == g_iNr) if (g_iCam1) savedCam(g_vFoc1, g_vPos1);
-				else if (5 == g_iNr) if (g_iCam2) savedCam(g_vFoc2, g_vPos2);
-				else if (6 == g_iNr) if (g_iCam3) savedCam(g_vFoc3, g_vPos3);
-				else if (7 == g_iNr) if (g_iCam4) savedCam(g_vFoc4, g_vPos4);
+				else if (4 == g_iNr) { if (g_iCam1) savedCam(g_vFoc1, g_vPos1); }
+				else if (5 == g_iNr) { if (g_iCam2) savedCam(g_vFoc2, g_vPos2); }
+				else if (6 == g_iNr) { if (g_iCam3) savedCam(g_vFoc3, g_vPos3); }
+				else if (7 == g_iNr) { if (g_iCam4) savedCam(g_vFoc4, g_vPos4); }
 				else if (3 == g_iNr) slCam();
 			} else if (3 == g_iNr) {
 				resetCamPos();
