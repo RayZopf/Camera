@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //16. Mrz. 2014
-//v2.47
+//v2.49
 //
 
 //Files:
@@ -56,7 +56,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.47";            // version
+string g_sVersion = "2.49";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -78,6 +78,7 @@ key g_kOwner;                      // object owner
 //key g_kUser;                       // key of last avatar to touch object
 //key g_kQuery = NULL_KEY;
 float g_fTouchTimer = 1.3;
+integer perm;
 
 integer g_iHandle = 0;
 integer g_iOn = FALSE;
@@ -99,6 +100,10 @@ vector g_vPos1;
 vector g_vFoc1;
 vector g_vPos2;
 vector g_vFoc2;
+vector g_vPos3;
+vector g_vFoc3;
+vector g_vPos4;
+vector g_vFoc4;
 integer g_iCamPos = FALSE;
 
 
@@ -123,6 +128,7 @@ initExtension(integer conf)
 {
 	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
+		else setButtonCol();
 	setColor(g_iOn);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
@@ -135,6 +141,7 @@ infoLines(integer help)
 {
 	llOwnerSay("HUD listens on channel: "+(string)CH);
 	if (verbose || help) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
+	if (verbose || help) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n'default', 'delete', 'help' and all other menu entries");
 }
 
 
@@ -173,14 +180,37 @@ setColor(integer on)
 }
 
 
+setButtonCol()
+{	
+	integer i = 4;
+	do
+		llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
+	while (++i <= 7);
+}
+
+
 resetCamPos()
 {
 	g_vPos1 = ZERO_VECTOR;
 	g_vFoc1 = ZERO_VECTOR;
 	g_vPos2 = ZERO_VECTOR;
 	g_vFoc2 = ZERO_VECTOR;
+	g_vPos3 = ZERO_VECTOR;
+	g_vFoc3 = ZERO_VECTOR;
+	g_vPos4 = ZERO_VECTOR;
+	g_vFoc4 = ZERO_VECTOR;
 	g_iCamPos = FALSE;
+	setButtonCol();
+	
 	defCam();
+}
+
+
+// pragma inline
+slCam()
+{
+	llClearCameraParams(); // reset camera to default
+	llSetCameraParams([CAMERA_ACTIVE, TRUE]);
 }
 
 
@@ -188,6 +218,30 @@ defCam()
 {
 	shoulderCamRight();
 	//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
+}
+
+
+savedCam(vector foc, vector pos)
+{
+	llClearCameraParams(); // reset camera to default
+	llSetCameraParams([
+		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
+		//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
+		//CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
+		//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
+		CAMERA_FOCUS, foc, // region relative position
+		CAMERA_FOCUS_LAG, 0.0, // (0 to 3) seconds
+		CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
+		//CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0>, // <-10,-10,-10> to <10,10,10> meters
+		//CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
+		//CAMERA_PITCH, 30.0, // (-45 to 80) degrees
+		CAMERA_POSITION, pos, // region relative position
+		CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
+		CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
+		//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
+	]);
+	g_iCamPos = TRUE;
+	if (debug) Debug("restored pos: "+(string)pos+" foc: "+(string)foc, FALSE,FALSE);
 }
 
 
@@ -566,9 +620,10 @@ default
 
 	touch_start(integer num_detected)
 	{
-		if (verbose) llOwnerSay("*Long touch to save/delete*");
+		if (verbose) llOwnerSay("*Long touch to save/delete/reset*");
 		llResetTime();
 		g_iNr= llDetectedLinkNumber(0);
+		perm = llGetPermissions();
 		if (debug) Debug("prim/link number: "+ (string)g_iNr, FALSE, FALSE);
 	}
 
@@ -576,8 +631,12 @@ default
 	touch(integer num_detected)
 	{
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
-			if (3 == g_iNr || 4 == g_iNr) llOwnerSay("Cam position saved");
-				else if (5 == g_iNr) llOwnerSay("Saved cam positions deleted");
+			if ((perm & PERMISSION_TRACK_CAMERA) && 4 <= g_iNr) {
+				if (verbose) llOwnerSay("Cam position saved");
+			} else if (perm & PERMISSION_CONTROL_CAMERA) {
+				if (3 > g_iNr) llOwnerSay("Resetting to SL standard");
+					else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
+			} else llOwnerSay("To work amera permissions are needed\nend clicking to get menu");
 			g_iMsg = FALSE;
 		}
 	}
@@ -585,70 +644,46 @@ default
 	touch_end(integer num_detected)
 	{
 		g_iMsg = TRUE;
-		integer perm = llGetPermissions();
-		if (perm & PERMISSION_CONTROL_CAMERA) {
+		float time = llGetTime(); 
+		if (time > g_fTouchTimer && 4 <= g_iNr && (perm & PERMISSION_TRACK_CAMERA)) {
+			if (4 == g_iNr) {
+				g_vPos1 = llGetCameraPos();
+				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
+				llSetLinkPrimitiveParamsFast(4, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
+				if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
+			}
+			else if (5 == g_iNr) {
+				g_vPos2 = llGetCameraPos();
+				g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
+				llSetLinkPrimitiveParamsFast(5, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
+				if (debug) Debug("save pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
+			}
+			else if (6 == g_iNr) {
+				g_vPos3 = llGetCameraPos();
+				g_vFoc3 = g_vPos3 + llRot2Fwd(llGetCameraRot());
+				llSetLinkPrimitiveParamsFast(6, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
+				if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
+			}
+			else if (7 == g_iNr) {
+				g_vPos4 = llGetCameraPos();
+				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
+				llSetLinkPrimitiveParamsFast(7, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
+				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
+			} 
+		} else if (perm & PERMISSION_CONTROL_CAMERA) {
 			// is the above line causing the bug that menu is not shown?
-			if (llGetTime() < g_fTouchTimer) {
+			if (time < g_fTouchTimer) {
 				if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 					llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present dialog on click
 				}
-				else if (3 == g_iNr) {
-					llClearCameraParams(); // reset camera to default
-					llSetCameraParams([
-						CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
-						//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
-						//CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
-						//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
-						CAMERA_FOCUS, g_vFoc1, // region relative position
-						CAMERA_FOCUS_LAG, 0.0, // (0 to 3) seconds
-						CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
-						//CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0>, // <-10,-10,-10> to <10,10,10> meters
-						//CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
-						//CAMERA_PITCH, 30.0, // (-45 to 80) degrees
-						CAMERA_POSITION, g_vPos1, // region relative position
-						CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
-						CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
-						//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
-					]);
-					g_iCamPos = TRUE;
-					if (debug) Debug("restored pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
-				}
-				else if (4 == g_iNr) {
-					llClearCameraParams(); // reset camera to default
-					llSetCameraParams([
-						CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
-						//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
-						//CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
-						//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
-						CAMERA_FOCUS, g_vFoc2, // region relative position
-						CAMERA_FOCUS_LAG, 0.0, // (0 to 3) seconds
-						CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
-						//CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0>, // <-10,-10,-10> to <10,10,10> meters
-						//CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
-						//CAMERA_PITCH, 30.0, // (-45 to 80) degrees
-						CAMERA_POSITION, g_vPos2, // region relative position
-						CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
-						CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
-						//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
-					]);
-					g_iCamPos = TRUE;
-					if (debug) Debug("restored pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
-				}
-				else if (5 == g_iNr) defCam();
-			} else {
-				if (3 ==g_iNr) {
-					g_vPos1 = llGetCameraPos();
-					g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
-					if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
-				}
-				else if (4 == g_iNr) {
-					g_vPos2 = llGetCameraPos();
-					g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
-					if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
-				}
-				else if (5 == g_iNr) resetCamPos();
-			}
+				else if (4 == g_iNr) savedCam(g_vFoc1, g_vPos1);
+				else if (5 == g_iNr) savedCam(g_vFoc2, g_vPos2);
+				else if (6 == g_iNr) savedCam(g_vFoc3, g_vPos3);
+				else if (7 == g_iNr) savedCam(g_vFoc4, g_vPos4);
+				else if (3 == g_iNr) defCam();
+			} else if (3 == g_iNr) resetCamPos();
+			else if (2 >= g_iNr) slCam();
 		} else llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
 	}
 
@@ -660,7 +695,7 @@ default
 			message = llToLower(message);
 			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "help", "CLOSE",
 				"Me", "Worm", "Drop",
-				"Spin", "Spaz", "---", "Center","---", "DEFAULT"], CH); // present submenu on request
+				"Spin", "Spaz", "---", "Center","---", "STANDARD"], CH); // present submenu on request
 			else if ("...back" == message) llDialog(id, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if ("help" == message) {
 				infoLines(TRUE);
@@ -694,9 +729,8 @@ default
 			else if ("center" == message) {
 				centreCam();
 			}
-			else if ("default" == message) {
-				llClearCameraParams(); // reset camera to default
-				llSetCameraParams([CAMERA_ACTIVE, TRUE]);
+			else if ("standard" == message) {
+				slCam();
 			}
 			else if ("me" == message) {
 				focusCamMe();
@@ -720,6 +754,24 @@ default
 			}
 			else if ("spaz" == message) {
 				spazCam();
+			}
+			else if ("cam1" == message) {
+				savedCam(g_vFoc1, g_vPos1);
+			}
+			else if ("cam2" == message) {
+				savedCam(g_vFoc2, g_vPos2);
+			}
+			else if ("cam3" == message) {
+				savedCam(g_vFoc3, g_vPos3);
+			}
+			else if ("cam4" == message) {
+				savedCam(g_vFoc4, g_vPos4);
+			}
+			else if ("default" == message) {
+				defCam();
+			}
+			else if ("delete" == message) {
+				resetCamPos();
 			}
 			else if (!("---" == message || "close" == message)) llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
