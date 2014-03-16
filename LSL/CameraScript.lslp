@@ -145,8 +145,8 @@ initExtension(integer conf)
 infoLines(integer help)
 {
 	llOwnerSay("HUD listens on channel: "+(string)CH);
-	if (verbose || help) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-	if (verbose || help) llOwnerSay("Long touch on CameraControl button for default view\ntouch on death sign to get back to your SL standard");
+	if (verbose || help) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*");
+	if (verbose || help) llOwnerSay("Long touch on CameraControl button for default view\ntouch on death sign to get back to your SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
 	if (verbose || help) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n cycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'help' and all other menu entries");
 }
 
@@ -211,6 +211,7 @@ slCam()
 {
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([CAMERA_ACTIVE, TRUE]);
+	llOwnerSay("Resetting view to your SL standard");
 }
 
 
@@ -661,7 +662,7 @@ default
 				if (verbose) llOwnerSay("Cam position saved");
 				llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 			} else if (perm & PERMISSION_CONTROL_CAMERA) {
-				if (3 > g_iNr) llOwnerSay("Resetting to SL standard");
+				if (3 > g_iNr) llOwnerSay("Setting default view");
 					else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
 			} else llOwnerSay("To work amera permissions are needed\nend clicking to get menu");
 			g_iMsg = FALSE;
