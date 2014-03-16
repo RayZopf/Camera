@@ -1,0 +1,678 @@
+
+<!-- saved from url=(0041)http://wiki.secondlife.com/wiki/Followcam -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr"><script>var urchinTracker=function(){},_gaq={push:function(){try {if(arguments[0][0]=='_link')window.location.href=arguments[0][1]}catch(er){}}},_gat={_createTracker:function(){}, _getTracker:function(){return{__noSuchMethod__:function(){},_link:function(o){if(o)location.href=o;},_linkByPost:function(){return true;},_getLinkerUrl:function(o){return o;},_trackEvent:function(){}}}};</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css"></style><style type="text/css">@import "http://d1yjxggot69855.cloudfront.net/skins/monobook/KHTMLFixes.css";</style><style>#kohclponbmhvebgfpogforutqthlokor{border:solid 2px #fff !important;box-sizing:content-box !important;color:#fff !important;display:block !important;height:auto !important;margin:0 !important;opacity:0.9 !important;padding:7px 10px !important;position:fixed !important;visibility:visible !important;width:auto !important;z-index:2147483647 !important;-webkit-border-radius:5px !important;-webkit-box-shadow:0px 0px 20px #000 !important;-webkit-box-sizing:content-box !important;}.kohclponbmhvebgfpogforutqthlokor-blocked{color:#777 !important;display:inline !important;text-decoration:line-through !important;}#kohclponbmhvebgfpogforutqthlokor br{display:block !important;}#kohclponbmhvebgfpogforutqthlokor span{background:transparent !important;}#kohclponbmhvebgfpogforutqthlokor div{border:0 !important;margin:0 !important;padding:0 !important;width:auto !important;letter-spacing:normal !important;font:13px Arial,Helvetica !important;text-align:left !important;text-shadow:none !important;text-transform:none !important;word-spacing:normal !important;}#kohclponbmhvebgfpogforutqthlokor a{font-weight:normal !important;background:none !important;text-decoration:underline !important;color:#fff !important;}@media print{#kohclponbmhvebgfpogforutqthlokor{display:none !important;}}</style></head><body class="mediawiki ltr ns-0 ns-subject page-FollowCam skin-monobook"><php>
+
+
+	
+		
+		<meta name="mat" content="PG_NOT">
+		<meta http-equiv="Content-Style-Type" content="text/css">
+		<meta name="generator" content="MediaWiki 1.15.5">
+		<meta name="keywords" content="FollowCam,CAMERA ACTIVE,CAMERA BEHINDNESS ANGLE,CAMERA BEHINDNESS LAG,CAMERA DISTANCE,CAMERA FOCUS,CAMERA FOCUS LAG,CAMERA FOCUS LOCKED,CAMERA FOCUS OFFSET,CAMERA FOCUS THRESHOLD,CAMERA PITCH">
+		<link rel="canonical" href="http://wiki.secondlife.com/wiki/FollowCam">
+		<link rel="shortcut icon" href="http://wiki.secondlife.com/favicon.ico">
+		<link rel="search" type="application/opensearchdescription+xml" href="http://wiki.secondlife.com/w/opensearch_desc.php" title="Second Life Wiki (en)">
+		<link title="Creative Commons" type="application/rdf+xml" href="http://wiki.secondlife.com/w/index.php?title=FollowCam&action=creativecommons" rel="meta">
+		<link rel="copyright" href="http://wiki.secondlife.com/wiki/Project:Terms_of_Service">
+		<link rel="alternate" type="application/rss+xml" title="Second Life Wiki RSS feed" href="http://wiki.secondlife.com/w/index.php?title=Special:RecentChanges&feed=rss">
+		<link rel="alternate" type="application/atom+xml" title="Second Life Wiki Atom feed" href="http://wiki.secondlife.com/w/index.php?title=Special:RecentChanges&feed=atom">
+		<title>FollowCam - Second Life Wiki</title>
+		<link rel="stylesheet" href="./FollowCam - Second Life Wiki_files/shared.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="./FollowCam - Second Life Wiki_files/commonPrint.css" type="text/css" media="print">
+		<link rel="stylesheet" href="./FollowCam - Second Life Wiki_files/main.css" type="text/css" media="screen">
+		<!--[if lt IE 5.5000]><link rel="stylesheet" href="http://d1yjxggot69855.cloudfront.net/skins/monobook/IE50Fixes.css?207" type="text/css" media="screen" /><![endif]-->
+		<!--[if IE 5.5000]><link rel="stylesheet" href="http://d1yjxggot69855.cloudfront.net/skins/monobook/IE55Fixes.css?207" type="text/css" media="screen" /><![endif]-->
+		<!--[if IE 6]><link rel="stylesheet" href="http://d1yjxggot69855.cloudfront.net/skins/monobook/IE60Fixes.css?207" type="text/css" media="screen" /><![endif]-->
+		<!--[if IE 7]><link rel="stylesheet" href="http://d1yjxggot69855.cloudfront.net/skins/monobook/IE70Fixes.css?207" type="text/css" media="screen" /><![endif]-->
+		<link rel="stylesheet" href="./FollowCam - Second Life Wiki_files/index.php" type="text/css">
+		<link rel="stylesheet" href="./FollowCam - Second Life Wiki_files/index(1).php" type="text/css" media="print">
+		<link rel="stylesheet" href="./FollowCam - Second Life Wiki_files/index(2).php" type="text/css">
+		<link rel="stylesheet" href="./FollowCam - Second Life Wiki_files/index(3).php" type="text/css">
+		<!--[if lt IE 7]><script type="text/javascript" src="http://d1yjxggot69855.cloudfront.net/skins/common/IEFixes.js?207"></script>
+		<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
+
+		<script type="text/javascript">/*<![CDATA[*/
+		var skin = "monobook";
+		var stylepath = "http://d1yjxggot69855.cloudfront.net/skins";
+		var wgArticlePath = "/wiki/$1";
+		var wgScriptPath = "/w";
+		var wgScript = "/w/index.php";
+		var wgVariantArticlePath = false;
+		var wgActionPaths = {};
+		var wgServer = "http://wiki.secondlife.com";
+		var wgCanonicalNamespace = "";
+		var wgCanonicalSpecialPageName = false;
+		var wgNamespaceNumber = 0;
+		var wgPageName = "FollowCam";
+		var wgTitle = "FollowCam";
+		var wgAction = "view";
+		var wgArticleId = "14253";
+		var wgIsArticle = true;
+		var wgUserName = null;
+		var wgUserGroups = null;
+		var wgUserLanguage = "en";
+		var wgContentLanguage = "en";
+		var wgBreakFrames = false;
+		var wgCurRevisionId = 92097;
+		var wgVersion = "1.15.5";
+		var wgEnableAPI = true;
+		var wgEnableWriteAPI = true;
+		var wgSeparatorTransformTable = ["", ""];
+		var wgDigitTransformTable = ["", ""];
+		var wgMWSuggestTemplate = "http://wiki.secondlife.com/w/api.php?action=opensearch\x26search={searchTerms}\x26namespace={namespaces}";
+		var wgDBname = "lindenlab1";
+		var wgSearchNamespaces = [0, 100];
+		var wgMWSuggestMessages = ["with suggestions", "no suggestions"];
+		var wgRestrictionEdit = [];
+		var wgRestrictionMove = [];
+		/*]]>*/</script>
+
+		<script type="text/javascript" src="./FollowCam - Second Life Wiki_files/wikibits.js"><!-- wikibits js --></script>
+		<!-- Head Scripts -->
+		<script type="text/javascript" src="./FollowCam - Second Life Wiki_files/ajax.js"></script>
+		<script type="text/javascript" src="./FollowCam - Second Life Wiki_files/mwsuggest.js"></script>
+		<script type="text/javascript" src="./FollowCam - Second Life Wiki_files/index(4).php"><!-- site js --></script>
+	
+
+	<div id="globalWrapper">
+		<div id="column-content">
+	<div id="content">
+		<a name="top" id="top"></a>
+				<h1 id="firstHeading" class="firstHeading">FollowCam</h1>
+		<div id="bodyContent">
+			<h3 id="siteSub">From Second Life Wiki</h3>
+			<div id="contentSub"><a href="http://wiki.secondlife.com/wiki/Main_Page" title="Main Page">Second Life Wiki</a> &gt; FollowCam (Redirected from <a href="http://wiki.secondlife.com/w/index.php?title=Followcam&redirect=no" title="Followcam">Followcam</a>)</div>
+									<div id="jump-to-nav">Jump to: <a href="http://wiki.secondlife.com/wiki/Followcam#column-one">navigation</a>, <a href="http://wiki.secondlife.com/wiki/Followcam#searchInput">search</a></div>			<!-- start content -->
+			<div class="hf-nsheader"></div><div class="hf-header"></div><a name="FollowCam" id="FollowCam"></a><h2> <span class="mw-headline"> FollowCam </span></h2>
+<p><strong class="selflink">FollowCam</strong> functionality allows <a href="http://wiki.secondlife.com/wiki/Script" title="Script">scripts</a> to <a href="http://wiki.secondlife.com/wiki/Control" title="Control">control</a> the <a href="http://wiki.secondlife.com/wiki/Category:LSL_Camera" title="Category:LSL Camera">camera</a>.
+</p>
+<ul><li> Scripts on <a href="http://wiki.secondlife.com/wiki/Category:LSL_Attachment" title="Category:LSL Attachment">attachments</a> and <a href="http://wiki.secondlife.com/wiki/Category:LSL_Vehicle" title="Category:LSL Vehicle">vehicles</a> can now control camera behavior through a call to <a href="http://wiki.secondlife.com/wiki/LlSetCameraParams" title="LlSetCameraParams">llSetCameraParams</a>(), once they have acquired the <a href="http://wiki.secondlife.com/wiki/PERMISSION_CONTROL_CAMERA" title="PERMISSION CONTROL CAMERA">PERMISSION_CONTROL_CAMERA</a> <a href="http://wiki.secondlife.com/wiki/Category:LSL_Permissions/Script" title="Category:LSL Permissions/Script">permission</a>
+</li><li> The script will control the <a href="http://wiki.secondlife.com/wiki/User" title="User" class="mw-redirect">user's</a> camera as long as the resident doesn't override it (use Alt-zoom or enter <a href="http://wiki.secondlife.com/wiki/Mouselook" title="Mouselook">mouselook</a>, for example) and the <a href="http://wiki.secondlife.com/wiki/Object" title="Object">object</a> remains attached or the <a href="http://wiki.secondlife.com/wiki/Category:LSL_Avatar" title="Category:LSL Avatar">avatar</a> continues to <a href="http://wiki.secondlife.com/wiki/Category:LSL_Sit" title="Category:LSL Sit">sit</a> on it:
+<ul><li> When multiple scripts attempt to control the camera, the last script to set the <a href="http://wiki.secondlife.com/wiki/CAMERA_ACTIVE" title="CAMERA ACTIVE">CAMERA_ACTIVE</a> <a href="http://wiki.secondlife.com/w/index.php?title=Bitflags&action=edit&redlink=1" class="new" title="Bitflags (page does not exist)">flag</a> will have control
+</li><li> Older scripts will regain control as soon as the newer one is deactivated
+</li></ul>
+</li><li> The new <strong class="selflink">FollowCam</strong> scripts enable a huge variety of vehicle-following behaviors:
+</li><li> For instance, a loose camera setting allows sudden changes in vehicle acceleration to happen without causing dizzying jolts in the camera
+<ul><li> By turning off the "behindness" feature, the camera will be simply dragged along, but it will not try to stay exactly behind the vehicle
+</li><li> Other parameters, like pitch (the angle at which it "looks down" at the vehicle), distance, and others, allow you to customize the cinematics of vehicular fun
+</li></ul>
+</li></ul>
+<a name="FollowCam_family_of_camera_functions" id="FollowCam_family_of_camera_functions"></a><h3> <span class="mw-headline"><strong class="selflink">FollowCam</strong> family of camera functions</span></h3>
+<ul><li> <a href="http://wiki.secondlife.com/wiki/LlRequestPermissions" title="LlRequestPermissions">llRequestPermissions</a>(agent_key, <a href="http://wiki.secondlife.com/wiki/PERMISSION_CONTROL_CAMERA" title="PERMISSION CONTROL CAMERA">PERMISSION_CONTROL_CAMERA</a>)
+<ul><li> Requests permissions
+<ul><li> Note, <a href="http://wiki.secondlife.com/wiki/PERMISSION_CONTROL_CAMERA" title="PERMISSION CONTROL CAMERA">PERMISSION_CONTROL_CAMERA</a> permissions are only supported for attachments and vehicles at this time
+</li><li> Accepting permissions via a dialog is not currently implemented.
+</li></ul>
+</li></ul>
+</li></ul>
+<ul><li> <a href="http://wiki.secondlife.com/wiki/LlClearCameraParams" title="LlClearCameraParams">llClearCameraParams</a>(): Resets all camera values to their default.
+</li></ul>
+<ul><li> <a href="http://wiki.secondlife.com/wiki/LlSetCameraParams" title="LlSetCameraParams">llSetCameraParams</a>([]): sets up the camera movement rules based on the parameter list
+<ul><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_ACTIVE" title="CAMERA ACTIVE">CAMERA_ACTIVE</a> (<a href="http://wiki.secondlife.com/wiki/TRUE" title="TRUE">TRUE</a> or <a href="http://wiki.secondlife.com/wiki/FALSE" title="FALSE">FALSE</a>) Default = <a href="http://wiki.secondlife.com/wiki/FALSE" title="FALSE">FALSE</a>
+<ul><li> Turns on or off scripting control of Scripted Camera
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_DISTANCE" title="CAMERA DISTANCE">CAMERA_DISTANCE</a> (0.5 to&nbsp;? meters) Default = 3.0
+<ul><li> Sets how far away the Scripted Camera wants to be from its subject
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_PITCH" title="CAMERA PITCH">CAMERA_PITCH</a> (-45.0 to 80.0 degrees) Default = 0.0
+<ul><li> Adjusts the angular amount that the Scripted Camera aims straight ahead vs. straight down, maintaining the same distance. Analogous to 'incidence'
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_FOCUS_OFFSET" title="CAMERA FOCUS OFFSET">CAMERA_FOCUS_OFFSET</a> (&lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters) Default = &lt;0.0, 0.0, 0.0&gt;
+<ul><li> Adjusts the position of the Scripted Camera focus position relative to the subject
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_POSITION_LAG" title="CAMERA POSITION LAG">CAMERA_POSITION_LAG</a> (0.0 to 3.0 seconds) Default = 0.1
+<ul><li> How much the Scripted Camera lags as it tries to move towards its 'ideal' position
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_FOCUS_LAG" title="CAMERA FOCUS LAG">CAMERA_FOCUS_LAG</a> (0.0 to 3.0 seconds) Default = 0.1
+<ul><li> How much the Scripted Camera lags as it tries to aim towards the subject
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_BEHINDNESS_ANGLE" title="CAMERA BEHINDNESS ANGLE">CAMERA_BEHINDNESS_ANGLE</a> (0.0 to 180.0 degrees) Default = 10.0
+<ul><li> Sets the angle in degrees within which the Scripted Camera is not constrained by changes in subject rotation. 180 effectively turns behindness off.
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_BEHINDNESS_LAG" title="CAMERA BEHINDNESS LAG">CAMERA_BEHINDNESS_LAG</a> (0.0 to 3.0 seconds) Default = 0.0
+<ul><li> How much the Scripted Camera lags as it tries to stay behind the target if outside of behindness angle
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_POSITION_THRESHOLD" title="CAMERA POSITION THRESHOLD">CAMERA_POSITION_THRESHOLD</a> (0.0 to 4.0 meters) Default = 1.0
+<ul><li> Sets the radius of a sphere around the Scripted Camera's ideal position within which it is not affected by subject motion
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_FOCUS_THRESHOLD" title="CAMERA FOCUS THRESHOLD">CAMERA_FOCUS_THRESHOLD</a> (0.0 to 4.0 meters) Default = 1.0
+<ul><li> Sets the radius of a sphere around the Scripted Camera's subject position within which its focus is not affected by subject motion
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_POSITION" title="CAMERA POSITION">CAMERA_POSITION</a> (vector position within the region)
+<ul><li> Sets the position of the Scripted Camera
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_FOCUS" title="CAMERA FOCUS">CAMERA_FOCUS</a> (vector position within the region)
+<ul><li> Sets the focus position of the Scripted Camera
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_POSITION_LOCKED" title="CAMERA POSITION LOCKED">CAMERA_POSITION_LOCKED</a> (<a href="http://wiki.secondlife.com/wiki/TRUE" title="TRUE">TRUE</a> or <a href="http://wiki.secondlife.com/wiki/FALSE" title="FALSE">FALSE</a>) Default = <a href="http://wiki.secondlife.com/wiki/FALSE" title="FALSE">FALSE</a>
+<ul><li> Locks the camera position so it will not move
+</li></ul>
+</li><li> <a href="http://wiki.secondlife.com/wiki/CAMERA_FOCUS_LOCKED" title="CAMERA FOCUS LOCKED">CAMERA_FOCUS_LOCKED</a> (<a href="http://wiki.secondlife.com/wiki/TRUE" title="TRUE">TRUE</a> or <a href="http://wiki.secondlife.com/wiki/FALSE" title="FALSE">FALSE</a>) Default = <a href="http://wiki.secondlife.com/wiki/FALSE" title="FALSE">FALSE</a>
+<ul><li> Locks the camera focus so it will not move
+</li></ul>
+</li></ul>
+</li></ul>
+<a name="Known_issues" id="Known_issues"></a><h3> <span class="mw-headline">Known issues</span></h3>
+<ul><li> The camera appears to jitter back and forth. This is a problem with our avatar motion model that will be worse at lower framerate. We are continuing to investigate potential solutions.
+</li><li> Free standing objects cannot control the user camera. This will continue to be the case until we can implement a robust mechanism for letting residents cancel scripted camera behaviors.
+</li></ul>
+<pre class="lsl"><span style="color: #FF7700;">//Linden Lab</span>
+<span style="color: #FF7700;">//Dan Linden</span>
+<a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> CHANNEL; <span style="color: #FF7700;">// dialog channel</span>
+<a href="http://wiki.secondlife.com/index.php?title=list"><span style="color: #007700;font-weight: bold; text-decoration: none;">list</span></a> MENU_MAIN <span style="color: #66cc66;">=</span> <span style="color: #66cc66;">[</span><span style="color: #00A000;">"Default"</span>, <span style="color: #00A000;">"Overhead Cam"</span>, <span style="color: #00A000;">"Spin Cam"</span>, <span style="color: #00A000;">"Trap Toggle"</span>, <span style="color: #00A000;">"Spaz Cam"</span>, <span style="color: #00A000;">"Drop Cam"</span>, 
+<span style="color: #00A000;">"Worm Cam"</span>, <span style="color: #00A000;">"Side Cam"</span>, <span style="color: #00A000;">"Driving Cam"</span>, <span style="color: #00A000;">"More..."</span>, <span style="color: #00A000;">"Cam ON"</span>, <span style="color: #00A000;">"Cam OFF"</span><span style="color: #66cc66;">]</span>; <span style="color: #FF7700;">// the main menu</span>
+<a href="http://wiki.secondlife.com/index.php?title=list"><span style="color: #007700;font-weight: bold; text-decoration: none;">list</span></a> MENU_2 <span style="color: #66cc66;">=</span> <span style="color: #66cc66;">[</span><span style="color: #00A000;">"More..."</span>, <span style="color: #00A000;">"...Back"</span><span style="color: #66cc66;">]</span>; <span style="color: #FF7700;">// menu 2</span>
+&nbsp;
+<a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> on <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>;
+<a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> flying;
+<a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> falling;
+<a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> spaz <span style="color: #66cc66;">=</span> <span style="color: #cc66cc;">0</span>;
+<a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> trap <span style="color: #66cc66;">=</span> <span style="color: #cc66cc;">0</span>;
+&nbsp;
+take_camera_control<span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=key"><span style="color: #007700;font-weight: bold; text-decoration: none;">key</span></a> agent<span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"take_camera_control"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span> <span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span>agent<span style="color: #66cc66;">)</span>;
+    <a href="http://wiki.secondlife.com/index.php?title=llRequestPermissions"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llRequestPermissions</span></a><span style="color: #66cc66;">(</span>agent, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_CONTROL_CAMERA"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_CONTROL_CAMERA</span></a><span style="color: #66cc66;">)</span>;
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span><a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span><span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+    on <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=TRUE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">TRUE</span></a>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+release_camera_control<span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=key"><span style="color: #007700;font-weight: bold; text-decoration: none;">key</span></a> agent<span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"release_camera_control"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span><a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">0</span><span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llReleaseCamera"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llReleaseCamera</span></a><span style="color: #66cc66;">(</span>agent<span style="color: #66cc66;">)</span>;
+    on <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+focus_on_me<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"focus_on_me"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    <span style="color: #FF7700;">//    llClearCameraParams(); // reset camera to default</span>
+    <a href="http://wiki.secondlife.com/index.php?title=vector"><span style="color: #007700;font-weight: bold; text-decoration: none;">vector</span></a> here <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=llGetPos"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPos</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_DISTANCE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_DISTANCE</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// ( 0.5 to 10) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS</span></a>, here, <span style="color: #FF7700;">// region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <span style="color: #cc66cc;">0.0</span> , <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=TRUE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">TRUE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+<span style="color: #FF7700;">//        CAMERA_PITCH, 80.0, // (-45 to 80) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION</span></a>, here <span style="color: #66cc66;">+</span> <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">4.0</span>,<span style="color: #cc66cc;">4.0</span>,<span style="color: #cc66cc;">4.0</span><span style="color: #66cc66;">&gt;</span>, <span style="color: #FF7700;">// region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LAG</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=TRUE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">TRUE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=ZERO_VECTOR"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">ZERO_VECTOR</span></a> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+    <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+default_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+<span style="color: #FF7700;">//    llOwnerSay("default_cam"); // say function name for debugging</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llClearCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llClearCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// reset camera to default</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span><a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span><span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+&nbsp;
+driving_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"driving_cam"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    default_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">45.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <span style="color: #cc66cc;">0.5</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_DISTANCE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_DISTANCE</span></a>, <span style="color: #cc66cc;">8.0</span>, <span style="color: #FF7700;">// ( 0.5 to 10) meters</span>
+        <span style="color: #FF7700;">//CAMERA_FOCUS, &lt;0.0,0.0,5.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <span style="color: #cc66cc;">0.05</span> , <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_PITCH"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_PITCH</span></a>, <span style="color: #cc66cc;">20.0</span>, <span style="color: #FF7700;">// (-45 to 80) degrees</span>
+        <span style="color: #FF7700;">//CAMERA_POSITION, &lt;0.0,0.0,0.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LAG</span></a>, <span style="color: #cc66cc;">0.1</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">3.0</span>,<span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">2.0</span><span style="color: #66cc66;">&gt;</span> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+    <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+&nbsp;
+side_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"side_cam"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llClearCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llClearCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// reset camera to default</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_DISTANCE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_DISTANCE</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// ( 0.5 to 10) meters</span>
+        <span style="color: #FF7700;">//CAMERA_FOCUS, &lt;0.0,0.0,5.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <span style="color: #cc66cc;">0.0</span> , <span style="color: #FF7700;">// (0 to 3) seconds</span>
+<span style="color: #FF7700;">//        CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+<span style="color: #FF7700;">//        CAMERA_PITCH, 80.0, // (-45 to 80) degrees</span>
+        <span style="color: #FF7700;">//CAMERA_POSITION, &lt;0.0,0.0,0.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LAG</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+<span style="color: #FF7700;">//        CAMERA_POSITION_LOCKED, FALSE, // (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">3.0</span>,<span style="color: #cc66cc;">0.0</span><span style="color: #66cc66;">&gt;</span> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+    <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+rearview_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"rearview_cam"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">180.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+<span style="color: #FF7700;">//        CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters</span>
+        <span style="color: #FF7700;">//CAMERA_FOCUS, &lt;0.0,0.0,5.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <span style="color: #cc66cc;">3.0</span> , <span style="color: #FF7700;">// (0 to 3) seconds</span>
+<span style="color: #FF7700;">//        CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+<span style="color: #FF7700;">//        CAMERA_PITCH, 80.0, // (-45 to 80) degrees</span>
+        <span style="color: #FF7700;">//CAMERA_POSITION, &lt;0.0,0.0,0.0&gt;, // region relative position</span>
+<span style="color: #FF7700;">//        CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds</span>
+<span style="color: #FF7700;">//        CAMERA_POSITION_LOCKED, FALSE, // (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">5.0</span>,<span style="color: #cc66cc;">2.0</span>,<span style="color: #cc66cc;">-2.0</span><span style="color: #66cc66;">&gt;</span> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+    <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+overhead_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"overhead_cam"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    default_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">180.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <span style="color: #cc66cc;">0.5</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_DISTANCE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_DISTANCE</span></a>, <span style="color: #cc66cc;">10.0</span>, <span style="color: #FF7700;">// ( 0.5 to 10) meters</span>
+        <span style="color: #FF7700;">//CAMERA_FOCUS, &lt;0.0,0.0,5.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <span style="color: #cc66cc;">0.05</span> , <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_PITCH"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_PITCH</span></a>, <span style="color: #cc66cc;">80.0</span>, <span style="color: #FF7700;">// (-45 to 80) degrees</span>
+        <span style="color: #FF7700;">//CAMERA_POSITION, &lt;0.0,0.0,0.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LAG</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">0.0</span><span style="color: #66cc66;">&gt;</span> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+    <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+drop_camera_5_seconds<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"drop_camera_5_seconds"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <span style="color: #cc66cc;">0.5</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_DISTANCE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_DISTANCE</span></a>, <span style="color: #cc66cc;">3.0</span>, <span style="color: #FF7700;">// ( 0.5 to 10) meters</span>
+        <span style="color: #FF7700;">//CAMERA_FOCUS, &lt;0.0,0.0,5.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <span style="color: #cc66cc;">2.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_PITCH"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_PITCH</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (-45 to 80) degrees</span>
+        <span style="color: #FF7700;">//CAMERA_POSITION, &lt;0.0,0.0,0.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LAG</span></a>, <span style="color: #cc66cc;">0.05</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=TRUE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">TRUE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">0.0</span><span style="color: #66cc66;">&gt;</span> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+    <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+    <a href="http://wiki.secondlife.com/index.php?title=llSleep"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSleep</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">5</span><span style="color: #66cc66;">)</span>;
+    default_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+&nbsp;
+&nbsp;
+worm_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"worm_cam"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">180.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_DISTANCE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_DISTANCE</span></a>, <span style="color: #cc66cc;">8.0</span>, <span style="color: #FF7700;">// ( 0.5 to 10) meters</span>
+        <span style="color: #FF7700;">//CAMERA_FOCUS, &lt;0.0,0.0,5.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <span style="color: #cc66cc;">0.0</span> , <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <span style="color: #cc66cc;">4.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_PITCH"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_PITCH</span></a>, <span style="color: #cc66cc;">-45.0</span>, <span style="color: #FF7700;">// (-45 to 80) degrees</span>
+        <span style="color: #FF7700;">//CAMERA_POSITION, &lt;0.0,0.0,0.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LAG</span></a>, <span style="color: #cc66cc;">1.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <span style="color: #cc66cc;">1.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">0.0</span><span style="color: #66cc66;">&gt;</span> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+    <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+spaz_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"spaz_cam for 5 seconds"</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// say function name for debugging</span>
+    <a href="http://wiki.secondlife.com/index.php?title=float"><span style="color: #007700;font-weight: bold; text-decoration: none;">float</span></a> i;
+    <a href="http://wiki.secondlife.com/index.php?title=for"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">for</span></a> <span style="color: #66cc66;">(</span>i<span style="color: #66cc66;">=</span><span style="color: #cc66cc;">0</span>; i<span style="color: #66cc66;">&lt;</span> <span style="color: #cc66cc;">50</span>; i<span style="color: #66cc66;">+=</span><span style="color: #cc66cc;">1</span><span style="color: #66cc66;">)</span>
+    <span style="color: #66cc66;">{</span>
+        <a href="http://wiki.secondlife.com/index.php?title=vector"><span style="color: #007700;font-weight: bold; text-decoration: none;">vector</span></a> xyz <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=llGetPos"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPos</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #66cc66;">&lt;</span>llFrand<span style="color: #66cc66;">(</span><span style="color: #cc66cc;">80.0</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">-</span> <span style="color: #cc66cc;">40</span>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">80.0</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">-</span> <span style="color: #cc66cc;">40</span>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">10.0</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">&gt;</span>;
+        <span style="color: #FF7700;">//        llOwnerSay((string)xyz);</span>
+        <a href="http://wiki.secondlife.com/index.php?title=vector"><span style="color: #007700;font-weight: bold; text-decoration: none;">vector</span></a> xyz2 <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=llGetPos"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPos</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #66cc66;">&lt;</span>llFrand<span style="color: #66cc66;">(</span><span style="color: #cc66cc;">80.0</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">-</span> <span style="color: #cc66cc;">40</span>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">80.0</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">-</span> <span style="color: #cc66cc;">40</span>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">10.0</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">&gt;</span>;
+        <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">180.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">3.0</span><span style="color: #66cc66;">)</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_DISTANCE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_DISTANCE</span></a>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">10.0</span><span style="color: #66cc66;">)</span>, <span style="color: #FF7700;">// ( 0.5 to 10) meters</span>
+            <span style="color: #FF7700;">//CAMERA_FOCUS, xyz, // region relative position</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">3.0</span><span style="color: #66cc66;">)</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=TRUE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">TRUE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">4.0</span><span style="color: #66cc66;">)</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_PITCH"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_PITCH</span></a>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">125.0</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">-</span> <span style="color: #cc66cc;">45</span>, <span style="color: #FF7700;">// (-45 to 80) degrees</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION</span></a>, xyz2, <span style="color: #FF7700;">// region relative position</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LAG</span></a>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">3.0</span><span style="color: #66cc66;">)</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=TRUE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">TRUE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">4.0</span><span style="color: #66cc66;">)</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+            <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <span style="color: #66cc66;">&lt;</span>llFrand<span style="color: #66cc66;">(</span><span style="color: #cc66cc;">20.0</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">-</span> <span style="color: #cc66cc;">10</span>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">20.0</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">-</span> <span style="color: #cc66cc;">10</span>, <a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">20</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">-</span> <span style="color: #cc66cc;">10</span><span style="color: #66cc66;">&gt;</span> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+        <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+        <a href="http://wiki.secondlife.com/index.php?title=llSleep"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSleep</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">0.1</span><span style="color: #66cc66;">)</span>;
+    <span style="color: #66cc66;">}</span>
+    default_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+spin_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span>, <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_ANGLE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_ANGLE</span></a>, <span style="color: #cc66cc;">180.0</span>, <span style="color: #FF7700;">// (0 to 180) degrees</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_BEHINDNESS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_BEHINDNESS_LAG</span></a>, <span style="color: #cc66cc;">0.5</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <span style="color: #FF7700;">//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters</span>
+        <span style="color: #FF7700;">//CAMERA_FOCUS, &lt;0.0,0.0,5.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LAG</span></a>, <span style="color: #cc66cc;">0.05</span> , <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_PITCH"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_PITCH</span></a>, <span style="color: #cc66cc;">30.0</span>, <span style="color: #FF7700;">// (-45 to 80) degrees</span>
+        <span style="color: #FF7700;">//CAMERA_POSITION, &lt;0.0,0.0,0.0&gt;, // region relative position</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LAG"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LAG</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 3) seconds</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_LOCKED"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_LOCKED</span></a>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=FALSE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">FALSE</span></a>, <span style="color: #FF7700;">// (TRUE or FALSE)</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION_THRESHOLD"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION_THRESHOLD</span></a>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #FF7700;">// (0 to 4) meters</span>
+        <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_FOCUS_OFFSET"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_FOCUS_OFFSET</span></a>, <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">0.0</span>,<span style="color: #cc66cc;">0.0</span><span style="color: #66cc66;">&gt;</span> <span style="color: #FF7700;">// &lt;-10,-10,-10&gt; to &lt;10,10,10&gt; meters</span>
+    <span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+&nbsp;
+    <a href="http://wiki.secondlife.com/index.php?title=float"><span style="color: #007700;font-weight: bold; text-decoration: none;">float</span></a> i;
+    <a href="http://wiki.secondlife.com/index.php?title=vector"><span style="color: #007700;font-weight: bold; text-decoration: none;">vector</span></a> camera_position;
+    <a href="http://wiki.secondlife.com/index.php?title=for"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">for</span></a> <span style="color: #66cc66;">(</span>i<span style="color: #66cc66;">=</span><span style="color: #cc66cc;">0</span>; i<span style="color: #66cc66;">&lt;</span> <span style="color: #cc66cc;">2</span><span style="color: #66cc66;">*</span><a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=TWO_PI"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">TWO_PI</span></a>; i<span style="color: #66cc66;">+=</span>.<span style="color: #cc66cc;">05</span><span style="color: #66cc66;">)</span>
+    <span style="color: #66cc66;">{</span>
+        camera_position <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=llGetPos"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPos</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">0.0</span>, <span style="color: #cc66cc;">4.0</span>, <span style="color: #cc66cc;">0.0</span><span style="color: #66cc66;">&gt;</span> <span style="color: #66cc66;">*</span> <a href="http://wiki.secondlife.com/index.php?title=llEuler2Rot"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llEuler2Rot</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">0.0</span>, <span style="color: #cc66cc;">0.0</span>, i<span style="color: #66cc66;">&gt;</span><span style="color: #66cc66;">)</span>;
+        <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span><a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_POSITION"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_POSITION</span></a>, camera_position<span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>;
+    <span style="color: #66cc66;">}</span>
+    default_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+<span style="color: #66cc66;">}</span>
+&nbsp;
+setup_listen<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=llListenRemove"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llListenRemove</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">1</span><span style="color: #66cc66;">)</span>;
+    CHANNEL <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=llRound"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llRound</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llFrand"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llFrand</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">1</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">*</span> <span style="color: #cc66cc;">100000</span><span style="color: #66cc66;">)</span>;
+    <a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> x <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=llListen"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llListen</span></a><span style="color: #66cc66;">(</span>CHANNEL, <span style="color: #00A000;">""</span>, <span style="color: #00A000;">""</span>, <span style="color: #00A000;">""</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// listen for dialog answers</span>
+<span style="color: #66cc66;">}</span>
+&nbsp;
+<a href="http://wiki.secondlife.com/index.php?title=default"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">default</span></a>
+<span style="color: #66cc66;">{</span>
+    <a href="http://wiki.secondlife.com/index.php?title=state_entry"><span style="color: #00A0A0;font-weight: bold; text-decoration: none;">state_entry</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+    <span style="color: #66cc66;">{</span>
+        <a href="http://wiki.secondlife.com/index.php?title=llSitTarget"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSitTarget</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">&lt;</span><span style="color: #cc66cc;">0.0</span>, <span style="color: #cc66cc;">0.0</span>, <span style="color: #cc66cc;">0.1</span><span style="color: #66cc66;">&gt;</span>, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=ZERO_ROTATION"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">ZERO_ROTATION</span></a><span style="color: #66cc66;">)</span>;
+        setup_listen<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+        <a href="http://wiki.secondlife.com/index.php?title=llSetTimerEvent"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetTimerEvent</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">2.0</span><span style="color: #66cc66;">)</span>;
+    <span style="color: #66cc66;">}</span>
+&nbsp;
+    <a href="http://wiki.secondlife.com/index.php?title=touch_start"><span style="color: #00A0A0;font-weight: bold; text-decoration: none;">touch_start</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> total_number<span style="color: #66cc66;">)</span>
+    <span style="color: #66cc66;">{</span>
+        <a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> perm <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=llGetPermissions"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissions</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_DEBIT"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_DEBIT</span></a><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span> <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llGetScriptName"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetScriptName</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" has PERMISSION_DEBIT perms for "</span><span style="color: #66cc66;">+</span><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span><a href="http://wiki.secondlife.com/index.php?title=llGetPermissionsKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissionsKey</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>; <span style="color: #66cc66;">}</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_TAKE_CONTROLS"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_TAKE_CONTROLS</span></a><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span> <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llGetScriptName"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetScriptName</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" has PERMISSION_TAKE_CONTROLS perms for "</span><span style="color: #66cc66;">+</span><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span><a href="http://wiki.secondlife.com/index.php?title=llGetPermissionsKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissionsKey</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>; <span style="color: #66cc66;">}</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_TRIGGER_ANIMATION"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_TRIGGER_ANIMATION</span></a><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span> <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llGetScriptName"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetScriptName</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" has PERMISSION_TRIGGER_ANIMATION perms for "</span><span style="color: #66cc66;">+</span><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span><a href="http://wiki.secondlife.com/index.php?title=llGetPermissionsKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissionsKey</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>; <span style="color: #66cc66;">}</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_ATTACH"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_ATTACH</span></a><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span> <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llGetScriptName"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetScriptName</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" has PERMISSION_ATTACH perms for "</span><span style="color: #66cc66;">+</span><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span><a href="http://wiki.secondlife.com/index.php?title=llGetPermissionsKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissionsKey</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>; <span style="color: #66cc66;">}</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_CHANGE_LINKS"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_CHANGE_LINKS</span></a><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span> <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llGetScriptName"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetScriptName</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" has PERMISSION_CHANGE_LINKS perms for "</span><span style="color: #66cc66;">+</span><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span><a href="http://wiki.secondlife.com/index.php?title=llGetPermissionsKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissionsKey</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>; <span style="color: #66cc66;">}</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_TRACK_CAMERA"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_TRACK_CAMERA</span></a><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span> <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llGetScriptName"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetScriptName</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" has PERMISSION_TRACK_CAMERA perms for "</span><span style="color: #66cc66;">+</span><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span><a href="http://wiki.secondlife.com/index.php?title=llGetPermissionsKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissionsKey</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>; <span style="color: #66cc66;">}</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_CONTROL_CAMERA"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_CONTROL_CAMERA</span></a><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span> <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llGetScriptName"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetScriptName</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" has PERMISSION_CONTROL_CAMERA perms for "</span><span style="color: #66cc66;">+</span><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span><a href="http://wiki.secondlife.com/index.php?title=llGetPermissionsKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissionsKey</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>; <span style="color: #66cc66;">}</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">==</span> <span style="color: #cc66cc;">0</span><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span> <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llGetScriptName"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetScriptName</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" has NO perms for "</span><span style="color: #66cc66;">+</span><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a><span style="color: #66cc66;">)</span><a href="http://wiki.secondlife.com/index.php?title=llGetPermissionsKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llGetPermissionsKey</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>; <span style="color: #66cc66;">}</span>
+&nbsp;
+        <a href="http://wiki.secondlife.com/index.php?title=llDialog"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llDialog</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=llDetectedKey"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llDetectedKey</span></a><span style="color: #66cc66;">(</span><span style="color: #cc66cc;">0</span><span style="color: #66cc66;">)</span>, <span style="color: #00A000;">"What do you want to do?"</span>, MENU_MAIN, CHANNEL<span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// present dialog on click</span>
+    <span style="color: #66cc66;">}</span>
+&nbsp;
+    <a href="http://wiki.secondlife.com/index.php?title=listen"><span style="color: #00A0A0;font-weight: bold; text-decoration: none;">listen</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> channel, <a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a> name, <a href="http://wiki.secondlife.com/index.php?title=key"><span style="color: #007700;font-weight: bold; text-decoration: none;">key</span></a> id, <a href="http://wiki.secondlife.com/index.php?title=string"><span style="color: #007700;font-weight: bold; text-decoration: none;">string</span></a> message<span style="color: #66cc66;">)</span>
+    <span style="color: #66cc66;">{</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span><span style="color: #66cc66;">~</span><a href="http://wiki.secondlife.com/index.php?title=llListFindList"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llListFindList</span></a><span style="color: #66cc66;">(</span>MENU_MAIN <span style="color: #66cc66;">+</span> MENU_2, <span style="color: #66cc66;">[</span>message<span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span><span style="color: #66cc66;">)</span>  <span style="color: #FF7700;">// verify dialog choice</span>
+<span style="color: #FF7700;">//        if (~llListFindList(MENU_MAIN, [message]))  // verify dialog choice</span>
+        <span style="color: #66cc66;">{</span>
+<span style="color: #FF7700;">//            llOwnerSay(name + " picked the option '" + message + "'."); // output the answer</span>
+            <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"More..."</span><span style="color: #66cc66;">)</span>
+                <a href="http://wiki.secondlife.com/index.php?title=llDialog"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llDialog</span></a><span style="color: #66cc66;">(</span>id, <span style="color: #00A000;">"Pick an option!"</span>, MENU_2, CHANNEL<span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// present submenu on request</span>
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"...Back"</span><span style="color: #66cc66;">)</span>
+                <a href="http://wiki.secondlife.com/index.php?title=llDialog"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llDialog</span></a><span style="color: #66cc66;">(</span>id, <span style="color: #00A000;">"What do you want to do?"</span>, MENU_MAIN, CHANNEL<span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// present main menu on request to go back</span>
+&nbsp;
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Cam ON"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                take_camera_control<span style="color: #66cc66;">(</span>id<span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Cam OFF"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                release_camera_control<span style="color: #66cc66;">(</span>id<span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Default"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                default_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Driving Cam"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                driving_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Worm Cam"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                worm_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Overhead Cam"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                overhead_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Spaz Cam"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                spaz_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Side Cam"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                side_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Drop Cam"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                drop_camera_5_seconds<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Trap Toggle"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                trap <span style="color: #66cc66;">=</span> <span style="color: #66cc66;">!</span>trap;
+                <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>trap <span style="color: #66cc66;">==</span> <span style="color: #cc66cc;">1</span><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">{</span>
+                    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"trap is on"</span><span style="color: #66cc66;">)</span>;
+                <span style="color: #66cc66;">}</span>
+                <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <span style="color: #66cc66;">{</span>
+                    <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"trap is off"</span><span style="color: #66cc66;">)</span>;
+                <span style="color: #66cc66;">}</span>
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+            <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a> <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>message <span style="color: #66cc66;">==</span> <span style="color: #00A000;">"Spin Cam"</span><span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                spin_cam<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+&nbsp;
+        <span style="color: #66cc66;">}</span> <a href="http://wiki.secondlife.com/index.php?title=else"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">else</span></a>
+        <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span>name <span style="color: #66cc66;">+</span> <span style="color: #00A000;">" picked invalid option '"</span> <span style="color: #66cc66;">+</span> <a href="http://wiki.secondlife.com/index.php?title=llToLower"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llToLower</span></a><span style="color: #66cc66;">(</span>message<span style="color: #66cc66;">)</span> <span style="color: #66cc66;">+</span> <span style="color: #00A000;">"'."</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// not a valid dialog choice</span>
+    <span style="color: #66cc66;">}</span>
+&nbsp;
+    <a href="http://wiki.secondlife.com/index.php?title=run_time_permissions"><span style="color: #00A0A0;font-weight: bold; text-decoration: none;">run_time_permissions</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> perm<span style="color: #66cc66;">)</span> <span style="color: #66cc66;">{</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>perm <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_CONTROL_CAMERA"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_CONTROL_CAMERA</span></a><span style="color: #66cc66;">)</span> <span style="color: #66cc66;">{</span>
+            <a href="http://wiki.secondlife.com/index.php?title=llSetCameraParams"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llSetCameraParams</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">[</span><a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CAMERA_ACTIVE"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CAMERA_ACTIVE</span></a>, <span style="color: #cc66cc;">1</span><span style="color: #66cc66;">]</span><span style="color: #66cc66;">)</span>; <span style="color: #FF7700;">// 1 is active, 0 is inactive</span>
+            <a href="http://wiki.secondlife.com/index.php?title=llOwnerSay"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llOwnerSay</span></a><span style="color: #66cc66;">(</span><span style="color: #00A000;">"Camera permissions have been taken"</span><span style="color: #66cc66;">)</span>;
+        <span style="color: #66cc66;">}</span>
+    <span style="color: #66cc66;">}</span>
+&nbsp;
+    <a href="http://wiki.secondlife.com/index.php?title=changed"><span style="color: #00A0A0;font-weight: bold; text-decoration: none;">changed</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=integer"><span style="color: #007700;font-weight: bold; text-decoration: none;">integer</span></a> change<span style="color: #66cc66;">)</span>
+    <span style="color: #66cc66;">{</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>change <span style="color: #66cc66;">&amp;</span> <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=CHANGED_LINK"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">CHANGED_LINK</span></a><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span>
+            <a href="http://wiki.secondlife.com/index.php?title=key"><span style="color: #007700;font-weight: bold; text-decoration: none;">key</span></a> agent <span style="color: #66cc66;">=</span> <a href="http://wiki.secondlife.com/index.php?title=llAvatarOnSitTarget"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llAvatarOnSitTarget</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>agent<span style="color: #66cc66;">)</span>
+            <span style="color: #66cc66;">{</span>
+                setup_listen<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+                <a href="http://wiki.secondlife.com/index.php?title=llRequestPermissions"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llRequestPermissions</span></a><span style="color: #66cc66;">(</span>agent, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_CONTROL_CAMERA"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_CONTROL_CAMERA</span></a><span style="color: #66cc66;">)</span>;
+            <span style="color: #66cc66;">}</span>
+        <span style="color: #66cc66;">}</span>
+    <span style="color: #66cc66;">}</span>
+&nbsp;
+    <a href="http://wiki.secondlife.com/index.php?title=attach"><span style="color: #00A0A0;font-weight: bold; text-decoration: none;">attach</span></a><span style="color: #66cc66;">(</span><a href="http://wiki.secondlife.com/index.php?title=key"><span style="color: #007700;font-weight: bold; text-decoration: none;">key</span></a> agent<span style="color: #66cc66;">)</span>
+    <span style="color: #66cc66;">{</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>agent<span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span>
+            setup_listen<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+            <a href="http://wiki.secondlife.com/index.php?title=llRequestPermissions"><span style="color: #A00000;font-weight: bold; text-decoration: none;">llRequestPermissions</span></a><span style="color: #66cc66;">(</span>agent, <a href="http://wiki.secondlife.com/index.php?title=Special:Search&go=Go&search=PERMISSION_CONTROL_CAMERA"><span style="color: #0000A0;font-weight: bold; text-decoration: none;">PERMISSION_CONTROL_CAMERA</span></a><span style="color: #66cc66;">)</span>;
+        <span style="color: #66cc66;">}</span>
+    <span style="color: #66cc66;">}</span>
+&nbsp;
+    <a href="http://wiki.secondlife.com/index.php?title=timer"><span style="color: #00A0A0;font-weight: bold; text-decoration: none;">timer</span></a><span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>
+    <span style="color: #66cc66;">{</span>
+        <a href="http://wiki.secondlife.com/index.php?title=if"><span style="color: #0000FF;font-weight: bold; text-decoration: none;">if</span></a> <span style="color: #66cc66;">(</span>trap <span style="color: #66cc66;">==</span> <span style="color: #cc66cc;">1</span><span style="color: #66cc66;">)</span>
+        <span style="color: #66cc66;">{</span>
+            focus_on_me<span style="color: #66cc66;">(</span><span style="color: #66cc66;">)</span>;
+        <span style="color: #66cc66;">}</span>
+    <span style="color: #66cc66;">}</span>
+<span style="color: #66cc66;">}</span></pre>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 61/1000000
+Post-expand include size: 252/2097152 bytes
+Template argument size: 138/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key lindenlab1-mw_:pcache:idhash:14253-0!1!0!!en!2!edit=0 and timestamp 20140313225909 -->
+<div class="hf-footer"></div><div class="hf-nsfooter"></div><div class="printfooter">
+Retrieved from "<a href="http://wiki.secondlife.com/wiki/FollowCam">http://wiki.secondlife.com/wiki/FollowCam</a>"</div>
+						<!-- end content -->
+						<div class="visualClear"></div>
+		</div>
+	</div>
+		</div>
+		<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+	
+				 <li id="ca-nstab-main" class="selected"><a href="http://wiki.secondlife.com/wiki/FollowCam" title="View the content page [alt-c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="http://wiki.secondlife.com/w/index.php?title=Talk:FollowCam&action=edit&redlink=1" title="Discussion about the content page [alt-t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="http://wiki.secondlife.com/w/index.php?title=FollowCam&action=edit" title="This page is protected. You can view its source. [alt-e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="http://wiki.secondlife.com/w/index.php?title=FollowCam&action=history" title="Past versions of this page. [alt-h]" accesskey="h">History</a></li>			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="http://wiki.secondlife.com/w/index.php?title=Special:UserLogin&returnto=FollowCam" title="You are encouraged to log in, it is not mandatory however. [alt-o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo" title="Main Page">
+		<a style="background-image: url(http://d1yjxggot69855.cloudfront.net/images/secondlife.jpg);" href="http://wiki.secondlife.com/wiki/Main_Page" title="Visit the main page [alt-z]" accesskey="z"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-navigation">
+		<h5>Navigation</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-About-.26-Help"><a href="http://wiki.secondlife.com/wiki/Project:About">About &amp; Help</a></li>
+				<li id="n-Editing-Guidelines"><a href="http://wiki.secondlife.com/wiki/Editing_Guidelines">Editing Guidelines</a></li>
+				<li id="n-mainpage"><a href="http://wiki.secondlife.com/wiki/Main_Page" title="Visit the Main Page [alt-z]" accesskey="z">Main Page</a></li>
+				<li id="n-recentchanges"><a href="http://wiki.secondlife.com/wiki/Special:RecentChanges" title="The list of recent changes in the wiki. [alt-r]" accesskey="r">Recent Changes</a></li>
+				<li id="n-Advanced-Search"><a href="http://wiki.secondlife.com/wiki/Special:Search">Advanced Search</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-other_sites">
+		<h5>other sites</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-knowledgebase"><a href="http://community.secondlife.com/t5/English-Knowledge-Base/tkb-p/English_KB%40tkb">Knowledge Base</a></li>
+				<li id="n-Blogs-.26-Forums"><a href="http://blogs.secondlife.com/">Blogs &amp; Forums</a></li>
+				<li id="n-secondlife.com"><a href="http://secondlife.com/">secondlife.com</a></li>
+				<li id="n-Bug-Tracker"><a href="http://jira.secondlife.com/">Bug Tracker</a></li>
+				<li id="n-Support-Portal"><a href="http://secondlife.com/support">Support Portal</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="http://wiki.secondlife.com/w/index.php" id="searchform"><div>
+				<input type="hidden" name="title" value="Special:Search">
+				<input id="searchInput" name="search" type="text" title="Search Second Life Wiki [alt-f]" accesskey="f" value="" autocomplete="off" data-cip-id="searchInput">
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists">&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text">
+			</div></form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="http://wiki.secondlife.com/wiki/Special:WhatLinksHere/FollowCam" title="List of all wiki pages that link here [alt-j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="http://wiki.secondlife.com/wiki/Special:RecentChangesLinked/FollowCam" title="Recent changes in pages linked from this page [alt-k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="http://wiki.secondlife.com/wiki/Special:SpecialPages" title="List of all special pages [alt-q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="http://wiki.secondlife.com/w/index.php?title=FollowCam&printable=yes" rel="alternate" title="Printable version of this page [alt-p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="http://wiki.secondlife.com/w/index.php?title=FollowCam&oldid=92097" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-cite"><a href="http://wiki.secondlife.com/w/index.php?title=Special:Cite&page=FollowCam&id=92097">Cite this page</a></li>			</ul>
+		</div>
+	</div>
+		</div><!-- end of the left (by default at least) column -->
+			<div class="visualClear"></div>
+			<div id="footer">
+				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="./FollowCam - Second Life Wiki_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki"></a></div>
+				<div id="f-copyrightico"><a href="http://www.creativecommons.org/licenses/by-sa/3.0/"><img src="./FollowCam - Second Life Wiki_files/somerights20.png" alt="Creative Commons Attribution-Share Alike 3.0"></a></div>
+			<ul id="f-list">
+					<li id="lastmod"> This page was last modified on 20 September 2008, at 10:05.</li>
+					<li id="viewcount">This page has been accessed 15,099 times.</li>
+					<li id="copyright">Copyright © 2009 Linden Research, Inc. Licensed under <a href="http://wiki.secondlife.com/wiki/Project:Terms_of_Service" title="Project:Terms of Service">Creative Commons Attribution-Share Alike 3.0</a> unless otherwise noted.</li>
+					<li id="privacy"><a href="http://wiki.secondlife.com/wiki/Project:Terms_of_Use" title="Project:Terms of Use">Privacy policy</a></li>
+					<li id="about"><a href="http://wiki.secondlife.com/wiki/Project:About" title="Project:About">About Second Life Wiki</a></li>
+					<li id="disclaimer"><a href="http://wiki.secondlife.com/wiki/Project:Terms_of_Use" title="Project:Terms of Use">Terms of Use</a></li>
+			</ul>
+		</div>
+</div>
+
+		<script type="text/javascript">if (window.runOnloadHook) runOnloadHook();</script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="http://www.google-analytics.com/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-190376-9");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script><!-- Served in 0.751 secs. -->
+</php><div id="kohclponbmhvebgfpogforutqthlokor" style="right: 20px !important; bottom: 15px !important; background-color: rgb(51, 0, 51) !important; cursor: pointer; background-position: initial initial !important; background-repeat: initial initial !important;"><div style="background-color: rgb(51, 0, 51) !important; background-position: initial initial !important; background-repeat: initial initial !important;"><span class="kohclponbmhvebgfpogforutqthlokor-blocked">Google Analytics</span><br></div></div></body><style type="text/css">embed[type*="application/x-shockwave-flash"],embed[src*=".swf"],object[type*="application/x-shockwave-flash"],object[codetype*="application/x-shockwave-flash"],object[src*=".swf"],object[codebase*="swflash.cab"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"],object[classid*="d27cdb6e-ae6d-11cf-96b8-444553540000"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"]{	display: none !important;}</style><style type="text/css">embed[type*="application/x-silverlight-2"],object[type*="application/x-silverlight-2"]{display: none !important;}</style></html>

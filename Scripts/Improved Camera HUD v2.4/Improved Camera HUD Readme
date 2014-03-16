@@ -1,0 +1,84 @@
+Version 2.4
+Vaelissa Cortes
+
+
+
+
+----------------------------------------
+Using the Improved Camera HUD
+----------------------------------------
+ 
+ This HUD is pretty straight forward. First, wear or add the "Improved Camera HUD v2.4"; it will attach to the "center" HUD attachment point by default, but feel free to put it anywhere. After you've done that, activate the two included gestures. If for some reason the gestures were not included, or you have otherwise misplaced them, copies can be found inside the HUD itself. If the included gestures interfere with others you already have, simply reassign the activation keys as necessary.
+ 
+  With the "Camera HUD - Distance (F10)" gesture activated, press the F10 key toggle between turning the HUD on or off, and to switch between two different camera distances. The HUD's icon will also change to indicate whether it is enabled or disabled.
+
+  With the "Camera HUD - Cycle Mode (F9)" gesture activated, press the F9 key to switch between a centered view, an over the left shoulder view, and an over the right shoulder view.
+
+  The HUD can also be operated by manually clicking the HUD itself and choosing a dialog option. In addition, it will respond to the options listed in the dialog menu by issuing commands on channel 8374. The commands are case sensitive and must be typed exactly as they are listed in the menu.
+
+  For example, typing "/8374 Left" without the quotes will move the camera to the over the left shoulder offset. This can be useful if you would like to set up your own custom gestures.
+
+--------------------
+Troubleshooting:
+--------------------
+
+  If for some reason the HUD is not responding to the gesture commands, try pressing the escape key a few times to reset your camera's viewpoint, then try again. If that doesn't work, you can manually click the HUD itself to turn it on, and it should be responsive after that. If all else fails, a script reset should fix everything.
+
+----------------------------------------
+If you would like to make your default camera similar to those the HUD offers, follow the instructions below.
+  
+First, you'll need to enable the advanced menu in the upper left area of your viewer. To do so, press the following key combinations: 
+  
+PC users: Ctrl+Alt+D
+Mac users: Opt+Ctrl+D
+
+ Next, open the Advanced Menu and select Show Debug Settings, which should be located near the bottom of the list. Alternatively, you can simply press Ctrl+Alt+Shift+S to open it directly without doing the first step. Be sure your viewer isn't focused a notecard or script, otherwise this key combination will attempt to save instead.
+
+  There are two settings which work together that you must change in order to adjust the camera, they vary depending on your viewer version, so I've listed both. Depending on which viewer you use, type in the below settings without quotes, then change the X, Y and Z numbers accordingly.
+
+*****************************
+To make the camera similar to the more zoomed out view:
+
+Enter the following in the debug menu to change the camera's offset:
+
+Viewer 3+: "CameraOffsetRearView".
+1.x viewers: "CameraOffsetDefault".
+
+X: -2.700
+Y: 0.000 (Set this to 0.400 for an over the left shoulder offset, and -0.400 for over the right)
+Z: 0.000
+
+Enter the following in the debug menu to to change the camera's focus:
+
+Viewer 3: "FocusOffsetRearView".
+1.x viewers: "FocusOffsetDefault".
+
+X: 2.800
+Y: 0.000 (Set this to 0.700 for an over the left shoulder offset, or -0.700 for over the right) 
+Z: 0.100
+*****************************
+To make the camera similar to the closer view:
+
+Enter the following in the debug menu to change the camera's offset:
+
+Viewer 3+: "CameraOffsetRearView".
+1.x viewers: "CameraOffsetDefault".
+
+x: -2.000
+Y: 0.000 (Set this to 0.400 for an over the left shoulder offset, and -0.400 for over the right)
+z: -0.200
+
+Enter the following in the debug menu to to change the camera's focus:
+
+Viewer 3: "FocusOffsetRearView".
+1.x viewers: "FocusOffsetDefault".
+
+x: 0.900
+Y: 0.000 (Set this to 0.700 for an over the left shoulder offset, or -0.700 for over the right) 
+z: 0.200
+*****************************
+  
+Credits:
+Core Taurog
+Penny Patton
+Vaelissa Cortes
