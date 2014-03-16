@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 22:06:05 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 22:16:34 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -20,7 +20,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //16. Mrz. 2014
-//v2.50
+//v2.51
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.50";
+string g_sVersion = "2.51";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -122,7 +122,8 @@ initExtension(integer conf){
     }
     llOwnerSay(("HUD listens on channel: " + ((string)CH)));
     if ((verbose || 0)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-    if ((verbose || 0)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n'default', 'delete', 'help' and all other menu entries");
+    if ((verbose || 0)) llOwnerSay("Long touch on CameraControl button for default view\ntouch on death sign to get back to your SL standard");
+    if ((verbose || 0)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n cycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'help' and all other menu entries");
 }
 
 
@@ -411,7 +412,8 @@ default {
         else  if (("help" == message)) {
             llOwnerSay(("HUD listens on channel: " + ((string)CH)));
             if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-            if ((verbose || 1)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n'default', 'delete', 'help' and all other menu entries");
+            if ((verbose || 1)) llOwnerSay("Long touch on CameraControl button for default view\ntouch on death sign to get back to your SL standard");
+            if ((verbose || 1)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n cycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'help' and all other menu entries");
         }
         else  if ((-1 != llSubStringIndex(message,"cam"))) {
             if (("cam" == message)) {
