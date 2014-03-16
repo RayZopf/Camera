@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 17:24:30 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 17:49:49 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -20,7 +20,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //16. Mrz. 2014
-//v2.46
+//v2.47
 //
 
 //Files:
@@ -46,6 +46,7 @@
 /*Each prim that makes up an object has an address, a link number. To access a specific prim in the object, the prim's link number must be known. In addition to prims having link numbers, avatars seated upon the object do as well.
 If an object consists of only one prim, and there are no avatars seated upon it, the (root) prim's link number is zero.
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
+//TODU: cycling to focusCamMe does not work reliablely
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -64,7 +65,7 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.46";
+string g_sVersion = "2.47";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -78,7 +79,7 @@ key g_kOwner;
 integer g_iHandle = 0;
 integer g_iOn = 0;
 integer g_iPersNr = 0;
-integer g_iPerspective = 0;
+integer g_iPerspective = 1;
 
 // for gesture support
 integer g_iFar = 0;
@@ -167,7 +168,7 @@ setPers(){
             if (verbose) llOwnerSay("Focussing on yourself");
             llClearCameraParams();
             vector here = llGetPos();
-            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(2.0 + g_fDist),(2.0 + g_fDist),(2.0 + g_fDist)>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist))>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
             (g_iPerspective = -1);
         }
         else  if ((g_iPerspective == 0)) {
@@ -422,7 +423,7 @@ default {
             if (verbose) llOwnerSay("Focussing on yourself");
             llClearCameraParams();
             vector here = llGetPos();
-            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(2.0 + g_fDist),(2.0 + g_fDist),(2.0 + g_fDist)>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist))>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
             (g_iPerspective = -1);
         }
         else  if (("worm" == message)) {
@@ -467,7 +468,7 @@ default {
         if ((perm & 2048)) {
             llSetCameraParams([12,1]);
             llOwnerSay("Camera permissions have been taken");
-            defCam();
+            setPers();
         }
     }
 

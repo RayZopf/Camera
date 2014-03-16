@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //16. Mrz. 2014
-//v2.46
+//v2.47
 //
 
 //Files:
@@ -45,6 +45,7 @@
 /*Each prim that makes up an object has an address, a link number. To access a specific prim in the object, the prim's link number must be known. In addition to prims having link numbers, avatars seated upon the object do as well.
 If an object consists of only one prim, and there are no avatars seated upon it, the (root) prim's link number is zero.
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
+//TODU: cycling to focusCamMe does not work reliablely
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -63,7 +64,7 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.46";            // version
+string g_sVersion = "2.47";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -89,7 +90,7 @@ integer falling;
 integer spaz = 0;
 integer trap = 0;
 integer g_iPersNr = 0;
-integer g_iPerspective = 0;
+integer g_iPerspective = 1;
 
 // for gesture support
 integer g_iFar = FALSE;
@@ -309,7 +310,7 @@ focusCamMe()
 		CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
 		CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
 //        CAMERA_PITCH, 80.0, // (-45 to 80) degrees
-		CAMERA_POSITION, here + <2.0+g_fDist,2.0+g_fDist,2.0+g_fDist>, // region relative position
+		CAMERA_POSITION, here + <1.5+(2*g_fDist),1.5+(2*g_fDist),1.5+(2*g_fDist)>, // region relative position
 		CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_POSITION_LOCKED, TRUE, // (TRUE or FALSE)
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
@@ -733,7 +734,7 @@ default
 		if (perm & PERMISSION_CONTROL_CAMERA) {
 			llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
 			llOwnerSay("Camera permissions have been taken");
-			defCam();
+			setPers();
 		}
 	}
 
