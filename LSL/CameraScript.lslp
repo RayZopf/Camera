@@ -530,11 +530,12 @@ default
 	touch(integer num_detected)
 	{
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
-			if (4 >= g_iNr) llOwnerSay("Cam position saved");
-				else if (perm & PERMISSION_CONTROL_CAMERA) {
-					if (3 > g_iNr) llOwnerSay("Resetting to SL standard");
-						else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
-				} else if (4 > g_iNr) llOwnerSay("For most functions camera permissions are needed\nend clicking to get menu");
+			if ((perm & PERMISSION_TRACK_CAMERA) && 4 <= g_iNr) {
+				llOwnerSay("Cam position saved");
+			} else if (perm & PERMISSION_CONTROL_CAMERA) {
+				if (3 > g_iNr) llOwnerSay("Resetting to SL standard");
+					else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
+			} else llOwnerSay("To work amera permissions are needed\nend clicking to get menu");
 			g_iMsg = FALSE;
 		}
 	}

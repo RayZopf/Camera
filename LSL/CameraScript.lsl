@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 01:07:04 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 19:02:42 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -219,12 +219,14 @@ default {
 
 	touch(integer num_detected) {
         if ((g_iMsg && (llGetTime() > 1.3))) {
-            if ((4 >= g_iNr)) llOwnerSay("Cam position saved");
+            if (((perm & 1024) && (4 <= g_iNr))) {
+                llOwnerSay("Cam position saved");
+            }
             else  if ((perm & 2048)) {
                 if ((3 > g_iNr)) llOwnerSay("Resetting to SL standard");
                 else  if ((3 == g_iNr)) llOwnerSay("Saved cam positions deleted");
             }
-            else  if ((4 > g_iNr)) llOwnerSay("For most functions camera permissions are needed\nend clicking to get menu");
+            else  llOwnerSay("To work amera permissions are needed\nend clicking to get menu");
             (g_iMsg = 0);
         }
     }
