@@ -88,8 +88,8 @@ integer flying;
 integer falling;
 integer spaz = 0;
 integer trap = 0;
+integer g_iPersNr = 0;
 integer g_iPerspective = 0;
-integer g_iPerspective2 = 0;
 
 // for gesture support
 integer g_iFar = FALSE;
@@ -289,6 +289,7 @@ centreCam()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,0,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPerspective = 1;
 }
 
 
@@ -302,18 +303,19 @@ focusCamMe()
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.0, // (0 to 3) seconds
-		CAMERA_DISTANCE, g_fDist, // ( 0.5 to 10) meters
+		CAMERA_DISTANCE, 0.0, // ( 0.5 to 10) meters
 		CAMERA_FOCUS, here, // region relative position
 		CAMERA_FOCUS_LAG, 0.0 , // (0 to 3) seconds
 		CAMERA_FOCUS_LOCKED, TRUE, // (TRUE or FALSE)
 		CAMERA_FOCUS_THRESHOLD, 0.0, // (0 to 4) meters
 //        CAMERA_PITCH, 80.0, // (-45 to 80) degrees
-		CAMERA_POSITION, here + <3.0,3.0,3.0>, // region relative position
+		CAMERA_POSITION, here + <2.0+g_fDist,2.0+g_fDist,2.0+g_fDist>, // region relative position
 		CAMERA_POSITION_LAG, 0.0, // (0 to 3) seconds
 		CAMERA_POSITION_LOCKED, TRUE, // (TRUE or FALSE)
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, ZERO_VECTOR // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPerspective = -1;
 }
 
 
@@ -338,6 +340,7 @@ wormCam()
 		CAMERA_POSITION_THRESHOLD, 1.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPerspective = 0;
 }
 
 
@@ -372,7 +375,7 @@ spinCam()
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
 		CAMERA_BEHINDNESS_LAG, 0.5, // (0 to 3) seconds
-		CAMERA_DISTANCE, g_fDist + 6, // ( 0.5 to 10) meters
+		//CAMERA_DISTANCE, 10.0, // ( 0.5 to 10) meters
 		//CAMERA_FOCUS, <0.0,0.0,5.0>, // region relative position
 		CAMERA_FOCUS_LAG, 0.05 , // (0 to 3) seconds
 		CAMERA_FOCUS_LOCKED, FALSE, // (TRUE or FALSE)
@@ -389,7 +392,7 @@ spinCam()
 	vector camera_position;
 	for (i=0; i< 2*TWO_PI; i+=.025)
 	{
-		camera_position = llGetPos() + <0.0, 4.0, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
+		camera_position = llGetPos() + <0.0, 3.0+g_fDist, 0.0> * llEuler2Rot(<0.0, 0.0, i>);
 		llSetCameraParams([CAMERA_POSITION, camera_position]);
 		llSleep(0.020);
 	}
@@ -461,15 +464,28 @@ togglePers()
 
 setPers()
 {
-	if (g_iPerspective == -1) {
-		shoulderCamLeft();
-	} else if (g_iPerspective == 0) {
-		shoulderCam();
-	} else if (g_iPerspective == 1) {
-		shoulderCamRight();
+	if (g_iPersNr) {
+		if (g_iPerspective == -1) {
+			focusCamMe();
+		} else if (g_iPerspective == 0) {
+			wormCam();
+		} else if (g_iPerspective == 1) {
+			centreCam();
+		} else {
+			g_iPerspective = 0;
+			defCam();
+		}
 	} else {
-		g_iPerspective = 0;
-		defCam();
+		if (g_iPerspective == -1) {
+			shoulderCamLeft();
+		} else if (g_iPerspective == 0) {
+			shoulderCam();
+		} else if (g_iPerspective == 1) {
+			shoulderCamRight();
+		} else {
+			g_iPerspective = 0;
+			defCam();
+		}
 	}
 }
 
@@ -653,9 +669,11 @@ default
 				infoLines(TRUE);
 			}
 			else if ("cycle" == message) {
+				g_iPersNr = 0;
 				togglePers();
 			}
 			else if ("cycle2" == message) {
+				g_iPersNr = 1;
 				togglePers();
 			}
 			else if ("distance" == message) {

@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 16:51:08 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 17:24:30 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -77,6 +77,7 @@ key g_kOwner;
 
 integer g_iHandle = 0;
 integer g_iOn = 0;
+integer g_iPersNr = 0;
 integer g_iPerspective = 0;
 
 // for gesture support
@@ -161,24 +162,51 @@ shoulderCamRight(){
 
 
 setPers(){
-    if ((g_iPerspective == -1)) {
-        if (verbose) llOwnerSay("Left Shoulder");
-        llClearCameraParams();
-        llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
-        (g_iPerspective = -1);
-    }
-    else  if ((g_iPerspective == 0)) {
-        if (verbose) llOwnerSay("Shoulder Cam");
-        llClearCameraParams();
-        llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
-        (g_iPerspective = 0);
-    }
-    else  if ((g_iPerspective == 1)) {
-        shoulderCamRight();
+    if (g_iPersNr) {
+        if ((g_iPerspective == -1)) {
+            if (verbose) llOwnerSay("Focussing on yourself");
+            llClearCameraParams();
+            vector here = llGetPos();
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(2.0 + g_fDist),(2.0 + g_fDist),(2.0 + g_fDist)>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+            (g_iPerspective = -1);
+        }
+        else  if ((g_iPerspective == 0)) {
+            if (verbose) llOwnerSay("Worm Cam");
+            llClearCameraParams();
+            llSetCameraParams([12,1,8,180.0,9,0.0,7,(g_fDist + 4),6,0.0,22,0,11,2.5,0,-35.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
+            (g_iPerspective = 0);
+        }
+        else  if ((g_iPerspective == 1)) {
+            if (verbose) llOwnerSay("Center Cam");
+            llClearCameraParams();
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
+            (g_iPerspective = 1);
+        }
+        else  {
+            (g_iPerspective = 0);
+            defCam();
+        }
     }
     else  {
-        (g_iPerspective = 0);
-        defCam();
+        if ((g_iPerspective == -1)) {
+            if (verbose) llOwnerSay("Left Shoulder");
+            llClearCameraParams();
+            llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
+            (g_iPerspective = -1);
+        }
+        else  if ((g_iPerspective == 0)) {
+            if (verbose) llOwnerSay("Shoulder Cam");
+            llClearCameraParams();
+            llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
+            (g_iPerspective = 0);
+        }
+        else  if ((g_iPerspective == 1)) {
+            shoulderCamRight();
+        }
+        else  {
+            (g_iPerspective = 0);
+            defCam();
+        }
     }
 }
 
@@ -320,6 +348,7 @@ default {
             if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
         }
         else  if (("cycle" == message)) {
+            (g_iPersNr = 0);
             (++g_iPerspective);
             if ((g_iPerspective > 1)) {
                 (g_iPerspective = -1);
@@ -327,6 +356,7 @@ default {
             setPers();
         }
         else  if (("cycle2" == message)) {
+            (g_iPersNr = 1);
             (++g_iPerspective);
             if ((g_iPerspective > 1)) {
                 (g_iPerspective = -1);
@@ -382,6 +412,7 @@ default {
             if (verbose) llOwnerSay("Center Cam");
             llClearCameraParams();
             llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
+            (g_iPerspective = 1);
         }
         else  if (("default" == message)) {
             llClearCameraParams();
@@ -391,12 +422,14 @@ default {
             if (verbose) llOwnerSay("Focussing on yourself");
             llClearCameraParams();
             vector here = llGetPos();
-            llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,17,here,6,0.0,22,1,11,0.0,13,(here + <3.0,3.0,3.0>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+            llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(2.0 + g_fDist),(2.0 + g_fDist),(2.0 + g_fDist)>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+            (g_iPerspective = -1);
         }
         else  if (("worm" == message)) {
             if (verbose) llOwnerSay("Worm Cam");
             llClearCameraParams();
             llSetCameraParams([12,1,8,180.0,9,0.0,7,(g_fDist + 4),6,0.0,22,0,11,2.5,0,-35.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
+            (g_iPerspective = 0);
         }
         else  if (("drop" == message)) {
             if (verbose) llOwnerSay("Dropping camera");
@@ -404,11 +437,11 @@ default {
         }
         else  if (("spin" == message)) {
             llClearCameraParams();
-            llSetCameraParams([12,1,8,180.0,9,0.5,7,(g_fDist + 6),6,5.0e-2,22,0,11,0.0,0,30.0,5,0.0,21,0,10,0.0,1,<0.0,0.0,0.0>]);
+            llSetCameraParams([12,1,8,180.0,9,0.5,6,5.0e-2,22,0,11,0.0,0,30.0,5,0.0,21,0,10,0.0,1,<0.0,0.0,0.0>]);
             float i;
             vector camera_position;
             for ((i = 0); (i < 12.5663706); (i += 2.5e-2)) {
-                (camera_position = (llGetPos() + (<0.0,4.0,0.0> * llEuler2Rot(<0.0,0.0,i>))));
+                (camera_position = (llGetPos() + (<0.0,(3.0 + g_fDist),0.0> * llEuler2Rot(<0.0,0.0,i>))));
                 llSetCameraParams([13,camera_position]);
                 llSleep(2.0e-2);
             }
