@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //16. Mrz. 2014
-//v2.49
+//v2.50
 //
 
 //Files:
@@ -56,7 +56,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.49";            // version
+string g_sVersion = "2.50";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -98,13 +98,18 @@ integer g_iNr;
 integer g_iMsg = TRUE;
 vector g_vPos1;
 vector g_vFoc1;
+integer g_iCam1 = FALSE;
 vector g_vPos2;
 vector g_vFoc2;
+integer g_iCam2 = FALSE;
 vector g_vPos3;
 vector g_vFoc3;
+integer g_iCam3 = FALSE;
 vector g_vPos4;
 vector g_vFoc4;
+integer g_iCam4 = FALSE;
 integer g_iCamPos = FALSE;
+integer g_iCamNr = 1;
 
 
 //===============================================
@@ -191,14 +196,11 @@ setButtonCol()
 
 resetCamPos()
 {
-	g_vPos1 = ZERO_VECTOR;
-	g_vFoc1 = ZERO_VECTOR;
-	g_vPos2 = ZERO_VECTOR;
-	g_vFoc2 = ZERO_VECTOR;
-	g_vPos3 = ZERO_VECTOR;
-	g_vFoc3 = ZERO_VECTOR;
-	g_vPos4 = ZERO_VECTOR;
-	g_vFoc4 = ZERO_VECTOR;
+	g_vPos1 = g_vFoc1 = ZERO_VECTOR;
+	g_vPos2 = g_vFoc2 = ZERO_VECTOR;
+	g_vPos3 = g_vFoc3 = ZERO_VECTOR;
+	g_vPos4 = g_vFoc4 = ZERO_VECTOR;
+	g_iCam1 = g_iCam2 = g_iCam3 = g_iCam4 = FALSE;
 	g_iCamPos = FALSE;
 	setButtonCol();
 	
@@ -240,7 +242,6 @@ savedCam(vector foc, vector pos)
 		CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
 		//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 	]);
-	g_iCamPos = TRUE;
 	if (debug) Debug("restored pos: "+(string)pos+" foc: "+(string)foc, FALSE,FALSE);
 }
 
@@ -484,6 +485,33 @@ spazCam()
 
 
 // pragma inline
+toggleCam()
+{
+	++g_iCamNr;
+	if (g_iCamNr > 4) g_iCamNr = 1;
+	
+	setCam((string)g_iCamNr);
+}
+
+
+setCam(string cam)
+{
+	if ("cam1" == cam || "1" == cam) {
+		if (g_iCam1) savedCam(g_vFoc1, g_vPos1);
+	}
+	else if ("cam2" == cam || "2" == cam) {
+		if (g_iCam2) savedCam(g_vFoc2, g_vPos2);
+	}
+	else if ("cam3" == cam || "3" == cam) {
+		if (g_iCam3) savedCam(g_vFoc3, g_vPos3);
+	}
+	else if ("cam4" == cam || "4" == cam) {
+		if (g_iCam4) savedCam(g_vFoc4, g_vPos4);
+	}
+}
+
+
+// pragma inline
 toggleDist()
 {
 	if (g_iFar) {
@@ -506,7 +534,7 @@ toggleDist()
 togglePers()
 {
 	++g_iPerspective;
-	if (g_iPerspective > 1)	{
+	if (g_iPerspective > 1) {
 		g_iPerspective = -1;
 	}
 	setPers();
@@ -650,23 +678,28 @@ default
 			if (4 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
+				g_iCam1 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
 			}
 			else if (5 == g_iNr) {
 				g_vPos2 = llGetCameraPos();
 				g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
+				g_iCam2 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
 			}
 			else if (6 == g_iNr) {
 				g_vPos3 = llGetCameraPos();
 				g_vFoc3 = g_vPos3 + llRot2Fwd(llGetCameraRot());
+				g_iCam3 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
 			}
 			else if (7 == g_iNr) {
 				g_vPos4 = llGetCameraPos();
 				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
+				g_iCam4 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
-			} 
+			}
+			g_iCamPos = TRUE;
 		} else if (perm & PERMISSION_CONTROL_CAMERA) {
 			// is the above line causing the bug that menu is not shown?
 			if (time < g_fTouchTimer) {
@@ -696,6 +729,10 @@ default
 			else if ("...back" == message) llDialog(id, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if ("help" == message) {
 				infoLines(TRUE);
+			}
+			else if (-1 != llSubStringIndex(message, "cam")) {
+				if ("cam" == message) toggleCam();
+					else setCam(message);
 			}
 			else if ("cycle" == message) {
 				g_iPersNr = 0;
@@ -751,18 +788,6 @@ default
 			}
 			else if ("spaz" == message) {
 				spazCam();
-			}
-			else if ("cam1" == message) {
-				savedCam(g_vFoc1, g_vPos1);
-			}
-			else if ("cam2" == message) {
-				savedCam(g_vFoc2, g_vPos2);
-			}
-			else if ("cam3" == message) {
-				savedCam(g_vFoc3, g_vPos3);
-			}
-			else if ("cam4" == message) {
-				savedCam(g_vFoc4, g_vPos4);
 			}
 			else if ("default" == message) {
 				defCam();

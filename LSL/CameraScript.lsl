@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 20:18:45 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 21:03:42 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -20,7 +20,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //16. Mrz. 2014
-//v2.49
+//v2.50
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.49";
+string g_sVersion = "2.50";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -87,13 +87,18 @@ integer g_iNr;
 integer g_iMsg = 1;
 vector g_vPos1;
 vector g_vFoc1;
+integer g_iCam1 = 0;
 vector g_vPos2;
 vector g_vFoc2;
+integer g_iCam2 = 0;
 vector g_vPos3;
 vector g_vFoc3;
+integer g_iCam3 = 0;
 vector g_vPos4;
 vector g_vFoc4;
+integer g_iCam4 = 0;
 integer g_iCamPos = 0;
+integer g_iCamNr = 1;
 
 //project specific modules
 //-----------------------------------------------
@@ -150,14 +155,11 @@ setButtonCol(){
 
 
 resetCamPos(){
-    (g_vPos1 = ZERO_VECTOR);
-    (g_vFoc1 = ZERO_VECTOR);
-    (g_vPos2 = ZERO_VECTOR);
-    (g_vFoc2 = ZERO_VECTOR);
-    (g_vPos3 = ZERO_VECTOR);
-    (g_vFoc3 = ZERO_VECTOR);
-    (g_vPos4 = ZERO_VECTOR);
-    (g_vFoc4 = ZERO_VECTOR);
+    (g_vPos1 = (g_vFoc1 = ZERO_VECTOR));
+    (g_vPos2 = (g_vFoc2 = ZERO_VECTOR));
+    (g_vPos3 = (g_vFoc3 = ZERO_VECTOR));
+    (g_vPos4 = (g_vFoc4 = ZERO_VECTOR));
+    (g_iCam1 = (g_iCam2 = (g_iCam3 = (g_iCam4 = 0))));
     (g_iCamPos = 0);
     setButtonCol();
     defCam();
@@ -172,7 +174,6 @@ defCam(){
 savedCam(vector foc,vector pos){
     llClearCameraParams();
     llSetCameraParams([12,1,17,foc,6,0.0,22,1,13,pos,5,0.0,21,1]);
-    (g_iCamPos = 1);
     
 }
 
@@ -182,6 +183,22 @@ shoulderCamRight(){
     llClearCameraParams();
     llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
     (g_iPerspective = 1);
+}
+
+
+setCam(string cam){
+    if ((("cam1" == cam) || ("1" == cam))) {
+        if (g_iCam1) savedCam(g_vFoc1,g_vPos1);
+    }
+    else  if ((("cam2" == cam) || ("2" == cam))) {
+        if (g_iCam2) savedCam(g_vFoc2,g_vPos2);
+    }
+    else  if ((("cam3" == cam) || ("3" == cam))) {
+        if (g_iCam3) savedCam(g_vFoc3,g_vPos3);
+    }
+    else  if ((("cam4" == cam) || ("4" == cam))) {
+        if (g_iCam4) savedCam(g_vFoc4,g_vPos4);
+    }
 }
 
 
@@ -335,23 +352,28 @@ default {
             if ((4 == g_iNr)) {
                 (g_vPos1 = llGetCameraPos());
                 (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
+                (g_iCam1 = 1);
                 
             }
             else  if ((5 == g_iNr)) {
                 (g_vPos2 = llGetCameraPos());
                 (g_vFoc2 = (g_vPos2 + llRot2Fwd(llGetCameraRot())));
+                (g_iCam2 = 1);
                 
             }
             else  if ((6 == g_iNr)) {
                 (g_vPos3 = llGetCameraPos());
                 (g_vFoc3 = (g_vPos3 + llRot2Fwd(llGetCameraRot())));
+                (g_iCam3 = 1);
                 
             }
             else  if ((7 == g_iNr)) {
                 (g_vPos4 = llGetCameraPos());
                 (g_vFoc4 = (g_vPos4 + llRot2Fwd(llGetCameraRot())));
+                (g_iCam4 = 1);
                 
             }
+            (g_iCamPos = 1);
         }
         else  if ((perm & 2048)) {
             if ((time < 1.3)) {
@@ -386,6 +408,14 @@ default {
             if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
             if ((verbose || 1)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n'default', 'delete', 'help' and all other menu entries");
         }
+        else  if ((-1 != llSubStringIndex(message,"cam"))) {
+            if (("cam" == message)) {
+                (++g_iCamNr);
+                if ((g_iCamNr > 4)) (g_iCamNr = 1);
+                setCam(((string)g_iCamNr));
+            }
+            else  setCam(message);
+        }
         else  if (("cycle" == message)) {
             (g_iPersNr = 0);
             (++g_iPerspective);
@@ -410,9 +440,9 @@ default {
             }
             else  if ((!g_iOn)) {
                 (g_iOn = 1);
-                key _id4 = llGetOwner();
-                if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)_id4)));
-                llRequestPermissions(_id4,3072);
+                key _id5 = llGetOwner();
+                if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)_id5)));
+                llRequestPermissions(_id5,3072);
                 llSetCameraParams([12,1]);
                 (g_iOn = 1);
                 setColor(g_iOn);
@@ -488,26 +518,14 @@ default {
         }
         else  if (("spaz" == message)) {
             if (verbose) llOwnerSay("Spaz cam for 7 seconds");
-            float _i15;
-            for ((_i15 = 0); (_i15 < 70); (_i15 += 1)) {
+            float _i16;
+            for ((_i16 = 0); (_i16 < 70); (_i16 += 1)) {
                 vector xyz = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                 vector xyz2 = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                 llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,(llFrand(125.0) - 45),13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<(llFrand(20.0) - 10),(llFrand(20.0) - 10),(llFrand(20) - 10)>]);
                 llSleep(0.1);
             }
             defCam();
-        }
-        else  if (("cam1" == message)) {
-            savedCam(g_vFoc1,g_vPos1);
-        }
-        else  if (("cam2" == message)) {
-            savedCam(g_vFoc2,g_vPos2);
-        }
-        else  if (("cam3" == message)) {
-            savedCam(g_vFoc3,g_vPos3);
-        }
-        else  if (("cam4" == message)) {
-            savedCam(g_vFoc4,g_vPos4);
         }
         else  if (("default" == message)) {
             defCam();
