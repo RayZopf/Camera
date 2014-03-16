@@ -201,12 +201,9 @@ resetCamPos()
 	g_vFoc4 = ZERO_VECTOR;
 	g_iCamPos = FALSE;
 	setButtonCol();
-	
-	defCam();
 }
 
 
-// pragma inline
 slCam()
 {
 	llClearCameraParams(); // reset camera to default
@@ -681,9 +678,11 @@ default
 				else if (5 == g_iNr) savedCam(g_vFoc2, g_vPos2);
 				else if (6 == g_iNr) savedCam(g_vFoc3, g_vPos3);
 				else if (7 == g_iNr) savedCam(g_vFoc4, g_vPos4);
-				else if (3 == g_iNr) defCam();
-			} else if (3 == g_iNr) resetCamPos();
-			else if (2 >= g_iNr) slCam();
+				else if (3 == g_iNr) slCam();
+			} else if (3 == g_iNr) {
+				resetCamPos();
+				slCam();
+			} else if (2 >= g_iNr) defCam();
 		} else llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
 	}
 
