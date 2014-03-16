@@ -706,10 +706,10 @@ default
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 					llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present dialog on click
 				}
-				else if (4 == g_iNr) savedCam(g_vFoc1, g_vPos1);
-				else if (5 == g_iNr) savedCam(g_vFoc2, g_vPos2);
-				else if (6 == g_iNr) savedCam(g_vFoc3, g_vPos3);
-				else if (7 == g_iNr) savedCam(g_vFoc4, g_vPos4);
+				else if (4 == g_iNr) if (g_iCam1) savedCam(g_vFoc1, g_vPos1);
+				else if (5 == g_iNr) if (g_iCam2) savedCam(g_vFoc2, g_vPos2);
+				else if (6 == g_iNr) if (g_iCam3) savedCam(g_vFoc3, g_vPos3);
+				else if (7 == g_iNr) if (g_iCam4) savedCam(g_vFoc4, g_vPos4);
 				else if (3 == g_iNr) slCam();
 			} else if (3 == g_iNr) {
 				resetCamPos();
