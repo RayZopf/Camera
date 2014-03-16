@@ -45,7 +45,7 @@
 /*Each prim that makes up an object has an address, a link number. To access a specific prim in the object, the prim's link number must be known. In addition to prims having link numbers, avatars seated upon the object do as well.
 If an object consists of only one prim, and there are no avatars seated upon it, the (root) prim's link number is zero.
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
-//TODU: cycling to focusCamMe does not work reliablely
+//TODU: cycling to focusCamMe does not work reliablely - same with saved positions
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -53,20 +53,15 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //GLOBAL VARIABLES
 //===============================================
 
-//user changeable variables
-//-----------------------------------------------
-integer verbose;         // show more/less info during startup
-
-//SCRIPT MESSAGE MAP
-integer CH; // dialog channel
-
-
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
 string g_sVersion = "2.47";            // version
 string g_sScriptName;
-string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
+string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
+
+//SCRIPT MESSAGE MAP
+integer CH; // dialog channel
 
 // Constants
 list MENU_MAIN = ["More...", "help", "CLOSE",
@@ -78,6 +73,7 @@ float DIST_FAR = 2.0;
 
 
 // Variables
+integer verbose;         // show more/less info during startup
 key g_kOwner;                      // object owner
 //key g_kUser;                       // key of last avatar to touch object
 //key g_kQuery = NULL_KEY;
@@ -89,10 +85,10 @@ integer flying;
 integer falling;
 integer spaz = 0;
 integer trap = 0;
-integer g_iPersNr = 0;
-integer g_iPerspective = 1;
 
 // for gesture support
+integer g_iPersNr = 0;
+integer g_iPerspective = 1;
 integer g_iFar = FALSE;
 float g_fDist = DIST_NEAR;
 

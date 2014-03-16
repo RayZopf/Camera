@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 17:49:49 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 18:29:38 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -46,7 +46,7 @@
 /*Each prim that makes up an object has an address, a link number. To access a specific prim in the object, the prim's link number must be known. In addition to prims having link numbers, avatars seated upon the object do as well.
 If an object consists of only one prim, and there are no avatars seated upon it, the (root) prim's link number is zero.
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
-//TODU: cycling to focusCamMe does not work reliablely
+//TODU: cycling to focusCamMe does not work reliablely - same with saved positions
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -54,34 +54,30 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //GLOBAL VARIABLES
 //===============================================
 
-//user changeable variables
-//-----------------------------------------------
-integer verbose;
-
-//SCRIPT MESSAGE MAP
-integer CH;
-
-
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
 string g_sVersion = "2.47";
 string g_sScriptName;
-string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
+string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
+
+//SCRIPT MESSAGE MAP
+integer CH;
 
 // Constants
 list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","ON","Distance","OFF"];
 
 
 // Variables
+integer verbose;
 key g_kOwner;
 
 integer g_iHandle = 0;
 integer g_iOn = 0;
-integer g_iPersNr = 0;
-integer g_iPerspective = 1;
 
 // for gesture support
+integer g_iPersNr = 0;
+integer g_iPerspective = 1;
 integer g_iFar = 0;
 float g_fDist = 0.5;
 
