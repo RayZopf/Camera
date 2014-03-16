@@ -154,11 +154,11 @@ takeCamCtrl(key id)
 }
 
 
-// pragma inline
 releaseCamCtrl(key id)
 {
 	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
+	llSetCameraParams([CAMERA_ACTIVE, FALSE]); // 1 is active, 0 is inactive
 	g_iOn = FALSE;
 	setColor(g_iOn);
 }
@@ -435,18 +435,16 @@ toggleDist()
 	if (g_iFar) {
 		g_iOn = FALSE;
 		g_iFar = FALSE;
-	} else if (!g_iFar && !g_iOn) {
+		releaseCamCtrl(llGetOwner());
+	} else if (!g_iOn) {
 		g_iOn = TRUE;
-		g_iFar = FALSE;
-	} else {
-		g_iOn = TRUE;
-		g_iFar = TRUE;
-	}
+		takeCamCtrl(llGetOwner());
+	} else g_iFar = TRUE;
 
 	if (g_iFar) g_fDist = DIST_FAR;
 		else g_fDist = DIST_NEAR;
 
-	setPers();
+	if (g_iOn) setPers();
 }
 
 
@@ -463,11 +461,6 @@ togglePers()
 
 setPers()
 {
-	if (!g_iOn) {
-		releaseCamCtrl(llGetOwner());
-		return;
-	}
-
 	if (g_iPerspective == -1) {
 		shoulderCamLeft();
 	} else if (g_iPerspective == 0) {
@@ -475,7 +468,8 @@ setPers()
 	} else if (g_iPerspective == 1) {
 		shoulderCamRight();
 	} else {
-		releaseCamCtrl(llGetOwner());
+		g_iPerspective = 0;
+		defCam();
 	}
 }
 

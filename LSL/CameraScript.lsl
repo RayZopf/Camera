@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 16:06:29 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 16:51:08 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -116,6 +116,15 @@ initExtension(integer conf){
 }
 
 
+releaseCamCtrl(key id){
+    llOwnerSay("release CamCtrl");
+    llClearCameraParams();
+    llSetCameraParams([12,0]);
+    (g_iOn = 0);
+    setColor(g_iOn);
+}
+
+
 setColor(integer on){
     if (on) {
         llSetLinkPrimitiveParamsFast(2,[18,-1,<1.0,1.0,1.0>,1]);
@@ -152,14 +161,6 @@ shoulderCamRight(){
 
 
 setPers(){
-    if ((!g_iOn)) {
-        key id = llGetOwner();
-        llOwnerSay("release CamCtrl");
-        llClearCameraParams();
-        (g_iOn = 0);
-        setColor(g_iOn);
-        return;
-    }
     if ((g_iPerspective == -1)) {
         if (verbose) llOwnerSay("Left Shoulder");
         llClearCameraParams();
@@ -176,11 +177,8 @@ setPers(){
         shoulderCamRight();
     }
     else  {
-        key _id4 = llGetOwner();
-        llOwnerSay("release CamCtrl");
-        llClearCameraParams();
-        (g_iOn = 0);
-        setColor(g_iOn);
+        (g_iPerspective = 0);
+        defCam();
     }
 }
 
@@ -339,18 +337,21 @@ default {
             if (g_iFar) {
                 (g_iOn = 0);
                 (g_iFar = 0);
+                releaseCamCtrl(llGetOwner());
             }
-            else  if (((!g_iFar) && (!g_iOn))) {
+            else  if ((!g_iOn)) {
                 (g_iOn = 1);
-                (g_iFar = 0);
-            }
-            else  {
+                key _id4 = llGetOwner();
+                if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)_id4)));
+                llRequestPermissions(_id4,3072);
+                llSetCameraParams([12,1]);
                 (g_iOn = 1);
-                (g_iFar = 1);
+                setColor(g_iOn);
             }
+            else  (g_iFar = 1);
             if (g_iFar) (g_fDist = 2.0);
             else  (g_fDist = 0.5);
-            setPers();
+            if (g_iOn) setPers();
         }
         else  if (("on" == message)) {
             if (verbose) llOwnerSay(("take CamCtrl\nAvatar key: " + ((string)id)));
@@ -360,10 +361,7 @@ default {
             setColor(g_iOn);
         }
         else  if (("off" == message)) {
-            llOwnerSay("release CamCtrl");
-            llClearCameraParams();
-            (g_iOn = 0);
-            setColor(g_iOn);
+            releaseCamCtrl(id);
         }
         else  if (("left" == message)) {
             if (verbose) llOwnerSay("Left Shoulder");
