@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 19:02:42 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 19:41:30 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //16. Mrz. 2014
-//v1.48
+//v1.49
 //
 
 //Files:
@@ -59,7 +59,7 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.48";
+string g_sVersion = "1.49";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -100,6 +100,7 @@ initExtension(integer conf){
     llListenRemove(g_iHandle);
     (g_iHandle = llListen(CH,"",g_kOwner,""));
     if (conf) llRequestPermissions(g_kOwner,3072);
+    else  setButtonCol();
     llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
     if (verbose) {
         
@@ -108,6 +109,13 @@ initExtension(integer conf){
     llOwnerSay(("HUD listens on channel: " + ((string)CH)));
     if ((verbose || 0)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
     if ((verbose || 0)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n'default', 'delete', 'help' and all other menu entries");
+}
+
+
+setButtonCol(){
+    integer i = 4;
+    do  llSetLinkPrimitiveParamsFast(i,[18,-1,<0.75,0.75,0.75>,0.95]);
+    while (((++i) <= 7));
 }
 
 
@@ -121,6 +129,7 @@ resetCamPos(){
     (g_vPos4 = ZERO_VECTOR);
     (g_vFoc4 = ZERO_VECTOR);
     (g_iCamPos = 0);
+    setButtonCol();
     defCam();
 }
 
@@ -186,7 +195,7 @@ default {
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         integer rc = 0;
-        (rc = llSetMemoryLimit(32000));
+        (rc = llSetMemoryLimit(36000));
         if ((verbose && (!rc))) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
@@ -220,7 +229,7 @@ default {
 	touch(integer num_detected) {
         if ((g_iMsg && (llGetTime() > 1.3))) {
             if (((perm & 1024) && (4 <= g_iNr))) {
-                llOwnerSay("Cam position saved");
+                if (verbose) llOwnerSay("Cam position saved");
             }
             else  if ((perm & 2048)) {
                 if ((3 > g_iNr)) llOwnerSay("Resetting to SL standard");
@@ -235,29 +244,33 @@ default {
 	touch_end(integer num_detected) {
         (g_iMsg = 1);
         float time = llGetTime();
-        if (((time > 1.3) && (4 >= g_iNr))) {
+        if ((((time > 1.3) && (4 <= g_iNr)) && (perm & 1024))) {
             if ((4 == g_iNr)) {
                 (g_vPos1 = llGetCameraPos());
                 (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
+                llSetLinkPrimitiveParamsFast(4,[18,-1,<0.0,1.0,1.0>,1]);
                 
             }
             else  if ((5 == g_iNr)) {
                 (g_vPos2 = llGetCameraPos());
                 (g_vFoc2 = (g_vPos2 + llRot2Fwd(llGetCameraRot())));
+                llSetLinkPrimitiveParamsFast(5,[18,-1,<0.0,1.0,1.0>,1]);
                 
             }
             else  if ((6 == g_iNr)) {
                 (g_vPos3 = llGetCameraPos());
                 (g_vFoc3 = (g_vPos3 + llRot2Fwd(llGetCameraRot())));
+                llSetLinkPrimitiveParamsFast(6,[18,-1,<0.0,1.0,1.0>,1]);
                 
             }
             else  if ((7 == g_iNr)) {
                 (g_vPos4 = llGetCameraPos());
                 (g_vFoc4 = (g_vPos4 + llRot2Fwd(llGetCameraRot())));
+                llSetLinkPrimitiveParamsFast(7,[18,-1,<0.0,1.0,1.0>,1]);
                 
             }
         }
-        if ((perm & 2048)) {
+        else  if ((perm & 2048)) {
             if ((time < 1.3)) {
                 if ((2 == g_iNr)) {
                     llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);

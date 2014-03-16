@@ -18,7 +18,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //16. Mrz. 2014
-//v1.48
+//v1.49
 //
 
 //Files:
@@ -58,7 +58,7 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.48";            // version
+string g_sVersion = "1.49";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -117,6 +117,7 @@ initExtension(integer conf)
 {
 	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
+		else setButtonCol();
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
 	infoLines(FALSE);
@@ -153,6 +154,15 @@ releaseCamCtrl(key id)
 }
 
 
+setButtonCol()
+{	
+	integer i = 4;
+	do
+		llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
+	while (++i <= 7);
+}
+
+
 resetCamPos()
 {
 	g_vPos1 = ZERO_VECTOR;
@@ -164,6 +174,8 @@ resetCamPos()
 	g_vPos4 = ZERO_VECTOR;
 	g_vFoc4 = ZERO_VECTOR;
 	g_iCamPos = FALSE;
+	setButtonCol();
+	
 	defCam();
 }
 
@@ -499,7 +511,7 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		MemRestrict(32000, FALSE);
+		MemRestrict(36000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -531,7 +543,7 @@ default
 	{
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
 			if ((perm & PERMISSION_TRACK_CAMERA) && 4 <= g_iNr) {
-				llOwnerSay("Cam position saved");
+				if (verbose) llOwnerSay("Cam position saved");
 			} else if (perm & PERMISSION_CONTROL_CAMERA) {
 				if (3 > g_iNr) llOwnerSay("Resetting to SL standard");
 					else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
@@ -544,29 +556,32 @@ default
 	{
 		g_iMsg = TRUE;
 		float time = llGetTime(); 
-		if (time > g_fTouchTimer && 4 >= g_iNr) {
+		if (time > g_fTouchTimer && 4 <= g_iNr && (perm & PERMISSION_TRACK_CAMERA)) {
 			if (4 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
+				llSetLinkPrimitiveParamsFast(4, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 				if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
 			}
 			else if (5 == g_iNr) {
 				g_vPos2 = llGetCameraPos();
 				g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
+				llSetLinkPrimitiveParamsFast(5, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 				if (debug) Debug("save pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
 			}
 			else if (6 == g_iNr) {
 				g_vPos3 = llGetCameraPos();
 				g_vFoc3 = g_vPos3 + llRot2Fwd(llGetCameraRot());
+				llSetLinkPrimitiveParamsFast(6, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 				if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
 			}
 			else if (7 == g_iNr) {
 				g_vPos4 = llGetCameraPos();
 				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
+				llSetLinkPrimitiveParamsFast(7, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
 			} 
-		}
-		if (perm & PERMISSION_CONTROL_CAMERA) {
+		} else if (perm & PERMISSION_CONTROL_CAMERA) {
 			// is the above line causing the bug that menu is not shown?
 			if (time < g_fTouchTimer) {
 				if (2 == g_iNr) {
