@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 21:03:42 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 22:06:05 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -162,7 +162,12 @@ resetCamPos(){
     (g_iCam1 = (g_iCam2 = (g_iCam3 = (g_iCam4 = 0))));
     (g_iCamPos = 0);
     setButtonCol();
-    defCam();
+}
+
+
+slCam(){
+    llClearCameraParams();
+    llSetCameraParams([12,1]);
 }
 
 
@@ -384,13 +389,13 @@ default {
                 else  if ((5 == g_iNr)) savedCam(g_vFoc2,g_vPos2);
                 else  if ((6 == g_iNr)) savedCam(g_vFoc3,g_vPos3);
                 else  if ((7 == g_iNr)) savedCam(g_vFoc4,g_vPos4);
-                else  if ((3 == g_iNr)) defCam();
+                else  if ((3 == g_iNr)) slCam();
             }
-            else  if ((3 == g_iNr)) resetCamPos();
-            else  if ((2 >= g_iNr)) {
-                llClearCameraParams();
-                llSetCameraParams([12,1]);
+            else  if ((3 == g_iNr)) {
+                resetCamPos();
+                slCam();
             }
+            else  if ((2 >= g_iNr)) defCam();
         }
         else  llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?"),["---","help","CLOSE","ON"],CH);
     }
@@ -484,8 +489,7 @@ default {
             (g_iPerspective = 1);
         }
         else  if (("standard" == message)) {
-            llClearCameraParams();
-            llSetCameraParams([12,1]);
+            slCam();
         }
         else  if (("me" == message)) {
             if (verbose) llOwnerSay("Focussing on yourself");
@@ -518,8 +522,8 @@ default {
         }
         else  if (("spaz" == message)) {
             if (verbose) llOwnerSay("Spaz cam for 7 seconds");
-            float _i16;
-            for ((_i16 = 0); (_i16 < 70); (_i16 += 1)) {
+            float _i15;
+            for ((_i15 = 0); (_i15 < 70); (_i15 += 1)) {
                 vector xyz = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                 vector xyz2 = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                 llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,(llFrand(125.0) - 45),13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<(llFrand(20.0) - 10),(llFrand(20.0) - 10),(llFrand(20) - 10)>]);
