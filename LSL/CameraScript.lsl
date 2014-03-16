@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 20:10:38 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 20:18:45 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -316,6 +316,7 @@ default {
         if ((g_iMsg && (llGetTime() > 1.3))) {
             if (((perm & 1024) && (4 <= g_iNr))) {
                 if (verbose) llOwnerSay("Cam position saved");
+                llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.0,1.0,1.0>,1]);
             }
             else  if ((perm & 2048)) {
                 if ((3 > g_iNr)) llOwnerSay("Resetting to SL standard");
@@ -334,25 +335,21 @@ default {
             if ((4 == g_iNr)) {
                 (g_vPos1 = llGetCameraPos());
                 (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
-                llSetLinkPrimitiveParamsFast(4,[18,-1,<0.0,1.0,1.0>,1]);
                 
             }
             else  if ((5 == g_iNr)) {
                 (g_vPos2 = llGetCameraPos());
                 (g_vFoc2 = (g_vPos2 + llRot2Fwd(llGetCameraRot())));
-                llSetLinkPrimitiveParamsFast(5,[18,-1,<0.0,1.0,1.0>,1]);
                 
             }
             else  if ((6 == g_iNr)) {
                 (g_vPos3 = llGetCameraPos());
                 (g_vFoc3 = (g_vPos3 + llRot2Fwd(llGetCameraRot())));
-                llSetLinkPrimitiveParamsFast(6,[18,-1,<0.0,1.0,1.0>,1]);
                 
             }
             else  if ((7 == g_iNr)) {
                 (g_vPos4 = llGetCameraPos());
                 (g_vFoc4 = (g_vPos4 + llRot2Fwd(llGetCameraRot())));
-                llSetLinkPrimitiveParamsFast(7,[18,-1,<0.0,1.0,1.0>,1]);
                 
             }
         }

@@ -633,6 +633,7 @@ default
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
 			if ((perm & PERMISSION_TRACK_CAMERA) && 4 <= g_iNr) {
 				if (verbose) llOwnerSay("Cam position saved");
+				llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 			} else if (perm & PERMISSION_CONTROL_CAMERA) {
 				if (3 > g_iNr) llOwnerSay("Resetting to SL standard");
 					else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
@@ -649,25 +650,21 @@ default
 			if (4 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
-				llSetLinkPrimitiveParamsFast(4, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 				if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
 			}
 			else if (5 == g_iNr) {
 				g_vPos2 = llGetCameraPos();
 				g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
-				llSetLinkPrimitiveParamsFast(5, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 				if (debug) Debug("save pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
 			}
 			else if (6 == g_iNr) {
 				g_vPos3 = llGetCameraPos();
 				g_vFoc3 = g_vPos3 + llRot2Fwd(llGetCameraRot());
-				llSetLinkPrimitiveParamsFast(6, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 				if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
 			}
 			else if (7 == g_iNr) {
 				g_vPos4 = llGetCameraPos();
 				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
-				llSetLinkPrimitiveParamsFast(7, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
 			} 
 		} else if (perm & PERMISSION_CONTROL_CAMERA) {
