@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sat Mar 15 20:24:31 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 01:07:04 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -18,8 +18,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//15. Mrz. 2014
-//v1.47
+//16. Mrz. 2014
+//v1.48
 //
 
 //Files:
@@ -59,7 +59,7 @@ integer CH;
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "1.47";
+string g_sVersion = "1.48";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -70,6 +70,7 @@ list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","ON","Cente
 
 // Variables
 key g_kOwner;
+integer perm;
 
 integer g_iHandle = 0;
 integer g_iOn = 0;
@@ -185,7 +186,7 @@ default {
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
         integer rc = 0;
-        (rc = llSetMemoryLimit(30000));
+        (rc = llSetMemoryLimit(32000));
         if ((verbose && (!rc))) {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
@@ -210,6 +211,7 @@ default {
         if (verbose) llOwnerSay("*Long touch to save/delete/reset*");
         llResetTime();
         (g_iNr = llDetectedLinkNumber(0));
+        (perm = llGetPermissions());
         
     }
 
@@ -217,8 +219,12 @@ default {
 
 	touch(integer num_detected) {
         if ((g_iMsg && (llGetTime() > 1.3))) {
-            if (((((4 == g_iNr) || (5 == g_iNr)) || (6 == g_iNr)) || (7 == g_iNr))) llOwnerSay("Cam position saved");
-            else  if ((3 == g_iNr)) llOwnerSay("Saved cam positions deleted");
+            if ((4 >= g_iNr)) llOwnerSay("Cam position saved");
+            else  if ((perm & 2048)) {
+                if ((3 > g_iNr)) llOwnerSay("Resetting to SL standard");
+                else  if ((3 == g_iNr)) llOwnerSay("Saved cam positions deleted");
+            }
+            else  if ((4 > g_iNr)) llOwnerSay("For most functions camera permissions are needed\nend clicking to get menu");
             (g_iMsg = 0);
         }
     }
@@ -226,9 +232,8 @@ default {
 
 	touch_end(integer num_detected) {
         (g_iMsg = 1);
-        integer perm = llGetPermissions();
         float time = llGetTime();
-        if ((time > 1.3)) {
+        if (((time > 1.3) && (4 >= g_iNr))) {
             if ((4 == g_iNr)) {
                 (g_vPos1 = llGetCameraPos());
                 (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
@@ -262,6 +267,10 @@ default {
                 else  if ((3 == g_iNr)) defCam();
             }
             else  if ((3 == g_iNr)) resetCamPos();
+            else  if ((2 >= g_iNr)) {
+                llClearCameraParams();
+                llSetCameraParams([12,1]);
+            }
         }
         else  llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?"),["---","help","CLOSE","ON"],CH);
     }
@@ -375,8 +384,8 @@ default {
 
 
 
-	run_time_permissions(integer perm) {
-        if ((perm & 2048)) {
+	run_time_permissions(integer _perm0) {
+        if ((_perm0 & 2048)) {
             llSetCameraParams([12,1]);
             llOwnerSay("Camera permissions have been taken");
             defCam();

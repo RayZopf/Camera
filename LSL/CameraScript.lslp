@@ -17,8 +17,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//15. Mrz. 2014
-//v1.47
+//16. Mrz. 2014
+//v1.48
 //
 
 //Files:
@@ -58,7 +58,7 @@ integer CH; // dialog channel
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "1.47";            // version
+string g_sVersion = "1.48";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Zopf";
 
@@ -74,6 +74,7 @@ key g_kOwner;                      // object owner
 //key g_kUser;                       // key of last avatar to touch object
 //key g_kQuery = NULL_KEY;
 float g_fTouchTimer = 1.3;
+integer perm;
 
 integer g_iHandle = 0;
 integer g_iOn = FALSE;
@@ -498,7 +499,7 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		MemRestrict(30000, FALSE);
+		MemRestrict(32000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -521,6 +522,7 @@ default
 		if (verbose) llOwnerSay("*Long touch to save/delete/reset*");
 		llResetTime();
 		g_iNr= llDetectedLinkNumber(0);
+		perm = llGetPermissions();
 		if (debug) Debug("prim/link number: "+ (string)g_iNr, FALSE, FALSE);
 	}
 
@@ -528,8 +530,11 @@ default
 	touch(integer num_detected)
 	{
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
-			if (4 == g_iNr || 5 == g_iNr || 6 == g_iNr || 7 == g_iNr) llOwnerSay("Cam position saved");
-				else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
+			if (4 >= g_iNr) llOwnerSay("Cam position saved");
+				else if (perm & PERMISSION_CONTROL_CAMERA) {
+					if (3 > g_iNr) llOwnerSay("Resetting to SL standard");
+						else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
+				} else if (4 > g_iNr) llOwnerSay("For most functions camera permissions are needed\nend clicking to get menu");
 			g_iMsg = FALSE;
 		}
 	}
@@ -537,9 +542,8 @@ default
 	touch_end(integer num_detected)
 	{
 		g_iMsg = TRUE;
-		integer perm = llGetPermissions();
 		float time = llGetTime(); 
-		if (time > g_fTouchTimer) {
+		if (time > g_fTouchTimer && 4 >= g_iNr) {
 			if (4 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
@@ -574,6 +578,7 @@ default
 				else if (7 == g_iNr) savedCam(g_vFoc4, g_vPos4);
 				else if (3 == g_iNr) defCam();
 			} else if (3 == g_iNr) resetCamPos();
+			else if (2 >= g_iNr) slCam();
 		} else llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
 	}
 
