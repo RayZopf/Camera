@@ -19,7 +19,7 @@ _Script count_|1 (one), currently around 32kB - needs to use workaround for nosc
 _Saved positions_|4 (four) resetting on region change (e.g. teleport)|1 (one), persisting relog _added in Firestorm 4.6.1_|??? need to check
 _Setting up perspectives_|useful presets (right/left shoulder) - for further changes edit those in script (nasty)| 3 (three) - if 'rear view' is not good enough you need to use/change debug settings, as described in [Penny Patton's blog entry](http://pennycow.blogspot.de/2011/07/matter-of-perspective.html), [more detailed by Ciaran Laval](http://sl.governormarley.com/?p=483) or [modified  by Mona Eberhardt](https://monaeberhardt.wordpress.com/2014/02/10/revisiting-the-issue-of-camera-placement/)|five slots for presets, adjustable via sliders
 _Camera perspectives_|also some dynamic presets (spin, spaz)|only static ones|static ones, machinima stuff
-_Interface_|small HUD|big popup (way to big to keep open all the time), many preferences (Firestorm settings)|small camera UI
+_Interface_|small HUD, gesture support|big popup (way to big to keep open all the time), many preferences (Firestorm settings)|small camera UI
 
 
 Components
