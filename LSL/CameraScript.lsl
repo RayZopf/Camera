@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 13:52:13 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 16:56:39 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -20,7 +20,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //18. Mrz. 2014
-//v2.53
+//v2.54
 //
 
 //Files:
@@ -58,7 +58,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.53";
+string g_sVersion = "2.54";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -66,7 +66,7 @@ string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 integer CH;
 
 // Constants
-list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","ON","Distance","OFF"];
+list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","---","Distance","---","ON","verbose","OFF"];
 
 
 // Variables
@@ -371,6 +371,7 @@ default {
 	touch_end(integer num_detected) {
         (g_iMsg = 1);
         float time = llGetTime();
+        string status = "off";
         if ((((time > 1.3) && (4 <= g_iNr)) && (perm & 1024))) {
             if ((4 == g_iNr)) {
                 (g_vPos1 = llGetCameraPos());
@@ -402,7 +403,8 @@ default {
             if ((time < 1.3)) {
                 if ((2 == g_iNr)) {
                     if (g_iOn) {
-                        llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);
+                        if (verbose) (status = "on");
+                        llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nWhat do you want to do?\n\tverbose: ") + status),MENU_MAIN,CH);
                     }
                     else  {
                         if (verbose) llOwnerSay("enabling CameraControl HUD");
@@ -435,7 +437,8 @@ default {
                     }
                 }
                 else  if ((!g_iOn)) {
-                    llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?"),["---","help","CLOSE","ON"],CH);
+                    if (verbose) (status = "on");
+                    llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
                 }
             }
             else  if ((3 == g_iNr)) {
@@ -456,7 +459,10 @@ default {
                 }
             }
         }
-        else  llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?"),["---","help","CLOSE","ON"],CH);
+        else  {
+            if (verbose) (status = "on");
+            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+        }
     }
 
 
@@ -465,6 +471,7 @@ default {
 //-----------------------------------------------
 	listen(integer channel,string name,key id,string message) {
         (message = llToLower(message));
+        string status = "off";
         if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Me","Worm","Drop","Spin","Spaz","---","Center","---","STANDARD"],CH);
         else  if (("...back" == message)) llDialog(id,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);
         else  if (("help" == message)) {
@@ -472,6 +479,11 @@ default {
             if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*");
             if ((verbose || 1)) llOwnerSay("Long touch on CameraControl button for default view\ntouch on death sign to get back to SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
             if ((verbose || 1)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n cycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'help' and all other menu entries");
+        }
+        else  if (("verbose" == message)) {
+            (verbose = (!verbose));
+            if (verbose) llOwnerSay("Verbose messages turned ON");
+            else  llOwnerSay("Verbose messages turned OFF");
         }
         else  if (("distance" == message)) {
             (perm = llGetPermissions());
@@ -495,7 +507,10 @@ default {
                 else  (g_fDist = 0.5);
                 if (g_iOn) setPers();
             }
-            else  llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?"),["---","help","CLOSE","ON"],CH);
+            else  {
+                if (verbose) (status = "on");
+                llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            }
         }
         else  if (("on" == message)) {
             if ((!g_iOn)) {
@@ -629,7 +644,8 @@ default {
             }
         }
         else  if ((!g_iOn)) {
-            llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?"),["---","help","CLOSE","ON"],CH);
+            if (verbose) (status = "on");
+            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
         else  if ((!(("---" == message) || ("close" == message)))) llOwnerSay((((name + " picked invalid option '") + message) + "'.\n"));
     }

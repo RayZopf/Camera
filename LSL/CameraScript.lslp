@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //18. Mrz. 2014
-//v2.53
+//v2.54
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.53";            // version
+string g_sVersion = "2.54";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -67,7 +67,7 @@ integer CH; // dialog channel
 // Constants
 list MENU_MAIN = ["More...", "help", "CLOSE",
 	"Left", "Shoulder", "Right",
-	"ON", "Distance", "OFF"]; // the main menu
+	"---", "Distance", "---", "ON", "verbose", "OFF"]; // the main menu
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
 float DIST_NEAR = 0.5;
 float DIST_FAR = 2.0;
@@ -154,16 +154,16 @@ infoLines(integer help)
 
 
 // pragma inline
-dialogTurnOn()
+dialogTurnOn(string status)
 {
-	llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nHUD is disabled\nDo you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH);
+	llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH);
 }
 
 
 // pragma inline
-dialogPerms()
+dialogPerms(string status)
 {
-	 llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
+	 llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH); // present dialog on click
 }
 
 
@@ -726,6 +726,7 @@ default
 	{
 		g_iMsg = TRUE;
 		float time = llGetTime();
+		string status = "off";
 		if (time > g_fTouchTimer && 4 <= g_iNr && (perm & PERMISSION_TRACK_CAMERA)) {
 			if (4 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
@@ -758,7 +759,8 @@ default
 				if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 					if (g_iOn) {
-						llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present dialog on click
+						if (verbose) status = "on";
+						llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?\n\tverbose: "+status, MENU_MAIN, CH); // present dialog on click
 					} else {
 						takeCamCtrl("");
 						defCam();
@@ -771,7 +773,10 @@ default
 					else if (6 == g_iNr) { if (g_iCam3) savedCam(g_vFoc3, g_vPos3); }
 					else if (7 == g_iNr) { if (g_iCam4) savedCam(g_vFoc4, g_vPos4); }
 				}
-				else if (!g_iOn) { dialogTurnOn(); }
+				else if (!g_iOn) { 
+					if (verbose) status = "on";
+					dialogTurnOn(status);
+				}
 			} else if (3 == g_iNr) {
 				resetCamPos();
 				releaseCamCtrl();
@@ -783,7 +788,10 @@ default
 						defCam();
 					}
 			}
-		} else dialogPerms();
+		} else {
+			if (verbose) status = "on";
+			dialogPerms(status);
+		}
 	}
 
 
@@ -792,15 +800,24 @@ default
 	listen(integer channel, string name, key id, string message)
 	{
 			message = llToLower(message);
+			string status = "off";
 			if ("more..." == message) llDialog(id, "Pick an option!", ["...Back", "help", "CLOSE",
 				"Me", "Worm", "Drop",
 				"Spin", "Spaz", "---", "Center","---", "STANDARD"], CH); // present submenu on request
 			else if ("...back" == message) llDialog(id, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if ("help" == message) { infoLines(TRUE); }
+			else if ("verbose" == message) {
+				verbose = !verbose;
+				if (verbose) llOwnerSay("Verbose messages turned ON");
+					else llOwnerSay("Verbose messages turned OFF");
+			}
 			else if ("distance" == message) {
 				perm = llGetPermissions();
 				if (perm & PERMISSION_CONTROL_CAMERA) toggleDist();
-					else dialogPerms();
+					else {
+						if (verbose) status = "on";
+						dialogPerms(status);
+					}
 			}
 			else if ("on" == message) {
 				if (!g_iOn) {
@@ -850,7 +867,10 @@ default
 				else if ("spaz" == message) { spazCam(); }
 				else if ("default" == message) { defCam(); }
 			}
-			else if (!g_iOn) { dialogTurnOn(); }
+			else if (!g_iOn) {
+				if (verbose) status = "on";
+				dialogTurnOn(status);
+			}
 			else if (!("---" == message || "close" == message)) llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
 
