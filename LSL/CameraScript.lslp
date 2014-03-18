@@ -164,7 +164,7 @@ dialogTurnOn(string status)
 // pragma inline
 dialogPerms(string status)
 {
-	llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\HUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH); // present dialog on click
+	llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH); // present dialog on click
 }
 
 
@@ -824,6 +824,7 @@ default
 				if (verbose) llOwnerSay("Verbose messages turned ON");
 					else llOwnerSay("Verbose messages turned OFF");
 			}
+			else if ("---" == message || "close" == message) return;
 			else if ("distance" == message) {
 				perm = llGetPermissions();
 				if (perm & PERMISSION_CONTROL_CAMERA) toggleDist();
@@ -884,7 +885,7 @@ default
 				if (verbose) status = "on";
 				dialogTurnOn(status);
 			}
-			else if (!("---" == message || "close" == message)) llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
+			else llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}
 
 

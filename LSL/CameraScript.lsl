@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 23:38:29 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 23:46:57 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -471,7 +471,7 @@ default {
         }
         else  {
             if (verbose) (status = "on");
-            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\\HUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
     }
 
@@ -495,6 +495,7 @@ default {
             if (verbose) llOwnerSay("Verbose messages turned ON");
             else  llOwnerSay("Verbose messages turned OFF");
         }
+        else  if ((("---" == message) || ("close" == message))) return;
         else  if (("distance" == message)) {
             (perm = llGetPermissions());
             if ((perm & 2048)) {
@@ -519,7 +520,7 @@ default {
             }
             else  {
                 if (verbose) (status = "on");
-                llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\\HUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+                llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
             }
         }
         else  if (("on" == message)) {
@@ -666,7 +667,7 @@ default {
             if (verbose) (status = "on");
             llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
-        else  if ((!(("---" == message) || ("close" == message)))) llOwnerSay((((name + " picked invalid option '") + message) + "'.\n"));
+        else  llOwnerSay((((name + " picked invalid option '") + message) + "'.\n"));
     }
 
 
