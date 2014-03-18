@@ -163,7 +163,7 @@ dialogTurnOn(string status)
 // pragma inline
 dialogPerms(string status)
 {
-	 llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH); // present dialog on click
+	llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\HUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH); // present dialog on click
 }
 
 

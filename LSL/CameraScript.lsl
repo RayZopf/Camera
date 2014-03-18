@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 16:56:39 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 18:20:29 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -461,7 +461,7 @@ default {
         }
         else  {
             if (verbose) (status = "on");
-            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\\HUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
     }
 
@@ -509,7 +509,7 @@ default {
             }
             else  {
                 if (verbose) (status = "on");
-                llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+                llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\\HUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
             }
         }
         else  if (("on" == message)) {
