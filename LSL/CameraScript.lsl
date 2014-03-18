@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 16 22:04:38 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Wed Mar 19 00:02:05 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -19,8 +19,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//16. Mrz. 2014
-//v2.49
+//18. Mrz. 2014
+//v2.50
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.49";
+string g_sVersion = "2.50";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -65,11 +65,11 @@ string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 integer CH;
 
 // Constants
-list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","ON","Distance","OFF"];
+list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","---","Distance","---","ON","verbose","OFF"];
 
 
 // Variables
-integer verbose;
+integer verbose = 1;
 key g_kOwner;
 integer perm;
 
@@ -281,7 +281,6 @@ default {
 */
 
 	state_entry() {
-        (verbose = 0);
         (CH = 8374);
         (g_kOwner = llGetOwner());
         (g_sScriptName = llGetScriptName());
@@ -335,6 +334,7 @@ default {
 	touch_end(integer num_detected) {
         (g_iMsg = 1);
         float time = llGetTime();
+        string status = "off";
         if ((((time > 1.3) && (4 <= g_iNr)) && (perm & 1024))) {
             if ((4 == g_iNr)) {
                 (g_vPos1 = llGetCameraPos());
@@ -364,7 +364,8 @@ default {
         else  if ((perm & 2048)) {
             if ((time < 1.3)) {
                 if ((2 == g_iNr)) {
-                    llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);
+                    if (verbose) (status = "on");
+                    llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nWhat do you want to do?\n\tverbose: ") + status),MENU_MAIN,CH);
                 }
                 else  if ((4 == g_iNr)) savedCam(g_vFoc1,g_vPos1);
                 else  if ((5 == g_iNr)) savedCam(g_vFoc2,g_vPos2);
@@ -378,7 +379,10 @@ default {
             }
             else  if ((2 >= g_iNr)) defCam();
         }
-        else  llDialog(g_kOwner,(("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?"),["---","help","CLOSE","ON"],CH);
+        else  {
+            if (verbose) (status = "on");
+            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+        }
     }
 
 
@@ -393,6 +397,11 @@ default {
             llOwnerSay(("HUD listens on channel: " + ((string)CH)));
             if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
             if ((verbose || 1)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n'default', 'delete', 'help' and all other menu entries");
+        }
+        else  if (("verbose" == message)) {
+            (verbose = (!verbose));
+            if (verbose) llOwnerSay("Verbose messages turned ON");
+            else  llOwnerSay("Verbose messages turned OFF");
         }
         else  if (("cycle" == message)) {
             (g_iPersNr = 0);

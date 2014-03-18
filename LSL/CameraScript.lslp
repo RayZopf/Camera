@@ -18,8 +18,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//16. Mrz. 2014
-//v2.49
+//18. Mrz. 2014
+//v2.50
 //
 
 //Files:
@@ -56,7 +56,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.49";            // version
+string g_sVersion = "2.50";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -66,14 +66,14 @@ integer CH; // dialog channel
 // Constants
 list MENU_MAIN = ["More...", "help", "CLOSE",
 	"Left", "Shoulder", "Right",
-	"ON", "Distance", "OFF"]; // the main menu
+	"---", "Distance", "---", "ON", "verbose", "OFF"]; // the main menu
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
 float DIST_NEAR = 0.5;
 float DIST_FAR = 2.0;
 
 
 // Variables
-integer verbose;         // show more/less info during startup
+integer verbose = TRUE;         // show more/less info during startup
 key g_kOwner;                      // object owner
 //key g_kUser;                       // key of last avatar to touch object
 //key g_kQuery = NULL_KEY;
@@ -591,7 +591,6 @@ default
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
-		verbose = FALSE;
 		CH = 8374;
 
 		g_kOwner = llGetOwner();
@@ -642,6 +641,7 @@ default
 	{
 		g_iMsg = TRUE;
 		float time = llGetTime(); 
+		string status = "off";
 		if (time > g_fTouchTimer && 4 <= g_iNr && (perm & PERMISSION_TRACK_CAMERA)) {
 			if (4 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
@@ -672,7 +672,8 @@ default
 			if (time < g_fTouchTimer) {
 				if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
-					llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present dialog on click
+					if (verbose) status = "on";
+					llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?\n\tverbose: "+status, MENU_MAIN, CH); // present dialog on click
 				}
 				else if (4 == g_iNr) savedCam(g_vFoc1, g_vPos1);
 				else if (5 == g_iNr) savedCam(g_vFoc2, g_vPos2);
@@ -683,7 +684,10 @@ default
 				resetCamPos();
 				slCam();
 			} else if (2 >= g_iNr) defCam();
-		} else llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?", ["---", "help", "CLOSE", "ON"], CH); // present dialog on click
+		} else {
+			if (verbose) status = "on";
+			llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nDo you want to enable CameraControl?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH); // present dialog on click
+		}
 	}
 
 
@@ -698,6 +702,11 @@ default
 			else if ("...back" == message) llDialog(id, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
 			else if ("help" == message) {
 				infoLines(TRUE);
+			}
+			else if ("verbose" == message) {
+				verbose = !verbose;
+				if (verbose) llOwnerSay("Verbose messages turned ON");
+					else llOwnerSay("Verbose messages turned OFF");
 			}
 			else if ("cycle" == message) {
 				g_iPersNr = 0;
