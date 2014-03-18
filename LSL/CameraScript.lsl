@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Fri Mar 21 14:18:45 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Fri Mar 21 14:39:34 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -512,11 +512,6 @@ default {
             if ((verbose || 1)) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*");
             if ((verbose || 1)) llOwnerSay("Long touch on CameraControl button for default view\ntouch on death sign to get back to SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
             if ((verbose || 1)) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n cycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'help' and all other menu entries");
-        }
-        else  if (("verbose" == message)) {
-            (verbose = (!verbose));
-            if (verbose) llOwnerSay("Verbose messages turned ON");
-            else  llOwnerSay("Verbose messages turned OFF");
         }
         else  if (("verbose" == message)) {
             (verbose = (!verbose));

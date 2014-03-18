@@ -843,11 +843,6 @@ default
 				if (verbose) llOwnerSay("Verbose messages turned ON");
 					else llOwnerSay("Verbose messages turned OFF");
 			}
-			else if ("verbose" == message) {
-				verbose = !verbose;
-				if (verbose) llOwnerSay("Verbose messages turned ON");
-					else llOwnerSay("Verbose messages turned OFF");
-			}
 			else if ("---" == message || "close" == message) return;
 			else if ("distance" == message) {
 				perm = llGetPermissions();
