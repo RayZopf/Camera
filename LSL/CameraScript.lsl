@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 18:20:29 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 23:38:29 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -20,7 +20,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //18. Mrz. 2014
-//v2.54
+//v2.55
 //
 
 //Files:
@@ -58,7 +58,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.54";
+string g_sVersion = "2.55";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -100,11 +100,13 @@ vector g_vFoc4;
 integer g_iCam4 = 0;
 integer g_iCamPos = 0;
 integer g_iCamNr = 0;
+integer g_iCamLock = 0;
 
 
 releaseCamCtrl(){
     llOwnerSay("release CamCtrl");
     llClearCameraParams();
+    (g_iCamLock = 0);
     (g_iFar = 0);
     (g_fDist = 0.5);
     (g_iOn = 0);
@@ -150,6 +152,7 @@ defCam(){
 savedCam(vector foc,vector pos){
     llClearCameraParams();
     llSetCameraParams([12,1,17,foc,6,0.0,22,1,13,pos,5,0.0,21,1]);
+    (g_iCamLock = 1);
     
 }
 
@@ -158,6 +161,7 @@ shoulderCamRight(){
     if (verbose) llOwnerSay("Right Shoulder");
     llClearCameraParams();
     llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
+    (g_iCamLock = 0);
     (g_iPerspective = 1);
 }
 
@@ -219,18 +223,21 @@ setPers(){
             llClearCameraParams();
             vector here = llGetPos();
             llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist))>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+            (g_iCamLock = 1);
             (g_iPerspective = -1);
         }
         else  if ((g_iPerspective == 0)) {
             if (verbose) llOwnerSay("Worm Cam");
             llClearCameraParams();
             llSetCameraParams([12,1,8,180.0,9,0.0,7,(g_fDist + 4),6,0.0,22,0,11,2.5,0,-35.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
+            (g_iCamLock = 0);
             (g_iPerspective = 0);
         }
         else  if ((g_iPerspective == 1)) {
             if (verbose) llOwnerSay("Center Cam");
             llClearCameraParams();
             llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
+            (g_iCamLock = 0);
             (g_iPerspective = 1);
         }
         else  {
@@ -243,12 +250,14 @@ setPers(){
             if (verbose) llOwnerSay("Left Shoulder");
             llClearCameraParams();
             llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
+            (g_iCamLock = 0);
             (g_iPerspective = -1);
         }
         else  if ((g_iPerspective == 0)) {
             if (verbose) llOwnerSay("Shoulder Cam");
             llClearCameraParams();
             llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
+            (g_iCamLock = 0);
             (g_iPerspective = 0);
         }
         else  if ((g_iPerspective == 1)) {
@@ -420,6 +429,7 @@ default {
                 else  if ((3 == g_iNr)) {
                     llClearCameraParams();
                     llSetCameraParams([12,1]);
+                    (g_iCamLock = 0);
                     llOwnerSay("Resetting view to SL standard");
                 }
                 else  if (g_iOn) {
@@ -543,6 +553,7 @@ default {
             if (g_iOn) {
                 llClearCameraParams();
                 llSetCameraParams([12,1]);
+                (g_iCamLock = 0);
                 llOwnerSay("Resetting view to SL standard");
             }
             else  releaseCamCtrl();
@@ -582,12 +593,14 @@ default {
                 if (verbose) llOwnerSay("Left Shoulder");
                 llClearCameraParams();
                 llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
+                (g_iCamLock = 0);
                 (g_iPerspective = -1);
             }
             else  if (("shoulder" == message)) {
                 if (verbose) llOwnerSay("Shoulder Cam");
                 llClearCameraParams();
                 llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
+                (g_iCamLock = 0);
                 (g_iPerspective = 0);
             }
             else  if (("right" == message)) {
@@ -597,6 +610,7 @@ default {
                 if (verbose) llOwnerSay("Center Cam");
                 llClearCameraParams();
                 llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
+                (g_iCamLock = 0);
                 (g_iPerspective = 1);
             }
             else  if (("me" == message)) {
@@ -604,17 +618,20 @@ default {
                 llClearCameraParams();
                 vector here = llGetPos();
                 llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist))>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
+                (g_iCamLock = 1);
                 (g_iPerspective = -1);
             }
             else  if (("worm" == message)) {
                 if (verbose) llOwnerSay("Worm Cam");
                 llClearCameraParams();
                 llSetCameraParams([12,1,8,180.0,9,0.0,7,(g_fDist + 4),6,0.0,22,0,11,2.5,0,-35.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
+                (g_iCamLock = 0);
                 (g_iPerspective = 0);
             }
             else  if (("drop" == message)) {
                 if (verbose) llOwnerSay("Dropping camera");
                 llSetCameraParams([12,1,8,0.0,9,0.5,7,(g_fDist + 1),6,2.0,22,0,11,0.0,0,0.0,5,5.0e-2,21,1,10,0.0,1,<0.0,0.0,0.0>]);
+                (g_iCamLock = 1);
             }
             else  if (("spin" == message)) {
                 llClearCameraParams();
@@ -626,6 +643,7 @@ default {
                     llSetCameraParams([13,camera_position]);
                     llSleep(2.0e-2);
                 }
+                (g_iCamLock = 0);
                 defCam();
             }
             else  if (("spaz" == message)) {
@@ -637,6 +655,7 @@ default {
                     llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,(llFrand(125.0) - 45),13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<(llFrand(20.0) - 10),(llFrand(20.0) - 10),(llFrand(20) - 10)>]);
                     llSleep(0.1);
                 }
+                (g_iCamLock = 1);
                 defCam();
             }
             else  if (("default" == message)) {
@@ -665,7 +684,10 @@ default {
 
 
 	changed(integer change) {
-        if ((change & 256)) if (g_iCamPos) resetCamPos();
+        if ((change & 256)) {
+            if (g_iCamLock) defCam();
+            if (g_iCamPos) resetCamPos();
+        }
         if ((change & 128)) llResetScript();
     }
 

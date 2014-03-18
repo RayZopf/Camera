@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //18. Mrz. 2014
-//v2.54
+//v2.55
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.54";            // version
+string g_sVersion = "2.55";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -111,6 +111,7 @@ vector g_vFoc4;
 integer g_iCam4 = FALSE;
 integer g_iCamPos = FALSE;
 integer g_iCamNr = 0;
+integer g_iCamLock = FALSE;
 
 
 //===============================================
@@ -187,6 +188,7 @@ releaseCamCtrl()
 	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
 	//llSetCameraParams([CAMERA_ACTIVE, FALSE]); // 1 is active, 0 is inactive
+	g_iCamLock = FALSE;
 	g_iFar = FALSE;
 	g_fDist = DIST_NEAR;
 	g_iOn = FALSE;
@@ -232,6 +234,7 @@ slCam()
 {
 	llClearCameraParams(); // reset camera to default
 	llSetCameraParams([CAMERA_ACTIVE, TRUE]);
+	g_iCamLock = FALSE;
 	llOwnerSay("Resetting view to SL standard");
 }
 
@@ -262,6 +265,7 @@ savedCam(vector foc, vector pos)
 		CAMERA_POSITION_LOCKED, TRUE // (TRUE or FALSE)
 		//CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 	]);
+	g_iCamLock = TRUE;
 	if (debug) Debug("restored pos: "+(string)pos+" foc: "+(string)foc, FALSE,FALSE);
 }
 
@@ -287,6 +291,7 @@ shoulderCamLeft()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iCamLock = FALSE;
 	g_iPerspective = -1;
 }
 
@@ -312,6 +317,7 @@ shoulderCam()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,-0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iCamLock = FALSE;
 	g_iPerspective = 0;
 }
 
@@ -336,6 +342,7 @@ shoulderCamRight()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,-0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iCamLock = FALSE;
 	g_iPerspective = 1;
 }
 
@@ -361,6 +368,7 @@ centreCam()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,0,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iCamLock = FALSE;
 	g_iPerspective = 1;
 }
 
@@ -387,6 +395,7 @@ focusCamMe()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, ZERO_VECTOR // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iCamLock = TRUE;
 	g_iPerspective = -1;
 }
 
@@ -412,6 +421,7 @@ wormCam()
 		CAMERA_POSITION_THRESHOLD, 1.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iCamLock = FALSE;
 	g_iPerspective = 0;
 }
 
@@ -436,6 +446,7 @@ dropCam()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iCamLock = TRUE;
 }
 
 
@@ -468,6 +479,7 @@ spinCam()
 		llSetCameraParams([CAMERA_POSITION, camera_position]);
 		llSleep(0.020);
 	}
+	g_iCamLock = FALSE;
 	defCam();
 }
 
@@ -500,6 +512,7 @@ spazCam()
 		]);
 		llSleep(0.1);
 	}
+	g_iCamLock = TRUE;
 	defCam();
 }
 
@@ -889,7 +902,10 @@ default
 
 	changed(integer change)
 	{
-		if (change & CHANGED_REGION) if (g_iCamPos) resetCamPos();
+		if (change & CHANGED_REGION) {
+			if (g_iCamLock) defCam();
+			if (g_iCamPos) resetCamPos();
+		}
 		if (change & CHANGED_OWNER) llResetScript();
 	}
 
