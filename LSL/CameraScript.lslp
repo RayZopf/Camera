@@ -18,7 +18,7 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//18. Mrz. 2014
+//20. Mrz. 2014
 //v2.55
 //
 
@@ -883,7 +883,8 @@ default
 			}
 			else if (!g_iOn) {
 				if (verbose) status = "on";
-				dialogTurnOn(status);
+				if ((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA)) dialogTurnOn(status);
+					else dialogPerms(status);
 			}
 			else llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
 	}

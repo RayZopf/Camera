@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Tue Mar 18 23:46:57 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Thu Mar 20 02:26:10 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -19,7 +19,7 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//18. Mrz. 2014
+//20. Mrz. 2014
 //v2.55
 //
 
@@ -665,7 +665,8 @@ default {
         }
         else  if ((!g_iOn)) {
             if (verbose) (status = "on");
-            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            if (((perm & 2048) && (perm & 1024))) llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            else  llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
         else  llOwnerSay((((name + " picked invalid option '") + message) + "'.\n"));
     }
