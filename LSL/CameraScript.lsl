@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Thu Mar 20 02:26:10 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Thu Mar 20 16:18:53 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -162,6 +162,7 @@ shoulderCamRight(){
     llClearCameraParams();
     llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
     (g_iCamLock = 0);
+    (g_iPersNr = 0);
     (g_iPerspective = 1);
 }
 
@@ -224,6 +225,7 @@ setPers(){
             vector here = llGetPos();
             llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist))>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
             (g_iCamLock = 1);
+            (g_iPersNr = 1);
             (g_iPerspective = -1);
         }
         else  if ((g_iPerspective == 0)) {
@@ -231,6 +233,7 @@ setPers(){
             llClearCameraParams();
             llSetCameraParams([12,1,8,180.0,9,0.0,7,(g_fDist + 4),6,0.0,22,0,11,2.5,0,-35.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
             (g_iCamLock = 0);
+            (g_iPersNr = 1);
             (g_iPerspective = 0);
         }
         else  if ((g_iPerspective == 1)) {
@@ -238,6 +241,7 @@ setPers(){
             llClearCameraParams();
             llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
             (g_iCamLock = 0);
+            (g_iPersNr = 1);
             (g_iPerspective = 1);
         }
         else  {
@@ -251,6 +255,7 @@ setPers(){
             llClearCameraParams();
             llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
             (g_iCamLock = 0);
+            (g_iPersNr = 0);
             (g_iPerspective = -1);
         }
         else  if ((g_iPerspective == 0)) {
@@ -258,6 +263,7 @@ setPers(){
             llClearCameraParams();
             llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
             (g_iCamLock = 0);
+            (g_iPersNr = 0);
             (g_iPerspective = 0);
         }
         else  if ((g_iPerspective == 1)) {
@@ -595,6 +601,7 @@ default {
                 llClearCameraParams();
                 llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
                 (g_iCamLock = 0);
+                (g_iPersNr = 0);
                 (g_iPerspective = -1);
             }
             else  if (("shoulder" == message)) {
@@ -602,6 +609,7 @@ default {
                 llClearCameraParams();
                 llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
                 (g_iCamLock = 0);
+                (g_iPersNr = 0);
                 (g_iPerspective = 0);
             }
             else  if (("right" == message)) {
@@ -612,6 +620,7 @@ default {
                 llClearCameraParams();
                 llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
                 (g_iCamLock = 0);
+                (g_iPersNr = 1);
                 (g_iPerspective = 1);
             }
             else  if (("me" == message)) {
@@ -620,6 +629,7 @@ default {
                 vector here = llGetPos();
                 llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,(here + <(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist)),(1.5 + (2 * g_fDist))>),5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
                 (g_iCamLock = 1);
+                (g_iPersNr = 1);
                 (g_iPerspective = -1);
             }
             else  if (("worm" == message)) {
@@ -627,6 +637,7 @@ default {
                 llClearCameraParams();
                 llSetCameraParams([12,1,8,180.0,9,0.0,7,(g_fDist + 4),6,0.0,22,0,11,2.5,0,-35.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
                 (g_iCamLock = 0);
+                (g_iPersNr = 1);
                 (g_iPerspective = 0);
             }
             else  if (("drop" == message)) {

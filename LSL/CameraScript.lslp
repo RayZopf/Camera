@@ -292,6 +292,7 @@ shoulderCamLeft()
 		CAMERA_FOCUS_OFFSET, <-0.5,0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	g_iCamLock = FALSE;
+	g_iPersNr = 0;
 	g_iPerspective = -1;
 }
 
@@ -318,6 +319,7 @@ shoulderCam()
 		CAMERA_FOCUS_OFFSET, <-0.5,-0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	g_iCamLock = FALSE;
+	g_iPersNr = 0;
 	g_iPerspective = 0;
 }
 
@@ -343,6 +345,7 @@ shoulderCamRight()
 		CAMERA_FOCUS_OFFSET, <-0.5,-0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	g_iCamLock = FALSE;
+	g_iPersNr = 0;
 	g_iPerspective = 1;
 }
 
@@ -369,6 +372,7 @@ centreCam()
 		CAMERA_FOCUS_OFFSET, <-0.5,0,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	g_iCamLock = FALSE;
+	g_iPersNr = 1;
 	g_iPerspective = 1;
 }
 
@@ -396,6 +400,7 @@ focusCamMe()
 		CAMERA_FOCUS_OFFSET, ZERO_VECTOR // <-10,-10,-10> to <10,10,10> meters
 	]);
 	g_iCamLock = TRUE;
+	g_iPersNr = 1;
 	g_iPerspective = -1;
 }
 
@@ -422,6 +427,7 @@ wormCam()
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
 	g_iCamLock = FALSE;
+	g_iPersNr = 1;
 	g_iPerspective = 0;
 }
 
