@@ -18,7 +18,7 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//18. Mrz. 2014
+//20. Mrz. 2014
 //v2.50
 //
 
@@ -263,6 +263,7 @@ shoulderCamLeft()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPersNr = 0;
 	g_iPerspective = -1;
 }
 
@@ -288,6 +289,7 @@ shoulderCam()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,-0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPersNr = 0;
 	g_iPerspective = 0;
 }
 
@@ -312,6 +314,7 @@ shoulderCamRight()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,-0.5,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPersNr = 0;
 	g_iPerspective = 1;
 }
 
@@ -337,6 +340,7 @@ centreCam()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <-0.5,0,0.75> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPersNr = 1;
 	g_iPerspective = 1;
 }
 
@@ -363,6 +367,7 @@ focusCamMe()
 		CAMERA_POSITION_THRESHOLD, 0.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, ZERO_VECTOR // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPersNr = 1;
 	g_iPerspective = -1;
 }
 
@@ -388,6 +393,7 @@ wormCam()
 		CAMERA_POSITION_THRESHOLD, 1.0, // (0 to 4) meters
 		CAMERA_FOCUS_OFFSET, <0.0,0.0,0.0> // <-10,-10,-10> to <10,10,10> meters
 	]);
+	g_iPersNr = 1;
 	g_iPerspective = 0;
 }
 
