@@ -18,8 +18,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//20. Mrz. 2014
-//v2.55
+//21. Mrz. 2014
+//v2.56
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.55";            // version
+string g_sVersion = "2.56";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -136,7 +136,10 @@ initExtension(integer conf)
 {
 	setupListen();
 	if (conf) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
-		else setButtonCol();
+		else {
+			g_iNr = -1;
+			setButtonCol(FALSE);
+		}
 	setCol(g_iOn);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
@@ -168,7 +171,6 @@ dialogPerms(string status)
 }
 
 
-// pragma inline
 //most important function
 //-----------------------------------------------
 takeCamCtrl(key id)
@@ -208,12 +210,22 @@ setCol(integer on)
 }
 
 
-setButtonCol()
+setButtonCol(integer on)
 {
-	integer i = 4;
-	do
-		llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
-	while (++i <= 7);
+	if (1 == on) {
+		if (2 == g_iNr) llSetLinkPrimitiveParamsFast(2, [PRIM_COLOR, ALL_SIDES, <1,1,1>, 1]);
+		else if (3 == g_iNr) llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.7,1,1>, 1]);
+		else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
+	} else if (!on) {
+		if (3 <= g_iNr) {
+			llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
+		} else {
+			integer i = 4;
+			do
+				llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
+			while (7 > i++ );
+		}
+	} else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,0,1>, 1]);
 }
 
 
@@ -225,7 +237,8 @@ resetCamPos()
 	g_vPos4 = g_vFoc4 = ZERO_VECTOR;
 	g_iCam1 = g_iCam2 = g_iCam3 = g_iCam4 = FALSE;
 	g_iCamPos = FALSE;
-	setButtonCol();
+	g_iNr = -1;
+	setButtonCol(FALSE);
 }
 
 
@@ -722,6 +735,7 @@ default
 		if (verbose) llOwnerSay("*Long touch to save/delete/reset*");
 		llResetTime();
 		g_iNr= llDetectedLinkNumber(0);
+		if (2 < g_iNr) setButtonCol(FALSE);
 		perm = llGetPermissions();
 		if (debug) Debug("prim/link number: "+ (string)g_iNr, FALSE, FALSE);
 	}
@@ -730,10 +744,9 @@ default
 	touch(integer num_detected)
 	{
 		if (g_iMsg && llGetTime() > g_fTouchTimer) {
-			if ((perm & PERMISSION_TRACK_CAMERA) && 4 <= g_iNr) {
-				if (verbose) llOwnerSay("Cam position saved");
-				llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
-			} else if (perm & PERMISSION_CONTROL_CAMERA) {
+			setButtonCol(-1);
+			if ((perm & PERMISSION_TRACK_CAMERA) && 3 < g_iNr) { if (verbose) llOwnerSay("Cam position saved"); }
+			else if (perm & PERMISSION_CONTROL_CAMERA) {
 				if (3 > g_iNr) llOwnerSay("Setting default view");
 					else if (3 == g_iNr) llOwnerSay("Saved cam positions deleted");
 			} else llOwnerSay("To work amera permissions are needed\nend clicking to get menu");
@@ -746,7 +759,7 @@ default
 		g_iMsg = TRUE;
 		float time = llGetTime();
 		string status = "off";
-		if (time > g_fTouchTimer && 4 <= g_iNr && (perm & PERMISSION_TRACK_CAMERA)) {
+		if (time > g_fTouchTimer && 3 < g_iNr && (perm & PERMISSION_TRACK_CAMERA)) {
 			if (4 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
@@ -771,42 +784,43 @@ default
 				g_iCam4 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
 			}
+			setButtonCol(TRUE);
 			g_iCamPos = TRUE;
 		} else if (perm & PERMISSION_CONTROL_CAMERA) {
 			// is the above line causing the bug that menu is not shown?
 			if (time < g_fTouchTimer) {
-				if (2 == g_iNr) {
+				if (g_iOn) setButtonCol(TRUE);
+
+				if (3 == g_iNr) {slCam(); }
+				else if (g_iOn) {
+					if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
-					if (g_iOn) {
 						if (verbose) status = "on";
 						llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?\n\tverbose: "+status, MENU_MAIN, CH); // present dialog on click
-					} else {
-						takeCamCtrl("");
-						defCam();
-					}
-				}
-				else if (3 == g_iNr) { slCam(); }
-				else if (g_iOn) {
-					if (4 == g_iNr) { if (g_iCam1) savedCam(g_vFoc1, g_vPos1); }
+					} else if (4 == g_iNr) { if (g_iCam1) savedCam(g_vFoc1, g_vPos1); }
 					else if (5 == g_iNr) { if (g_iCam2) savedCam(g_vFoc2, g_vPos2); }
 					else if (6 == g_iNr) { if (g_iCam3) savedCam(g_vFoc3, g_vPos3); }
 					else if (7 == g_iNr) { if (g_iCam4) savedCam(g_vFoc4, g_vPos4); }
 				}
-				else if (!g_iOn) { 
+				else if (!g_iOn) {
 					if (verbose) status = "on";
 					dialogTurnOn(status);
 				}
+
 			} else if (3 == g_iNr) {
 				resetCamPos();
 				releaseCamCtrl();
 
 			} else if (2 >= g_iNr) {
-				if (g_iOn) defCam();
-					else {
-						takeCamCtrl("");
-						defCam();
-					}
+				if (g_iOn) {
+					setButtonCol(TRUE);
+					defCam();
+				} else {
+					takeCamCtrl("");
+					defCam();
+				}
 			}
+
 		} else {
 			if (verbose) status = "on";
 			dialogPerms(status);

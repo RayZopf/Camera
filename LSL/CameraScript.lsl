@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Thu Mar 20 16:18:53 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Fri Mar 21 02:04:49 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -19,8 +19,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
-//20. Mrz. 2014
-//v2.55
+//21. Mrz. 2014
+//v2.56
 //
 
 //Files:
@@ -58,7 +58,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.55";
+string g_sVersion = "2.56";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -103,6 +103,19 @@ integer g_iCamNr = 0;
 integer g_iCamLock = 0;
 
 
+//most important function
+//-----------------------------------------------
+takeCamCtrl(key id){
+    if (verbose) llOwnerSay("enabling CameraControl HUD");
+    if (id) llRequestPermissions(id,3072);
+    else  {
+        llSetCameraParams([12,1]);
+        (g_iOn = 1);
+        setCol(g_iOn);
+    }
+}
+
+
 releaseCamCtrl(){
     llOwnerSay("release CamCtrl");
     llClearCameraParams();
@@ -126,10 +139,23 @@ setCol(integer on){
 }
 
 
-setButtonCol(){
-    integer i = 4;
-    do  llSetLinkPrimitiveParamsFast(i,[18,-1,<0.75,0.75,0.75>,0.95]);
-    while (((++i) <= 7));
+setButtonCol(integer on){
+    if ((1 == on)) {
+        if ((2 == g_iNr)) llSetLinkPrimitiveParamsFast(2,[18,-1,<1.0,1.0,1.0>,1]);
+        else  if ((3 == g_iNr)) llSetLinkPrimitiveParamsFast(3,[18,-1,<0.7,1.0,1.0>,1]);
+        else  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.0,1.0,1.0>,1]);
+    }
+    else  if ((!on)) {
+        if ((3 <= g_iNr)) {
+            llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.75,0.75,0.75>,0.95]);
+        }
+        else  {
+            integer i = 4;
+            do  llSetLinkPrimitiveParamsFast(i,[18,-1,<0.75,0.75,0.75>,0.95]);
+            while ((7 > (i++)));
+        }
+    }
+    else  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<1.0,0.0,1.0>,1]);
 }
 
 
@@ -140,7 +166,8 @@ resetCamPos(){
     (g_vPos4 = (g_vFoc4 = ZERO_VECTOR));
     (g_iCam1 = (g_iCam2 = (g_iCam3 = (g_iCam4 = 0))));
     (g_iCamPos = 0);
-    setButtonCol();
+    (g_iNr = -1);
+    setButtonCol(0);
 }
 
 
@@ -331,7 +358,10 @@ default {
         llListenRemove(1);
         llListenRemove(g_iHandle);
         (g_iHandle = llListen(CH,"",g_kOwner,""));
-        setButtonCol();
+        {
+            (g_iNr = -1);
+            setButtonCol(0);
+        }
         setCol(g_iOn);
         llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
         if (verbose) {
@@ -361,6 +391,7 @@ default {
         if (verbose) llOwnerSay("*Long touch to save/delete/reset*");
         llResetTime();
         (g_iNr = llDetectedLinkNumber(0));
+        if ((2 < g_iNr)) setButtonCol(0);
         (perm = llGetPermissions());
         
     }
@@ -369,9 +400,9 @@ default {
 
 	touch(integer num_detected) {
         if ((g_iMsg && (llGetTime() > 1.3))) {
-            if (((perm & 1024) && (4 <= g_iNr))) {
+            setButtonCol(-1);
+            if (((perm & 1024) && (3 < g_iNr))) {
                 if (verbose) llOwnerSay("Cam position saved");
-                llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.0,1.0,1.0>,1]);
             }
             else  if ((perm & 2048)) {
                 if ((3 > g_iNr)) llOwnerSay("Setting default view");
@@ -387,7 +418,7 @@ default {
         (g_iMsg = 1);
         float time = llGetTime();
         string status = "off";
-        if ((((time > 1.3) && (4 <= g_iNr)) && (perm & 1024))) {
+        if ((((time > 1.3) && (3 < g_iNr)) && (perm & 1024))) {
             if ((4 == g_iNr)) {
                 (g_vPos1 = llGetCameraPos());
                 (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
@@ -412,34 +443,24 @@ default {
                 (g_iCam4 = 1);
                 
             }
+            setButtonCol(1);
             (g_iCamPos = 1);
         }
         else  if ((perm & 2048)) {
             if ((time < 1.3)) {
-                if ((2 == g_iNr)) {
-                    if (g_iOn) {
-                        if (verbose) (status = "on");
-                        llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nWhat do you want to do?\n\tverbose: ") + status),MENU_MAIN,CH);
-                    }
-                    else  {
-                        if (verbose) llOwnerSay("enabling CameraControl HUD");
-                        if ("") llRequestPermissions("",3072);
-                        else  {
-                            llSetCameraParams([12,1]);
-                            (g_iOn = 1);
-                            setCol(g_iOn);
-                        }
-                        defCam();
-                    }
-                }
-                else  if ((3 == g_iNr)) {
+                if (g_iOn) setButtonCol(1);
+                if ((3 == g_iNr)) {
                     llClearCameraParams();
                     llSetCameraParams([12,1]);
                     (g_iCamLock = 0);
                     llOwnerSay("Resetting view to SL standard");
                 }
                 else  if (g_iOn) {
-                    if ((4 == g_iNr)) {
+                    if ((2 == g_iNr)) {
+                        if (verbose) (status = "on");
+                        llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nWhat do you want to do?\n\tverbose: ") + status),MENU_MAIN,CH);
+                    }
+                    else  if ((4 == g_iNr)) {
                         if (g_iCam1) savedCam(g_vFoc1,g_vPos1);
                     }
                     else  if ((5 == g_iNr)) {
@@ -462,15 +483,12 @@ default {
                 releaseCamCtrl();
             }
             else  if ((2 >= g_iNr)) {
-                if (g_iOn) defCam();
+                if (g_iOn) {
+                    setButtonCol(1);
+                    defCam();
+                }
                 else  {
-                    if (verbose) llOwnerSay("enabling CameraControl HUD");
-                    if ("") llRequestPermissions("",3072);
-                    else  {
-                        llSetCameraParams([12,1]);
-                        (g_iOn = 1);
-                        setCol(g_iOn);
-                    }
+                    takeCamCtrl("");
                     defCam();
                 }
             }
@@ -511,13 +529,7 @@ default {
                     releaseCamCtrl();
                 }
                 else  if ((!g_iOn)) {
-                    if (verbose) llOwnerSay("enabling CameraControl HUD");
-                    if ("") llRequestPermissions("",3072);
-                    else  {
-                        llSetCameraParams([12,1]);
-                        (g_iOn = 1);
-                        setCol(g_iOn);
-                    }
+                    takeCamCtrl("");
                 }
                 else  (g_iFar = 1);
                 if (g_iFar) (g_fDist = 2.0);
@@ -532,24 +544,8 @@ default {
         else  if (("on" == message)) {
             if ((!g_iOn)) {
                 (perm = llGetPermissions());
-                if (((perm & 2048) && (perm & 1024))) {
-                    if (verbose) llOwnerSay("enabling CameraControl HUD");
-                    if ("") llRequestPermissions("",3072);
-                    else  {
-                        llSetCameraParams([12,1]);
-                        (g_iOn = 1);
-                        setCol(g_iOn);
-                    }
-                }
-                else  {
-                    if (verbose) llOwnerSay("enabling CameraControl HUD");
-                    if (id) llRequestPermissions(id,3072);
-                    else  {
-                        llSetCameraParams([12,1]);
-                        (g_iOn = 1);
-                        setCol(g_iOn);
-                    }
-                }
+                if (((perm & 2048) && (perm & 1024))) takeCamCtrl("");
+                else  takeCamCtrl(id);
             }
             defCam();
         }
@@ -660,8 +656,8 @@ default {
             }
             else  if (("spaz" == message)) {
                 if (verbose) llOwnerSay("Spaz cam for 7 seconds");
-                float _i17;
-                for ((_i17 = 0); (_i17 < 70); (_i17 += 1)) {
+                float _i15;
+                for ((_i15 = 0); (_i15 < 70); (_i15 += 1)) {
                     vector xyz = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                     vector xyz2 = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                     llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,(llFrand(125.0) - 45),13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<(llFrand(20.0) - 10),(llFrand(20.0) - 10),(llFrand(20) - 10)>]);
