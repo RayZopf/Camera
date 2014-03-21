@@ -19,7 +19,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions
 //21. Mrz. 2014
-//v2.56
+//v2.57
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.56";            // version
+string g_sVersion = "2.57";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -554,8 +554,13 @@ setCam(string cam)
 	if (g_iCamPos) do {
 		i = FALSE;
 		if ("cam1" == cam || "1" == cam) {
-			if (g_iCam1) savedCam(g_vFoc1, g_vPos1);
-				else if ("1" == cam) {
+			if (g_iCam1) {
+				g_iNr = 4;
+				setButtonCol(FALSE);
+				savedCam(g_vFoc1, g_vPos1);
+				llSleep(0.2);
+				setButtonCol(TRUE);
+			} else if ("1" == cam) {
 					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
 					++g_iCamNr;
 					cam = "2";
@@ -563,8 +568,13 @@ setCam(string cam)
 				}
 		}
 		else if ("cam2" == cam || "2" == cam) {
-			if (g_iCam2) savedCam(g_vFoc2, g_vPos2);
-				else if ("2" == cam) {
+			if (g_iCam2) {
+				g_iNr = 5;
+				setButtonCol(FALSE);
+				savedCam(g_vFoc2, g_vPos2);
+				llSleep(0.2);
+				setButtonCol(TRUE);
+			} else if ("2" == cam) {
 					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
 					++g_iCamNr;
 					cam = "3";
@@ -572,8 +582,13 @@ setCam(string cam)
 				}
 		}
 		else if ("cam3" == cam || "3" == cam) {
-			if (g_iCam3) savedCam(g_vFoc3, g_vPos3);
-				else if ("3" == cam) {
+			if (g_iCam3) {
+				g_iNr = 6;
+				setButtonCol(FALSE);
+				savedCam(g_vFoc3, g_vPos3);
+				llSleep(0.2);
+				setButtonCol(TRUE);
+			} else if ("3" == cam) {
 					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
 					++g_iCamNr;
 					cam = "4";
@@ -581,8 +596,13 @@ setCam(string cam)
 				}
 		}
 		else if ("cam4" == cam || "4" == cam) {
-			if (g_iCam4) savedCam(g_vFoc4, g_vPos4);
-				else if ("4" == cam) {
+			if (g_iCam4) {
+				g_iNr = 7;
+				setButtonCol(FALSE);
+				savedCam(g_vFoc4, g_vPos4);
+				llSleep(0.2);
+				setButtonCol(TRUE);
+			} else if ("4" == cam) {
 					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
 					g_iCamNr = 1;
 					cam = "1";
@@ -843,11 +863,6 @@ default
 				if (verbose) llOwnerSay("Verbose messages turned ON");
 					else llOwnerSay("Verbose messages turned OFF");
 			}
-			else if ("verbose" == message) {
-				verbose = !verbose;
-				if (verbose) llOwnerSay("Verbose messages turned ON");
-					else llOwnerSay("Verbose messages turned OFF");
-			}
 			else if ("---" == message || "close" == message) return;
 			else if ("distance" == message) {
 				perm = llGetPermissions();
@@ -867,10 +882,21 @@ default
 			}
 			else if ("off" == message) { releaseCamCtrl(); }
 			else if ("standard" == message) {
-				if (g_iOn) slCam();
-					else releaseCamCtrl();
+				if (g_iOn) {
+					g_iNr = 3;
+					setButtonCol(FALSE);
+					slCam();
+					llSleep(0.2);
+					setButtonCol(TRUE);
+				} else releaseCamCtrl();
 			}
-			else if ("delete" == message) { resetCamPos(); }
+			else if ("delete" == message) {
+				g_iNr = 3;
+				setButtonCol(-1);
+				llSleep(0.2);
+				setButtonCol(TRUE);
+				resetCamPos();
+				}
 			else if (g_iOn) {
 				if (-1 != llSubStringIndex(message, "cam")) {
 					if (g_iCamPos) {
@@ -903,7 +929,13 @@ default
 				}*/
 				else if ("spin" == message) { spinCam(); }
 				else if ("spaz" == message) { spazCam(); }
-				else if ("default" == message) { defCam(); }
+				else if ("default" == message) {
+					g_iNr = 2;
+					setButtonCol(-1);
+					defCam();
+					llSleep(0.2);
+					setButtonCol(TRUE);
+				}
 			}
 			else if (!g_iOn) {
 				if (verbose) status = "on";
