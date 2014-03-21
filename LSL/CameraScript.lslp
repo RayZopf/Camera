@@ -567,6 +567,7 @@ setCam(string cam)
 				savedCam(g_vFoc1, g_vPos1);
 				llSleep(0.2);
 				setButtonCol(TRUE);
+				g_iCamNr = 1;
 			} else if ("1" == cam) {
 					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
 					++g_iCamNr;
@@ -581,6 +582,7 @@ setCam(string cam)
 				savedCam(g_vFoc2, g_vPos2);
 				llSleep(0.2);
 				setButtonCol(TRUE);
+				g_iCamNr = 2;
 			} else if ("2" == cam) {
 					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
 					++g_iCamNr;
@@ -595,6 +597,7 @@ setCam(string cam)
 				savedCam(g_vFoc3, g_vPos3);
 				llSleep(0.2);
 				setButtonCol(TRUE);
+				g_iCamNr = 3;
 			} else if ("3" == cam) {
 					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
 					++g_iCamNr;
@@ -609,6 +612,7 @@ setCam(string cam)
 				savedCam(g_vFoc4, g_vPos4);
 				llSleep(0.2);
 				setButtonCol(TRUE);
+				g_iCamNr = 4;
 			} else if ("4" == cam) {
 					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
 					g_iCamNr = 1;

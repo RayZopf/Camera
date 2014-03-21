@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 00:09:32 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 00:17:56 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -215,6 +215,7 @@ setCam(string cam){
                 savedCam(g_vFoc1,g_vPos1);
                 llSleep(0.2);
                 setButtonCol(1);
+                (g_iCamNr = 1);
             }
             else  if (("1" == cam)) {
                 if (verbose) llOwnerSay((("no position saved on slot " + cam) + ", cycling to next one"));
@@ -230,6 +231,7 @@ setCam(string cam){
                 savedCam(g_vFoc2,g_vPos2);
                 llSleep(0.2);
                 setButtonCol(1);
+                (g_iCamNr = 2);
             }
             else  if (("2" == cam)) {
                 if (verbose) llOwnerSay((("no position saved on slot " + cam) + ", cycling to next one"));
@@ -245,6 +247,7 @@ setCam(string cam){
                 savedCam(g_vFoc3,g_vPos3);
                 llSleep(0.2);
                 setButtonCol(1);
+                (g_iCamNr = 3);
             }
             else  if (("3" == cam)) {
                 if (verbose) llOwnerSay((("no position saved on slot " + cam) + ", cycling to next one"));
@@ -260,6 +263,7 @@ setCam(string cam){
                 savedCam(g_vFoc4,g_vPos4);
                 llSleep(0.2);
                 setButtonCol(1);
+                (g_iCamNr = 4);
             }
             else  if (("4" == cam)) {
                 if (verbose) llOwnerSay((("no position saved on slot " + cam) + ", cycling to next one"));
