@@ -9,17 +9,10 @@
 //Search script for "changedefault" to find the line you need to alter to change the default view you see when first attaching the HUD!
 //Higherjacked by Core Taurog, 'cause I do what I'm told!
 //
-//parts from:
-// Script Vitality - keeps the script itself and all scripts in same prim
-// running also in 'dead' areas, those areas where scrpts are not allowed.
-// This works simply by taking avatar controls.
-// Author  Jenna Felton
-// Version 1.0
-//
 //modified by: Zopf Resident - Ray Zopf (Raz)
-//Additions: Abillity to save cam positions
+//Additions: Abillity to save cam positions, gesture support, visual feedback
 //22. Mrz. 2014
-//v2.58
+//v2.60
 //
 
 //Files:
@@ -28,14 +21,15 @@
 //NAME OF NOTEDACRD
 //
 //
-//Prequisites: ----
+//Prequisites: Gestures
 //Notecard format: ----
-//basic help: ----
+//basic help: /8374 help
 //
 //Changelog
 // Formatting
 // LSL Forge modules
 // code cleanup
+// new features
 
 //FIXME: ---
 
@@ -46,7 +40,6 @@
 If an object consists of only one prim, and there are no avatars seated upon it, the (root) prim's link number is zero.
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
 //TODU: cycling to focusCamMe does not work reliablely - same with saved positions
-//TODO: choosing perspective does enable scrpt - but not change color of hud... think about what we want
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -57,7 +50,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.58";            // version
+string g_sVersion = "2.60";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -132,6 +125,13 @@ $import MemoryManagement2.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m
 //PREDEFINED FUNCTIONS
 //===============================================
 
+defCam()
+{
+	shoulderCamRight();
+	//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
+}
+
+
 // pragma inline
 initExtension(integer conf)
 {
@@ -185,7 +185,7 @@ takeCamCtrl(key id)
 			llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
 			g_iOn = TRUE;
 			setCol(g_iOn);
-		}
+	}
 }
 
 
@@ -193,11 +193,8 @@ releaseCamCtrl()
 {
 	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
-	//llSetCameraParams([CAMERA_ACTIVE, FALSE]); // 1 is active, 0 is inactive
-	g_iCamLock = FALSE;
-	g_iFar = FALSE;
+	g_iCamLock = g_iFar = g_iOn = FALSE;
 	g_fDist = DIST_NEAR;
-	g_iOn = FALSE;
 	setCol(g_iOn);
 }
 
@@ -221,9 +218,8 @@ setButtonCol(integer on)
 		else if (3 == g_iNr) llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.7,1,1>, 1]);
 		else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 	} else if (!on) {
-		if (3 <= g_iNr) {
-			llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
-		} else {
+		if (3 <= g_iNr) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
+		else {
 			integer i = 4;
 			do
 				llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
@@ -240,8 +236,7 @@ resetCamPos()
 	g_vPos2 = g_vFoc2 = ZERO_VECTOR;
 	g_vPos3 = g_vFoc3 = ZERO_VECTOR;
 	g_vPos4 = g_vFoc4 = ZERO_VECTOR;
-	g_iCam1 = g_iCam2 = g_iCam3 = g_iCam4 = FALSE;
-	g_iCamPos = FALSE;
+	g_iCam1 = g_iCam2 = g_iCam3 = g_iCam4 = g_iCamPos = FALSE;
 	if (verbose) llOwnerSay("Saved cam positions deleted");
 	g_iNr = -1;
 	setButtonCol(FALSE);
@@ -256,13 +251,6 @@ slCam()
 	llSetCameraParams([CAMERA_ACTIVE, TRUE]);
 	g_iCamLock = FALSE;
 	llOwnerSay("Resetting view to SL standard");
-}
-
-
-defCam()
-{
-	shoulderCamRight();
-	//changedefault The above is what you need to change to change the default camera view you see whenever you first attach the HUD. For example, change it to centreCam(); to have the default view be centered behind your avatar!
 }
 
 
@@ -574,8 +562,7 @@ setCam(string cam)
 					cam = "2";
 					i = TRUE;
 				}
-		}
-		else if ("cam2" == cam || "cam 2" == cam || "2" == cam) {
+		} else if ("cam2" == cam || "cam 2" == cam || "2" == cam) {
 			if (g_iCam2) {
 				g_iNr = 5;
 				setButtonCol(FALSE);
@@ -589,8 +576,7 @@ setCam(string cam)
 					cam = "3";
 					i = TRUE;
 				}
-		}
-		else if ("cam3" == cam || "cam 3" == cam || "3" == cam) {
+		} else if ("cam3" == cam || "cam 3" == cam || "3" == cam) {
 			if (g_iCam3) {
 				g_iNr = 6;
 				setButtonCol(FALSE);
@@ -604,8 +590,7 @@ setCam(string cam)
 					cam = "4";
 					i = TRUE;
 				}
-		}
-		else if ("cam4" == cam || "cam 4" == cam || "4" == cam) {
+		} else if ("cam4" == cam || "cam 4" == cam || "4" == cam) {
 			if (g_iCam4) {
 				g_iNr = 7;
 				setButtonCol(FALSE);
@@ -626,7 +611,7 @@ setCam(string cam)
 
 		if (debug) Debug("end of do while, cam set to: "+cam+"-"+(string)i+(string)j, FALSE, FALSE);
 	} while (i && (++j < 4));
-	if (verbose && g_iCamNr) llOwnerSay("cam "+(string)g_iCamNr);
+	if (verbose && g_iCamNr) llOwnerSay("Camera "+(string)g_iCamNr);
 	if (debug) Debug("end setCam", FALSE, FALSE);
 }
 
@@ -653,9 +638,7 @@ toggleDist()
 togglePers()
 {
 	++g_iPerspective;
-	if (g_iPerspective > 1) {
-		g_iPerspective = -1;
-	}
+	if (g_iPerspective > 1) g_iPerspective = -1;
 	setPers();
 }
 
@@ -663,24 +646,18 @@ togglePers()
 setPers()
 {
 	if (g_iPersNr) {
-		if (g_iPerspective == -1) {
-			focusCamMe();
-		} else if (g_iPerspective == 0) {
-			wormCam();
-		} else if (g_iPerspective == 1) {
-			centreCam();
-		} else {
+		if (g_iPerspective == -1) focusCamMe();
+		else if (g_iPerspective == 0) wormCam();
+		else if (g_iPerspective == 1) centreCam();
+		else {
 			g_iPerspective = 0;
 			defCam();
 		}
 	} else {
-		if (g_iPerspective == -1) {
-			shoulderCamLeft();
-		} else if (g_iPerspective == 0) {
-			shoulderCam();
-		} else if (g_iPerspective == 1) {
-			shoulderCamRight();
-		} else {
+		if (g_iPerspective == -1) shoulderCamLeft();
+		else if (g_iPerspective == 0) shoulderCam();
+		else if (g_iPerspective == 1) shoulderCamRight();
+		else {
 			g_iPerspective = 0;
 			defCam();
 		}
@@ -691,7 +668,6 @@ setPers()
 // pragma inline
 setupListen()
 {
-	llListenRemove(1);
 	llListenRemove(g_iHandle);
 	//CH = -50000 -llRound(llFrand(1) * 100000);
 	g_iHandle = llListen(CH, "", g_kOwner, ""); // listen for dialog answers
@@ -709,35 +685,6 @@ setupListen()
 
 default
 {
-/*
-//XXX
-//let it run in noscript areas
-//-----------------------------------------------
-	run_time_permissions(integer perms)
-	{
-		if (perms & PERMISSION_TAKE_CONTROLS) {
-			llOwnerSay("Automatic Group Changer runs in noscript-areas");
-			llTakeControls(CONTROL_DOWN, TRUE, TRUE);
-		}
-	}
-
-//XXX
-	//  This is the magic. Even if empty the event handler makes the script
-	//  to keep the avatar's control. The script itself does not use it.
-	control(key name, integer levels, integer edges)
-	{
-		;
-	}
-
-//XXX
-	//make sure that we always have permissions
-	timer()
-	{
-		if(llGetPermissions() & PERMISSION_TAKE_CONTROLS) return;
-		llRequestPermissions(kOwner, PERMISSION_TAKE_CONTROLS);
-	}
-*/
-
 	state_entry()
 	{
 		//debug=TRUE; // set to TRUE to enable Debug messages
@@ -752,17 +699,6 @@ default
 		initExtension(FALSE);
 	}
 
-/*
-//listen for linked messages from other scripts and devices
-//-----------------------------------------------
-	link_message(integer sender_num, integer num, string str, key id)
-	{
-		if(str == "cam") {
-			integer perm = llGetPermissions();
-			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
-		}
-	}
-*/
 
 	touch_start(integer num_detected)
 	{
@@ -819,20 +755,17 @@ default
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
 				g_iCam1 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
-			}
-			else if (5 == g_iNr) {
+			} else if (5 == g_iNr) {
 				g_vPos2 = llGetCameraPos();
 				g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
 				g_iCam2 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
-			}
-			else if (6 == g_iNr) {
+			} else if (6 == g_iNr) {
 				g_vPos3 = llGetCameraPos();
 				g_vFoc3 = g_vPos3 + llRot2Fwd(llGetCameraRot());
 				g_iCam3 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
-			}
-			else if (7 == g_iNr) {
+			} else if (7 == g_iNr) {
 				g_vPos4 = llGetCameraPos();
 				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
 				g_iCam4 = TRUE;
@@ -885,15 +818,6 @@ default
 		} else {
 			if (verbose) status = "on";
 			dialogPerms(status);
-
-/*
-		integer nr= llDetectedLinkNumber(0);
-		if (2 == nr) {
-			integer perm = llGetPermissions();
-			// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
-			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(g_kOwner, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
-			// is the above line causing the bug that menu is not shown?
-*/
 		}
 	}
 
@@ -914,8 +838,7 @@ default
 				verbose = !verbose;
 				if (verbose) llOwnerSay("Verbose messages turned ON");
 					else llOwnerSay("Verbose messages turned OFF");
-			}
-			else if ("---" == message || "close" == message) return;
+			} else if ("---" == message || "close" == message) return;
 			else if ("distance" == message) {
 				perm = llGetPermissions();
 				if (perm & PERMISSION_CONTROL_CAMERA) toggleDist();
@@ -923,8 +846,7 @@ default
 						if (verbose) status = "on";
 						dialogPerms(status);
 					}
-			}
-			else if ("on" == message) {
+			} else if ("on" == message) {
 				if (!g_iOn) {
 					perm = llGetPermissions();
 					if ((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA)) {
@@ -932,20 +854,17 @@ default
 						defCam();
 					} else takeCamCtrl(id);
 				}
-			}
-			else if ("off" == message) { releaseCamCtrl(); }
+			} else if ("off" == message) { releaseCamCtrl(); }
 			else if ("clear" == message) {
 				resetCamPos();
 				releaseCamCtrl();
-			}
-			else if ("delete" == message) {
+			} else if ("delete" == message) {
 				g_iNr = 3;
 				setButtonCol(-1);
 				llSleep(0.2);
 				setButtonCol(TRUE);
 				resetCamPos();
-				}
-			else if ("standard" == message) {
+			} else if ("standard" == message) {
 				if (g_iOn) {
 					g_iNr = 3;
 					setButtonCol(FALSE);
@@ -953,37 +872,25 @@ default
 					llSleep(0.2);
 					setButtonCol(TRUE);
 				} else releaseCamCtrl();
-			}
-			else if (g_iOn) {
+			} else if (g_iOn) {
 				if (-1 != llSubStringIndex(message, "cam")) {
 					if (g_iCamPos) {
 						if ("cam" == message) toggleCam();
 							else setCam(message);
 					} else llOwnerSay("No camera positions saved");
-				}
-				else if ("cycle" == message) {
+				} else if ("cycle" == message) {
 					g_iPersNr = 0;
 					togglePers();
-				}
-				else if ("cycle2" == message) {
+				} else if ("cycle2" == message) {
 					g_iPersNr = 1;
 					togglePers();
-				}
-				else if ("left" == message) { shoulderCamLeft(); }
+				} else if ("left" == message) { shoulderCamLeft(); }
 				else if ("shoulder" == message) { shoulderCam(); }
 				else if ("right" == message) { shoulderCamRight(); }
 				else if ("center" == message) { centreCam(); }
 				else if ("me" == message) { focusCamMe(); }
 				else if ("worm" == message) { wormCam(); }
 				else if ("drop" == message) { dropCam(); }
-				/*else if (message == "Trap Toggle") {
-					trap = !trap;
-					if (trap == 1) {
-						llOwnerSay("trap is on");
-					} else {
-						llOwnerSay("trap is off");
-					}
-				}*/
 				else if ("spin" == message) { spinCam(); }
 				else if ("spaz" == message) { spazCam(); }
 				else if ("default" == message) {
@@ -993,13 +900,11 @@ default
 					llSleep(0.2);
 					setButtonCol(TRUE);
 				}
-			}
-			else if (!g_iOn) {
+			} else if (!g_iOn) {
 				if (verbose) status = "on";
 				if ((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA)) dialogTurnOn(status);
 					else dialogPerms(status);
-			}
-			else llOwnerSay(name + " picked invalid option '" + message + "'.\n"); // not a valid dialog choice
+			} else llOwnerSay("Invalid option picked (" + message + ").\n"); // not a valid dialog choice
 	}
 
 
