@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //22. Mrz. 2014
-//v2.60
+//v2.6.1
 //
 
 //Files:
@@ -50,7 +50,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.60";            // version
+string g_sVersion = "2.6.1";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -152,9 +152,11 @@ initExtension(integer conf)
 infoLines(integer help)
 {
 	llOwnerSay("HUD listens on channel: "+(string)CH);
-	if (verbose || help) llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions*");
-	if (verbose || help) llOwnerSay("Long touch on CameraControl button for default view\ntouch on death sign to get back to SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-	if (verbose || help) llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n cycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries");
+	if (verbose || help) {
+		llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off*");
+		llOwnerSay("Long touch on CameraControl button for on/default view\ntouch death sign to get SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
+		llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries");
+	}
 }
 
 
@@ -213,6 +215,8 @@ setCol(integer on)
 
 setButtonCol(integer on)
 {
+	if (1 == g_iNr) return;
+
 	if (1 == on) {
 		if (2 == g_iNr) llSetLinkPrimitiveParamsFast(2, [PRIM_COLOR, ALL_SIDES, <1,1,1>, 1]);
 		else if (3 == g_iNr) llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.7,1,1>, 1]);
@@ -561,7 +565,7 @@ setCam(string cam)
 					++g_iCamNr;
 					cam = "2";
 					i = TRUE;
-				}
+			} else g_iCamNr = 0;
 		} else if ("cam2" == cam || "cam 2" == cam || "2" == cam) {
 			if (g_iCam2) {
 				g_iNr = 5;
@@ -575,7 +579,7 @@ setCam(string cam)
 					++g_iCamNr;
 					cam = "3";
 					i = TRUE;
-				}
+			} else g_iCamNr = 0;
 		} else if ("cam3" == cam || "cam 3" == cam || "3" == cam) {
 			if (g_iCam3) {
 				g_iNr = 6;
@@ -589,7 +593,7 @@ setCam(string cam)
 					++g_iCamNr;
 					cam = "4";
 					i = TRUE;
-				}
+			} else g_iCamNr = 0;
 		} else if ("cam4" == cam || "cam 4" == cam || "4" == cam) {
 			if (g_iCam4) {
 				g_iNr = 7;
@@ -603,7 +607,7 @@ setCam(string cam)
 					g_iCamNr = 1;
 					cam = "1";
 					i = TRUE;
-				}
+			} else g_iCamNr = 0;
 		} else {
 			g_iCamNr = 0;
 			if (verbose) llOwnerSay("Incorrect camera chosen ("+cam+")");
@@ -770,27 +774,25 @@ default
 				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
 				g_iCam4 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
-			}
+			} else return;
+
 			if (verbose) llOwnerSay("Cam position saved");
 			setButtonCol(TRUE);
 			g_iCamPos = TRUE;
 		} else if (perm & PERMISSION_CONTROL_CAMERA) {
-			// is the above line causing the bug that menu is not shown?
-			if (g_iOn) setButtonCol(TRUE);
-
 			if (time < g_fTouchTimer) {
-				if (3 == g_iNr) { slCam(); }
+				if (3 == g_iNr) { if (g_iOn) setButtonCol(TRUE); slCam(); }
 				else if (g_iOn) {
 					if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 						if (verbose) status = "on";
 						llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?\n\tverbose: "+status, MENU_MAIN, CH); // present dialog on click
-					} else if (4 == g_iNr) { if (g_iCam1) savedCam(g_vFoc1, g_vPos1); }
-					else if (5 == g_iNr) { if (g_iCam2) savedCam(g_vFoc2, g_vPos2); }
-					else if (6 == g_iNr) { if (g_iCam3) savedCam(g_vFoc3, g_vPos3); }
-					else if (7 == g_iNr) { if (g_iCam4) savedCam(g_vFoc4, g_vPos4); }
+					} else if (4 == g_iNr) setCam("cam1");
+					else if (5 == g_iNr) setCam("cam2");
+					else if (6 == g_iNr) setCam("cam3");
+					else if (7 == g_iNr) setCam("cam4");
 				}
-				else if (!g_iOn) {
+				else {
 					if (verbose) status = "on";
 					dialogTurnOn(status);
 				}
@@ -799,14 +801,13 @@ default
 				resetCamPos();
 				if (time < (g_fTouchTimer + 1.5)) {
 					if (debug) Debug("Button: "+(string)g_iNr +" - " +(string)g_iOn+"=g_iOn, time:"+(string)time+" variable: "+(string)g_fTouchTimer+" calc: "+(string)(g_fTouchTimer + 1.5),FALSE,FALSE);
-					if (!g_iOn) setButtonCol(FALSE);
-				} else {
-					defCam();
-					releaseCamCtrl();
-				}
+					if (g_iOn) setButtonCol(TRUE);
+						else setButtonCol(FALSE);
+				} else releaseCamCtrl();
 
 			} else if (2 >= g_iNr) {
 				if (g_iOn) {
+					setButtonCol(TRUE);
 					defCam();
 					if (verbose) llOwnerSay("Setting default view");
 				} else {
@@ -873,7 +874,7 @@ default
 					setButtonCol(TRUE);
 				} else releaseCamCtrl();
 			} else if (g_iOn) {
-				if (-1 != llSubStringIndex(message, "cam")) {
+				if ((~llSubStringIndex(message, "cam")) || ((string)((integer)message) == message)) {
 					if (g_iCamPos) {
 						if ("cam" == message) toggleCam();
 							else setCam(message);
