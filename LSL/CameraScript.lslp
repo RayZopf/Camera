@@ -560,7 +560,7 @@ setCam(string cam)
 	integer j = 0;
 	if (g_iCamPos) do {
 		i = FALSE;
-		if ("cam1" == cam || "1" == cam) {
+		if ("cam1" == cam || "cam 1" == cam || "1" == cam) {
 			if (g_iCam1) {
 				g_iNr = 4;
 				setButtonCol(FALSE);
@@ -575,7 +575,7 @@ setCam(string cam)
 					i = TRUE;
 				}
 		}
-		else if ("cam2" == cam || "2" == cam) {
+		else if ("cam2" == cam || "cam 2" == cam || "2" == cam) {
 			if (g_iCam2) {
 				g_iNr = 5;
 				setButtonCol(FALSE);
@@ -590,7 +590,7 @@ setCam(string cam)
 					i = TRUE;
 				}
 		}
-		else if ("cam3" == cam || "3" == cam) {
+		else if ("cam3" == cam || "cam 3" == cam || "3" == cam) {
 			if (g_iCam3) {
 				g_iNr = 6;
 				setButtonCol(FALSE);
@@ -605,7 +605,7 @@ setCam(string cam)
 					i = TRUE;
 				}
 		}
-		else if ("cam4" == cam || "4" == cam) {
+		else if ("cam4" == cam || "cam 4" == cam || "4" == cam) {
 			if (g_iCam4) {
 				g_iNr = 7;
 				setButtonCol(FALSE);
@@ -619,10 +619,14 @@ setCam(string cam)
 					cam = "1";
 					i = TRUE;
 				}
-		} else llOwnerSay("Set cam 0");
+		} else {
+			g_iCamNr = 0;
+			if (verbose) llOwnerSay("Incorrect camera chosen ("+cam+")");
+		}
 
 		if (debug) Debug("end of do while, cam set to: "+cam+"-"+(string)i+(string)j, FALSE, FALSE);
 	} while (i && (++j < 4));
+	if (verbose && g_iCamNr) llOwnerSay("cam "+(string)g_iCamNr);
 	if (debug) Debug("end setCam", FALSE, FALSE);
 }
 
@@ -914,10 +918,11 @@ default
 			else if ("on" == message) {
 				if (!g_iOn) {
 					perm = llGetPermissions();
-					if ((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA)) takeCamCtrl("");
-						else takeCamCtrl(id);
+					if ((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA)) {
+						takeCamCtrl("");
+						defCam();
+					} else takeCamCtrl(id);
 				}
-				defCam();
 			}
 			else if ("off" == message) { releaseCamCtrl(); }
 			else if ("clear" == message) {

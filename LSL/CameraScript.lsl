@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 00:17:56 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 00:50:50 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -208,7 +208,7 @@ setCam(string cam){
     integer j = 0;
     if (g_iCamPos) do  {
         (i = 0);
-        if ((("cam1" == cam) || ("1" == cam))) {
+        if (((("cam1" == cam) || ("cam 1" == cam)) || ("1" == cam))) {
             if (g_iCam1) {
                 (g_iNr = 4);
                 setButtonCol(0);
@@ -224,7 +224,7 @@ setCam(string cam){
                 (i = 1);
             }
         }
-        else  if ((("cam2" == cam) || ("2" == cam))) {
+        else  if (((("cam2" == cam) || ("cam 2" == cam)) || ("2" == cam))) {
             if (g_iCam2) {
                 (g_iNr = 5);
                 setButtonCol(0);
@@ -240,7 +240,7 @@ setCam(string cam){
                 (i = 1);
             }
         }
-        else  if ((("cam3" == cam) || ("3" == cam))) {
+        else  if (((("cam3" == cam) || ("cam 3" == cam)) || ("3" == cam))) {
             if (g_iCam3) {
                 (g_iNr = 6);
                 setButtonCol(0);
@@ -256,7 +256,7 @@ setCam(string cam){
                 (i = 1);
             }
         }
-        else  if ((("cam4" == cam) || ("4" == cam))) {
+        else  if (((("cam4" == cam) || ("cam 4" == cam)) || ("4" == cam))) {
             if (g_iCam4) {
                 (g_iNr = 7);
                 setButtonCol(0);
@@ -272,10 +272,14 @@ setCam(string cam){
                 (i = 1);
             }
         }
-        else  llOwnerSay("Set cam 0");
+        else  {
+            (g_iCamNr = 0);
+            if (verbose) llOwnerSay((("Incorrect camera chosen (" + cam) + ")"));
+        }
         
     }
     while ((i && ((++j) < 4)));
+    if ((verbose && g_iCamNr)) llOwnerSay(("cam " + ((string)g_iCamNr)));
     
 }
 
@@ -605,10 +609,12 @@ default {
         else  if (("on" == message)) {
             if ((!g_iOn)) {
                 (perm = llGetPermissions());
-                if (((perm & 2048) && (perm & 1024))) takeCamCtrl("");
+                if (((perm & 2048) && (perm & 1024))) {
+                    takeCamCtrl("");
+                    defCam();
+                }
                 else  takeCamCtrl(id);
             }
-            defCam();
         }
         else  if (("off" == message)) {
             releaseCamCtrl();
