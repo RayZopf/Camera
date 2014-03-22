@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 02:10:56 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 02:34:44 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -408,7 +408,7 @@ default {
                 if (g_iMsg2) {
                     (g_iMsg2 = 0);
                     if (verbose) llOwnerSay("touch registered");
-                    setButtonCol(-1);
+                    if ((1 < g_iNr)) setButtonCol(-1);
                 }
                 else  if ((time >= 2.8)) {
                     (g_iMsg = 0);

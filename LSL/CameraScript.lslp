@@ -730,7 +730,7 @@ default
 				if (g_iMsg2) {
 					g_iMsg2 = FALSE;
 					if (verbose) llOwnerSay("touch registered");
-					setButtonCol(-1);
+					if (1 < g_iNr) setButtonCol(-1);
 				} else if (time >= (g_fTouchTimer + 1.5)) {
 					g_iMsg = FALSE;
 					if (verbose) llOwnerSay("long touch registered");
