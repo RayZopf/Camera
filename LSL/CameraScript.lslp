@@ -11,8 +11,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//22. Mrz. 2014
-//v2.6.1
+//23. Mrz. 2014
+//v2.6.2
 //
 
 //Files:
@@ -50,7 +50,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.6.1";            // version
+string g_sVersion = "2.6.2";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -62,6 +62,10 @@ list MENU_MAIN = ["More...", "help", "CLOSE",
 	"Left", "Shoulder", "Right",
 	"DELETE", "Distance", "CLEAR", "ON", "verbose", "OFF"]; // the main menu
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
+string MSG_DIALOG = "\n\nWhat do you want to do?\n\tverbose: ";
+string MSG_VER = "Script version: ";
+string MSG_EMPTY = "no position saved on slot ";
+string MSG_CYCLE = ", cycling to next one";
 float DIST_NEAR = 0.5;
 float DIST_FAR = 2.0;
 
@@ -163,14 +167,14 @@ infoLines(integer help)
 // pragma inline
 dialogTurnOn(string status)
 {
-	llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH);
+	llDialog(g_kOwner, MSG_VER +g_sVersion+"\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH);
 }
 
 
 // pragma inline
 dialogPerms(string status)
 {
-	llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH); // present dialog on click
+	llDialog(g_kOwner, MSG_VER +g_sVersion+"\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: "+status, ["verbose", "help", "CLOSE", "ON"], CH); // present dialog on click
 }
 
 
@@ -561,7 +565,7 @@ setCam(string cam)
 				setButtonCol(TRUE);
 				g_iCamNr = 1;
 			} else if ("1" == cam) {
-					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
+					if (verbose) llOwnerSay(MSG_EMPTY + cam + MSG_CYCLE);
 					++g_iCamNr;
 					cam = "2";
 					i = TRUE;
@@ -575,7 +579,7 @@ setCam(string cam)
 				setButtonCol(TRUE);
 				g_iCamNr = 2;
 			} else if ("2" == cam) {
-					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
+					if (verbose) llOwnerSay(MSG_EMPTY + cam + MSG_CYCLE);
 					++g_iCamNr;
 					cam = "3";
 					i = TRUE;
@@ -589,7 +593,7 @@ setCam(string cam)
 				setButtonCol(TRUE);
 				g_iCamNr = 3;
 			} else if ("3" == cam) {
-					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
+					if (verbose) llOwnerSay(MSG_EMPTY + cam + MSG_CYCLE);
 					++g_iCamNr;
 					cam = "4";
 					i = TRUE;
@@ -603,7 +607,7 @@ setCam(string cam)
 				setButtonCol(TRUE);
 				g_iCamNr = 4;
 			} else if ("4" == cam) {
-					if (verbose) llOwnerSay("no position saved on slot " +cam+", cycling to next one");
+					if (verbose) llOwnerSay(MSG_EMPTY + cam + MSG_CYCLE);
 					g_iCamNr = 1;
 					cam = "1";
 					i = TRUE;
@@ -611,11 +615,14 @@ setCam(string cam)
 		} else {
 			g_iCamNr = 0;
 			if (verbose) llOwnerSay("Incorrect camera chosen ("+cam+")");
+			return;
 		}
 
 		if (debug) Debug("end of do while, cam set to: "+cam+"-"+(string)i+(string)j, FALSE, FALSE);
 	} while (i && (++j < 4));
-	if (verbose && g_iCamNr) llOwnerSay("Camera "+(string)g_iCamNr);
+
+	if (g_iCamNr) { if (verbose) llOwnerSay("Camera "+(string)g_iCamNr); }
+		else llOwnerSay(MSG_EMPTY +cam);
 	if (debug) Debug("end setCam", FALSE, FALSE);
 }
 
@@ -786,7 +793,7 @@ default
 					if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 						if (verbose) status = "on";
-						llDialog(g_kOwner, "Script version: "+g_sVersion+"\n\nWhat do you want to do?\n\tverbose: "+status, MENU_MAIN, CH); // present dialog on click
+						llDialog(g_kOwner, MSG_VER + g_sVersion + MSG_DIALOG + status, MENU_MAIN, CH); // present dialog on click
 					} else if (4 == g_iNr) setCam("cam1");
 					else if (5 == g_iNr) setCam("cam2");
 					else if (6 == g_iNr) setCam("cam3");
@@ -829,11 +836,13 @@ default
 	{
 			message = llToLower(message);
 			string status = "off";
+			if (verbose) status = "on";
+
 			if ("more..." == message) llDialog(id, "Pick an option!",
 				["...Back", "help", "CLOSE",
 				"Me", "Worm", "Drop",
 				"Spin", "Spaz", "---", "DEFAULT","Center", "STANDARD"], CH); // present submenu on request
-			else if ("...back" == message) llDialog(id, "Script version: "+g_sVersion+"\n\nWhat do you want to do?", MENU_MAIN, CH); // present main menu on request to go back
+			else if ("...back" == message) llDialog(id, MSG_VER + g_sVersion + MSG_DIALOG + status, MENU_MAIN, CH); // present main menu on request to go back
 			else if ("help" == message) { infoLines(TRUE); }
 			else if ("verbose" == message) {
 				verbose = !verbose;
@@ -843,10 +852,7 @@ default
 			else if ("distance" == message) {
 				perm = llGetPermissions();
 				if (perm & PERMISSION_CONTROL_CAMERA) toggleDist();
-					else {
-						if (verbose) status = "on";
-						dialogPerms(status);
-					}
+					else dialogPerms(status);
 			} else if ("on" == message) {
 				if (!g_iOn) {
 					perm = llGetPermissions();
@@ -900,12 +906,12 @@ default
 					defCam();
 					llSleep(0.2);
 					setButtonCol(TRUE);
-				}
+				} else llOwnerSay("Invalid option picked (" + message + ").\n"); // not a valid dialog choice
 			} else if (!g_iOn) {
 				if (verbose) status = "on";
 				if ((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA)) dialogTurnOn(status);
 					else dialogPerms(status);
-			} else llOwnerSay("Invalid option picked (" + message + ").\n"); // not a valid dialog choice
+			} else llOwnerSay("something went wrong");
 	}
 
 

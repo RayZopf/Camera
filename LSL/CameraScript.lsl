@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 23:30:12 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 23 00:30:43 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -12,8 +12,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//22. Mrz. 2014
-//v2.6.1
+//23. Mrz. 2014
+//v2.6.2
 //
 
 //Files:
@@ -51,7 +51,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.6.1";
+string g_sVersion = "2.6.2";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -60,6 +60,11 @@ integer CH;
 
 // Constants
 list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","DELETE","Distance","CLEAR","ON","verbose","OFF"];
+//list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
+string MSG_DIALOG = "\n\nWhat do you want to do?\n\tverbose: ";
+string MSG_VER = "Script version: ";
+string MSG_EMPTY = "no position saved on slot ";
+string MSG_CYCLE = ", cycling to next one";
 
 
 // Variables
@@ -214,7 +219,7 @@ setCam(string cam){
                 (g_iCamNr = 1);
             }
             else  if (("1" == cam)) {
-                if (verbose) llOwnerSay((("no position saved on slot " + cam) + ", cycling to next one"));
+                if (verbose) llOwnerSay(((MSG_EMPTY + cam) + MSG_CYCLE));
                 (++g_iCamNr);
                 (cam = "2");
                 (i = 1);
@@ -231,7 +236,7 @@ setCam(string cam){
                 (g_iCamNr = 2);
             }
             else  if (("2" == cam)) {
-                if (verbose) llOwnerSay((("no position saved on slot " + cam) + ", cycling to next one"));
+                if (verbose) llOwnerSay(((MSG_EMPTY + cam) + MSG_CYCLE));
                 (++g_iCamNr);
                 (cam = "3");
                 (i = 1);
@@ -248,7 +253,7 @@ setCam(string cam){
                 (g_iCamNr = 3);
             }
             else  if (("3" == cam)) {
-                if (verbose) llOwnerSay((("no position saved on slot " + cam) + ", cycling to next one"));
+                if (verbose) llOwnerSay(((MSG_EMPTY + cam) + MSG_CYCLE));
                 (++g_iCamNr);
                 (cam = "4");
                 (i = 1);
@@ -265,7 +270,7 @@ setCam(string cam){
                 (g_iCamNr = 4);
             }
             else  if (("4" == cam)) {
-                if (verbose) llOwnerSay((("no position saved on slot " + cam) + ", cycling to next one"));
+                if (verbose) llOwnerSay(((MSG_EMPTY + cam) + MSG_CYCLE));
                 (g_iCamNr = 1);
                 (cam = "1");
                 (i = 1);
@@ -275,11 +280,15 @@ setCam(string cam){
         else  {
             (g_iCamNr = 0);
             if (verbose) llOwnerSay((("Incorrect camera chosen (" + cam) + ")"));
+            return;
         }
         
     }
     while ((i && ((++j) < 4)));
-    if ((verbose && g_iCamNr)) llOwnerSay(("Camera " + ((string)g_iCamNr)));
+    if (g_iCamNr) {
+        if (verbose) llOwnerSay(("Camera " + ((string)g_iCamNr)));
+    }
+    else  llOwnerSay((MSG_EMPTY + cam));
     
 }
 
@@ -476,7 +485,7 @@ default {
                 else  if (g_iOn) {
                     if ((2 == g_iNr)) {
                         if (verbose) (status = "on");
-                        llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nWhat do you want to do?\n\tverbose: ") + status),MENU_MAIN,CH);
+                        llDialog(g_kOwner,(((MSG_VER + g_sVersion) + MSG_DIALOG) + status),MENU_MAIN,CH);
                     }
                     else  if ((4 == g_iNr)) setCam("cam1");
                     else  if ((5 == g_iNr)) setCam("cam2");
@@ -485,7 +494,7 @@ default {
                 }
                 else  {
                     if (verbose) (status = "on");
-                    llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+                    llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
                 }
             }
             else  if ((3 == g_iNr)) {
@@ -511,7 +520,7 @@ default {
         }
         else  {
             if (verbose) (status = "on");
-            llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
     }
 
@@ -522,8 +531,9 @@ default {
 	listen(integer channel,string name,key id,string message) {
         (message = llToLower(message));
         string status = "off";
+        if (verbose) (status = "on");
         if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Me","Worm","Drop","Spin","Spaz","---","DEFAULT","Center","STANDARD"],CH);
-        else  if (("...back" == message)) llDialog(id,(("Script version: " + g_sVersion) + "\n\nWhat do you want to do?"),MENU_MAIN,CH);
+        else  if (("...back" == message)) llDialog(id,(((MSG_VER + g_sVersion) + MSG_DIALOG) + status),MENU_MAIN,CH);
         else  if (("help" == message)) {
             llOwnerSay(("HUD listens on channel: " + ((string)CH)));
             if ((verbose || 1)) {
@@ -554,10 +564,7 @@ default {
                 else  (g_fDist = 0.5);
                 if (g_iOn) setPers();
             }
-            else  {
-                if (verbose) (status = "on");
-                llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
-            }
+            else  llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
         else  if (("on" == message)) {
             if ((!g_iOn)) {
@@ -701,13 +708,14 @@ default {
                 llSleep(0.2);
                 setButtonCol(1);
             }
+            else  llOwnerSay((("Invalid option picked (" + message) + ").\n"));
         }
         else  if ((!g_iOn)) {
             if (verbose) (status = "on");
-            if (((perm & 2048) && (perm & 1024))) llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
-            else  llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            if (((perm & 2048) && (perm & 1024))) llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            else  llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
-        else  llOwnerSay((("Invalid option picked (" + message) + ").\n"));
+        else  llOwnerSay("something went wrong");
     }
 
 
