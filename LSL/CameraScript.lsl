@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 00:50:50 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sat Mar 22 02:34:44 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -10,17 +10,10 @@
 //Search script for "changedefault" to find the line you need to alter to change the default view you see when first attaching the HUD!
 //Higherjacked by Core Taurog, 'cause I do what I'm told!
 //
-//parts from:
-// Script Vitality - keeps the script itself and all scripts in same prim
-// running also in 'dead' areas, those areas where scrpts are not allowed.
-// This works simply by taking avatar controls.
-// Author  Jenna Felton
-// Version 1.0
-//
 //modified by: Zopf Resident - Ray Zopf (Raz)
-//Additions: Abillity to save cam positions
+//Additions: Abillity to save cam positions, gesture support, visual feedback
 //22. Mrz. 2014
-//v2.58
+//v2.60
 //
 
 //Files:
@@ -29,14 +22,15 @@
 //NAME OF NOTEDACRD
 //
 //
-//Prequisites: ----
+//Prequisites: Gestures
 //Notecard format: ----
-//basic help: ----
+//basic help: /8374 help
 //
 //Changelog
 // Formatting
 // LSL Forge modules
 // code cleanup
+// new features
 
 //FIXME: ---
 
@@ -47,7 +41,6 @@
 If an object consists of only one prim, and there are no avatars seated upon it, the (root) prim's link number is zero.
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
 //TODU: cycling to focusCamMe does not work reliablely - same with saved positions
-//TODO: choosing perspective does enable scrpt - but not change color of hud... think about what we want
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -58,7 +51,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.58";
+string g_sVersion = "2.60";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -103,6 +96,18 @@ integer g_iCamPos = 0;
 integer g_iCamNr = 0;
 integer g_iCamLock = 0;
 
+//project specific modules
+//-----------------------------------------------
+
+
+//===============================================
+//PREDEFINED FUNCTIONS
+//===============================================
+
+defCam(){
+    shoulderCamRight();
+}
+
 
 //most important function
 //-----------------------------------------------
@@ -124,10 +129,8 @@ takeCamCtrl(key id){
 releaseCamCtrl(){
     llOwnerSay("release CamCtrl");
     llClearCameraParams();
-    (g_iCamLock = 0);
-    (g_iFar = 0);
+    (g_iCamLock = (g_iFar = (g_iOn = 0)));
     (g_fDist = 0.5);
-    (g_iOn = 0);
     setCol(g_iOn);
 }
 
@@ -151,9 +154,7 @@ setButtonCol(integer on){
         else  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.0,1.0,1.0>,1]);
     }
     else  if ((!on)) {
-        if ((3 <= g_iNr)) {
-            llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.75,0.75,0.75>,0.95]);
-        }
+        if ((3 <= g_iNr)) llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.75,0.75,0.75>,0.95]);
         else  {
             integer i = 4;
             do  llSetLinkPrimitiveParamsFast(i,[18,-1,<0.75,0.75,0.75>,0.95]);
@@ -170,17 +171,11 @@ resetCamPos(){
     (g_vPos2 = (g_vFoc2 = ZERO_VECTOR));
     (g_vPos3 = (g_vFoc3 = ZERO_VECTOR));
     (g_vPos4 = (g_vFoc4 = ZERO_VECTOR));
-    (g_iCam1 = (g_iCam2 = (g_iCam3 = (g_iCam4 = 0))));
-    (g_iCamPos = 0);
+    (g_iCam1 = (g_iCam2 = (g_iCam3 = (g_iCam4 = (g_iCamPos = 0)))));
     if (verbose) llOwnerSay("Saved cam positions deleted");
     (g_iNr = -1);
     setButtonCol(0);
     (g_iNr = NrTmp);
-}
-
-
-defCam(){
-    shoulderCamRight();
 }
 
 
@@ -279,7 +274,7 @@ setCam(string cam){
         
     }
     while ((i && ((++j) < 4)));
-    if ((verbose && g_iCamNr)) llOwnerSay(("cam " + ((string)g_iCamNr)));
+    if ((verbose && g_iCamNr)) llOwnerSay(("Camera " + ((string)g_iCamNr)));
     
 }
 
@@ -333,9 +328,7 @@ setPers(){
             (g_iPersNr = 0);
             (g_iPerspective = 0);
         }
-        else  if ((g_iPerspective == 1)) {
-            shoulderCamRight();
-        }
+        else  if ((g_iPerspective == 1)) shoulderCamRight();
         else  {
             (g_iPerspective = 0);
             defCam();
@@ -355,35 +348,6 @@ setPers(){
 
 default {
 
-/*
-//XXX
-//let it run in noscript areas
-//-----------------------------------------------
-	run_time_permissions(integer perms)
-	{
-		if (perms & PERMISSION_TAKE_CONTROLS) {
-			llOwnerSay("Automatic Group Changer runs in noscript-areas");
-			llTakeControls(CONTROL_DOWN, TRUE, TRUE);
-		}
-	}
-
-//XXX
-	//  This is the magic. Even if empty the event handler makes the script
-	//  to keep the avatar's control. The script itself does not use it.
-	control(key name, integer levels, integer edges)
-	{
-		;
-	}
-
-//XXX
-	//make sure that we always have permissions
-	timer()
-	{
-		if(llGetPermissions() & PERMISSION_TAKE_CONTROLS) return;
-		llRequestPermissions(kOwner, PERMISSION_TAKE_CONTROLS);
-	}
-*/
-
 	state_entry() {
         (CH = 8374);
         (g_kOwner = llGetOwner());
@@ -394,7 +358,6 @@ default {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
         
-        llListenRemove(1);
         llListenRemove(g_iHandle);
         (g_iHandle = llListen(CH,"",g_kOwner,""));
         if ((0 && g_iOn)) llRequestPermissions(g_kOwner,3072);
@@ -415,17 +378,6 @@ default {
     }
 
 
-/*
-//listen for linked messages from other scripts and devices
-//-----------------------------------------------
-	link_message(integer sender_num, integer num, string str, key id)
-	{
-		if(str == "cam") {
-			integer perm = llGetPermissions();
-			if (perm & PERMISSION_CONTROL_CAMERA) llDialog(id, "What do you want to do?", MENU_MAIN, CH); // present dialog on click
-		}
-	}
-*/
 
 	touch_start(integer num_detected) {
         if (verbose) llOwnerSay("*Long touch to save/delete/reset*");
@@ -456,7 +408,7 @@ default {
                 if (g_iMsg2) {
                     (g_iMsg2 = 0);
                     if (verbose) llOwnerSay("touch registered");
-                    setButtonCol(-1);
+                    if ((1 < g_iNr)) setButtonCol(-1);
                 }
                 else  if ((time >= 2.8)) {
                     (g_iMsg = 0);
@@ -658,17 +610,13 @@ default {
             else  if (("cycle" == message)) {
                 (g_iPersNr = 0);
                 (++g_iPerspective);
-                if ((g_iPerspective > 1)) {
-                    (g_iPerspective = -1);
-                }
+                if ((g_iPerspective > 1)) (g_iPerspective = -1);
                 setPers();
             }
             else  if (("cycle2" == message)) {
                 (g_iPersNr = 1);
                 (++g_iPerspective);
-                if ((g_iPerspective > 1)) {
-                    (g_iPerspective = -1);
-                }
+                if ((g_iPerspective > 1)) (g_iPerspective = -1);
                 setPers();
             }
             else  if (("left" == message)) {
@@ -758,7 +706,7 @@ default {
             if (((perm & 2048) && (perm & 1024))) llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
             else  llDialog(g_kOwner,((("Script version: " + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
-        else  llOwnerSay((((name + " picked invalid option '") + message) + "'.\n"));
+        else  llOwnerSay((("Invalid option picked (" + message) + ").\n"));
     }
 
 
@@ -787,7 +735,6 @@ default {
 
 	attach(key id) {
         if ((id == g_kOwner)) {
-            llListenRemove(1);
             llListenRemove(g_iHandle);
             (g_iHandle = llListen(CH,"",g_kOwner,""));
             if ((1 && g_iOn)) llRequestPermissions(g_kOwner,3072);
