@@ -40,7 +40,8 @@
 If an object consists of only one prim, and there are no avatars seated upon it, the (root) prim's link number is zero.
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
 //TODU: cycling to focusCamMe does not work reliablely - same with saved positions
-//test case: set to default, try to set to saved (empty) position, set to default, then try to set to a saved (really saved) position; do that all with a certain speed = fail 
+//test case: set to default, try to set to saved (empty) position, set to default, then try to set to a saved (really saved) position; do that all with a certain speed = fail
+////is the reasond some kind of delay or lag??? use llMinEventDelay for touch events? add llSleep before changing perspectives?
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
