@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //23. Mrz. 2014
-//v2.6.2
+//v2.6.3
 //
 
 //Files:
@@ -41,7 +41,7 @@ If an object consists of only one prim, and there are no avatars seated upon it,
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
 //TODU: cycling to focusCamMe does not work reliablely - same with saved positions
 //test case: set to default, try to set to saved (empty) position, set to default, then try to set to a saved (really saved) position; do that all with a certain speed = fail
-////is the reasond some kind of delay or lag??? use llMinEventDelay for touch events? add llSleep before changing perspectives?
+//is the reasond some kind of delay or lag??? use llMinEventDelay for touch events? add llSleep before changing perspectives?
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -52,7 +52,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.6.2";            // version
+string g_sVersion = "2.6.3";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -63,7 +63,7 @@ integer CH; // dialog channel
 list MENU_MAIN = ["More...", "help", "CLOSE",
 	"Left", "Shoulder", "Right",
 	"DELETE", "Distance", "CLEAR", "ON", "verbose", "OFF"]; // the main menu
-//list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
+//list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as only used once
 string MSG_DIALOG = "\n\nWhat do you want to do?\n\tverbose: ";
 string MSG_VER = "Script version: ";
 string MSG_EMPTY = "no position saved on slot ";
@@ -75,17 +75,11 @@ float DIST_FAR = 2.0;
 // Variables
 integer verbose = TRUE;         // show more/less info during startup
 key g_kOwner;                      // object owner
-//key g_kUser;                       // key of last avatar to touch object
-//key g_kQuery = NULL_KEY;
 float g_fTouchTimer = 1.3;
 integer perm;
 
 integer g_iHandle = 0;
 integer g_iOn = FALSE;
-integer flying;
-integer falling;
-integer spaz = 0;
-integer trap = 0;
 
 // for gesture support
 integer g_iPersNr = 0;
@@ -99,17 +93,17 @@ integer g_iMsg = TRUE;
 integer g_iMsg2 = TRUE;
 vector g_vPos1;
 vector g_vFoc1;
-integer g_iCam1 = FALSE;
+integer g_iCam1;
 vector g_vPos2;
 vector g_vFoc2;
-integer g_iCam2 = FALSE;
+integer g_iCam2;
 vector g_vPos3;
 vector g_vFoc3;
-integer g_iCam3 = FALSE;
+integer g_iCam3;
 vector g_vPos4;
 vector g_vFoc4;
-integer g_iCam4 = FALSE;
-integer g_iCamPos = FALSE;
+integer g_iCam4;
+integer g_iCamPos;
 integer g_iCamNr = 0;
 integer g_iCamLock = FALSE;
 
@@ -123,9 +117,6 @@ integer g_iCamLock = FALSE;
 $import Debug2.lslm(m_sScriptName=g_sScriptName);
 $import MemoryManagement2.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_iVerbose=verbose);
 
-//project specific modules
-//-----------------------------------------------
-
 
 //===============================================
 //PREDEFINED FUNCTIONS
@@ -138,19 +129,27 @@ defCam()
 }
 
 
-// pragma inline
+//gain permissions to use camera
+//-----------------------------------------------
 initExtension(integer conf)
 {
 	setupListen();
-	if (conf && g_iOn) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
+	if (conf) { if (g_iOn) llRequestPermissions(g_kOwner, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA); }
 		else {
-			g_iNr = -1;
-			setButtonCol(FALSE);
+			resetCamPos();
+			setCol();
 		}
-	setCol(g_iOn);
 	llOwnerSay(g_sTitle +" ("+ g_sVersion +") written/enhanced by "+g_sAuthors);
 	if (verbose) MemInfo(FALSE);
 	infoLines(FALSE);
+}
+
+
+// pragma inline
+setupListen()
+{
+	llListenRemove(g_iHandle);
+	g_iHandle = llListen(CH, "", g_kOwner, ""); // listen for dialog answers
 }
 
 
@@ -180,20 +179,12 @@ dialogPerms(string status)
 }
 
 
-//most important function
-//-----------------------------------------------
-takeCamCtrl(key id)
+takeCamCtrl()
 {
 	if (verbose) llOwnerSay("enabling CameraControl HUD"); // say function name for debugging
-	if (id) {
-		g_iNr = -1;
-		setButtonCol(FALSE);
-		llRequestPermissions(id, PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA);
-	} else {
-			llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
-			g_iOn = TRUE;
-			setCol(g_iOn);
-	}
+	llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
+	g_iOn = TRUE;
+	setCol();
 }
 
 
@@ -203,13 +194,13 @@ releaseCamCtrl()
 	llClearCameraParams();
 	g_iCamLock = g_iFar = g_iOn = FALSE;
 	g_fDist = DIST_NEAR;
-	setCol(g_iOn);
+	setCol();
 }
 
 
-setCol(integer on)
+setCol()
 {
-	if (on) {
+	if (g_iOn) {
 		llSetLinkPrimitiveParamsFast(2, [PRIM_COLOR, ALL_SIDES, <1,1,1>, 1]);
 		llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.7,1,1>, 1]);
 	} else {
@@ -224,18 +215,18 @@ setButtonCol(integer on)
 	if (1 == g_iNr) return;
 
 	if (1 == on) {
-		if (2 == g_iNr) llSetLinkPrimitiveParamsFast(2, [PRIM_COLOR, ALL_SIDES, <1,1,1>, 1]);
-		else if (3 == g_iNr) llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.7,1,1>, 1]);
+		if (2 == g_iNr) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,1,1>, 1]);  //white, as main button texture hold the 'on' color
+		else if (3 == g_iNr) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0.7,1,1>, 1]);
 		else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 	} else if (!on) {
 		if (2 < g_iNr) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
 		else {
 			integer i = 4;
 			do
-				llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
+				llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);   // all saved cam positions buttons grey
 			while (7 > i++ );
 		}
-	} else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,0,1>, 1]);
+	} else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,0,1>, 1]);   //pink button
 }
 
 
@@ -636,7 +627,7 @@ toggleDist()
 		g_iFar = FALSE;
 		releaseCamCtrl();
 	} else if (!g_iOn) {
-		takeCamCtrl("");
+		takeCamCtrl();
 	} else g_iFar = TRUE;
 
 	if (g_iFar) g_fDist = DIST_FAR;
@@ -674,15 +665,6 @@ setPers()
 			defCam();
 		}
 	}
-}
-
-
-// pragma inline
-setupListen()
-{
-	llListenRemove(g_iHandle);
-	//CH = -50000 -llRound(llFrand(1) * 100000);
-	g_iHandle = llListen(CH, "", g_kOwner, ""); // listen for dialog answers
 }
 
 
@@ -787,8 +769,10 @@ default
 			g_iCamPos = TRUE;
 		} else if (perm & PERMISSION_CONTROL_CAMERA) {
 			if (time < g_fTouchTimer) {
-				if (3 == g_iNr) { if (g_iOn) setButtonCol(TRUE); slCam(); }
-				else if (g_iOn) {
+				if (3 == g_iNr) {
+					if (g_iOn) setButtonCol(TRUE);
+					slCam();
+				} else if (g_iOn) {
 					if (2 == g_iNr) {
 					// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 						if (verbose) status = "on";
@@ -797,8 +781,7 @@ default
 					else if (5 == g_iNr) setCam("cam2");
 					else if (6 == g_iNr) setCam("cam3");
 					else if (7 == g_iNr) setCam("cam4");
-				}
-				else {
+				} else {
 					if (verbose) status = "on";
 					dialogTurnOn(status);
 				}
@@ -817,7 +800,7 @@ default
 					defCam();
 					if (verbose) llOwnerSay("Setting default view");
 				} else {
-					takeCamCtrl("");
+					takeCamCtrl();
 					defCam();
 				}
 			}
@@ -856,9 +839,12 @@ default
 				if (!g_iOn) {
 					perm = llGetPermissions();
 					if ((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA)) {
-						takeCamCtrl("");
+						takeCamCtrl();
 						defCam();
-					} else takeCamCtrl(id);
+					} else {
+						g_iOn = TRUE;
+						initExtension(TRUE);
+					}
 				}
 			} else if ("off" == message) { releaseCamCtrl(); }
 			else if ("clear" == message) {
@@ -919,7 +905,8 @@ default
 		if (perm & PERMISSION_CONTROL_CAMERA) {
 			llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
 			g_iOn = TRUE;
-			setCol(g_iOn);
+			resetCamPos();
+			setCol();
 			llOwnerSay("Camera permissions have been taken \nAvatar key: "+(string)llGetPermissionsKey());
 			setPers();
 		}

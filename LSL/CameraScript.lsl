@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 23 03:44:59 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 23 17:23:50 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -13,7 +13,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //23. Mrz. 2014
-//v2.6.2
+//v2.6.3
 //
 
 //Files:
@@ -42,7 +42,7 @@ If an object consists of only one prim, and there are no avatars seated upon it,
 However, if the object is made up of multiple prims or there is an avatar seated upon the object, the root prim's link number is one.*/
 //TODU: cycling to focusCamMe does not work reliablely - same with saved positions
 //test case: set to default, try to set to saved (empty) position, set to default, then try to set to a saved (really saved) position; do that all with a certain speed = fail
-////is the reasond some kind of delay or lag??? use llMinEventDelay for touch events? add llSleep before changing perspectives?
+//is the reasond some kind of delay or lag??? use llMinEventDelay for touch events? add llSleep before changing perspectives?
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -53,7 +53,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.6.2";
+string g_sVersion = "2.6.3";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -62,7 +62,7 @@ integer CH;
 
 // Constants
 list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","DELETE","Distance","CLEAR","ON","verbose","OFF"];
-//list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as iy only used once
+//list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as only used once
 string MSG_DIALOG = "\n\nWhat do you want to do?\n\tverbose: ";
 string MSG_VER = "Script version: ";
 string MSG_EMPTY = "no position saved on slot ";
@@ -89,22 +89,19 @@ integer g_iMsg = 1;
 integer g_iMsg2 = 1;
 vector g_vPos1;
 vector g_vFoc1;
-integer g_iCam1 = 0;
+integer g_iCam1;
 vector g_vPos2;
 vector g_vFoc2;
-integer g_iCam2 = 0;
+integer g_iCam2;
 vector g_vPos3;
 vector g_vFoc3;
-integer g_iCam3 = 0;
+integer g_iCam3;
 vector g_vPos4;
 vector g_vFoc4;
-integer g_iCam4 = 0;
-integer g_iCamPos = 0;
+integer g_iCam4;
+integer g_iCamPos;
 integer g_iCamNr = 0;
 integer g_iCamLock = 0;
-
-//project specific modules
-//-----------------------------------------------
 
 
 //===============================================
@@ -116,20 +113,37 @@ defCam(){
 }
 
 
-//most important function
+//gain permissions to use camera
 //-----------------------------------------------
-takeCamCtrl(key id){
-    if (verbose) llOwnerSay("enabling CameraControl HUD");
-    if (id) {
-        (g_iNr = -1);
-        setButtonCol(0);
-        llRequestPermissions(id,3072);
+initExtension(integer conf){
+    llListenRemove(g_iHandle);
+    (g_iHandle = llListen(CH,"",g_kOwner,""));
+    if (conf) {
+        if (g_iOn) llRequestPermissions(g_kOwner,3072);
     }
     else  {
-        llSetCameraParams([12,1]);
-        (g_iOn = 1);
-        setCol(g_iOn);
+        resetCamPos();
+        setCol();
     }
+    llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
+    if (verbose) {
+        
+        llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
+    }
+    llOwnerSay(("HUD listens on channel: " + ((string)CH)));
+    if ((verbose || 0)) {
+        llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off*");
+        llOwnerSay("Long touch on CameraControl button for on/default view\ntouch death sign to get SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
+        llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries");
+    }
+}
+
+
+takeCamCtrl(){
+    if (verbose) llOwnerSay("enabling CameraControl HUD");
+    llSetCameraParams([12,1]);
+    (g_iOn = 1);
+    setCol();
 }
 
 
@@ -138,12 +152,12 @@ releaseCamCtrl(){
     llClearCameraParams();
     (g_iCamLock = (g_iFar = (g_iOn = 0)));
     (g_fDist = 0.5);
-    setCol(g_iOn);
+    setCol();
 }
 
 
-setCol(integer on){
-    if (on) {
+setCol(){
+    if (g_iOn) {
         llSetLinkPrimitiveParamsFast(2,[18,-1,<1.0,1.0,1.0>,1]);
         llSetLinkPrimitiveParamsFast(3,[18,-1,<0.7,1.0,1.0>,1]);
     }
@@ -157,8 +171,8 @@ setCol(integer on){
 setButtonCol(integer on){
     if ((1 == g_iNr)) return;
     if ((1 == on)) {
-        if ((2 == g_iNr)) llSetLinkPrimitiveParamsFast(2,[18,-1,<1.0,1.0,1.0>,1]);
-        else  if ((3 == g_iNr)) llSetLinkPrimitiveParamsFast(3,[18,-1,<0.7,1.0,1.0>,1]);
+        if ((2 == g_iNr)) llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<1.0,1.0,1.0>,1]);
+        else  if ((3 == g_iNr)) llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.7,1.0,1.0>,1]);
         else  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.0,1.0,1.0>,1]);
     }
     else  if ((!on)) {
@@ -373,25 +387,7 @@ default {
             llOwnerSay((((("(v) " + g_sTitle) + "/") + g_sScriptName) + " - could not set memory limit"));
         }
         
-        llListenRemove(g_iHandle);
-        (g_iHandle = llListen(CH,"",g_kOwner,""));
-        if ((0 && g_iOn)) llRequestPermissions(g_kOwner,3072);
-        else  {
-            (g_iNr = -1);
-            setButtonCol(0);
-        }
-        setCol(g_iOn);
-        llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
-        if (verbose) {
-            
-            llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
-        }
-        llOwnerSay(("HUD listens on channel: " + ((string)CH)));
-        if ((verbose || 0)) {
-            llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off*");
-            llOwnerSay("Long touch on CameraControl button for on/default view\ntouch death sign to get SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-            llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries");
-        }
+        initExtension(0);
     }
 
 
@@ -512,7 +508,7 @@ default {
                     if (verbose) llOwnerSay("Setting default view");
                 }
                 else  {
-                    takeCamCtrl("");
+                    takeCamCtrl();
                     defCam();
                 }
             }
@@ -556,7 +552,7 @@ default {
                     releaseCamCtrl();
                 }
                 else  if ((!g_iOn)) {
-                    takeCamCtrl("");
+                    takeCamCtrl();
                 }
                 else  (g_iFar = 1);
                 if (g_iFar) (g_fDist = 2.0);
@@ -569,10 +565,13 @@ default {
             if ((!g_iOn)) {
                 (perm = llGetPermissions());
                 if (((perm & 2048) && (perm & 1024))) {
-                    takeCamCtrl("");
+                    takeCamCtrl();
                     defCam();
                 }
-                else  takeCamCtrl(id);
+                else  {
+                    (g_iOn = 1);
+                    initExtension(1);
+                }
             }
         }
         else  if (("off" == message)) {
@@ -723,7 +722,8 @@ default {
         if ((_perm0 & 2048)) {
             llSetCameraParams([12,1]);
             (g_iOn = 1);
-            setCol(g_iOn);
+            resetCamPos();
+            setCol();
             llOwnerSay(("Camera permissions have been taken \nAvatar key: " + ((string)llGetPermissionsKey())));
             setPers();
         }
@@ -743,25 +743,7 @@ default {
 
 	attach(key id) {
         if ((id == g_kOwner)) {
-            llListenRemove(g_iHandle);
-            (g_iHandle = llListen(CH,"",g_kOwner,""));
-            if ((1 && g_iOn)) llRequestPermissions(g_kOwner,3072);
-            else  {
-                (g_iNr = -1);
-                setButtonCol(0);
-            }
-            setCol(g_iOn);
-            llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
-            if (verbose) {
-                
-                llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
-            }
-            llOwnerSay(("HUD listens on channel: " + ((string)CH)));
-            if ((verbose || 0)) {
-                llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off*");
-                llOwnerSay("Long touch on CameraControl button for on/default view\ntouch death sign to get SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-                llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries");
-            }
+            initExtension(1);
         }
         else  llResetScript();
     }
