@@ -228,7 +228,7 @@ setButtonCol(integer on)
 		else if (3 == g_iNr) llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.7,1,1>, 1]);
 		else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,1>, 1]);
 	} else if (!on) {
-		if (3 <= g_iNr) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
+		if (2 < g_iNr) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
 		else {
 			integer i = 4;
 			do
@@ -729,7 +729,7 @@ default
 			if (!((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA))) {
 				g_iMsg = FALSE;
 				g_iOn = FALSE;
-				g_iNr = 1;
+				g_iNr = 2;
 				do {
 					setButtonCol(-1);
 				} while (7 > g_iNr++);
@@ -742,13 +742,11 @@ default
 				if (g_iMsg2) {
 					g_iMsg2 = FALSE;
 					if (verbose) llOwnerSay("touch registered");
-					if (1 < g_iNr) setButtonCol(-1);
+					setButtonCol(-1);
 				} else if (time >= (g_fTouchTimer + 1.5)) {
 					g_iMsg = FALSE;
 					if (verbose) llOwnerSay("long touch registered");
-					if (3 == g_iNr) {
-						setButtonCol(FALSE);
-					}
+					if (3 == g_iNr) setButtonCol(FALSE);
 				}
 			}
 		}

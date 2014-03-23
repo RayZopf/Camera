@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 23 02:14:43 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 23 03:44:59 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -162,7 +162,7 @@ setButtonCol(integer on){
         else  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.0,1.0,1.0>,1]);
     }
     else  if ((!on)) {
-        if ((3 <= g_iNr)) llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.75,0.75,0.75>,0.95]);
+        if ((2 < g_iNr)) llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.75,0.75,0.75>,0.95]);
         else  {
             integer i = 4;
             do  llSetLinkPrimitiveParamsFast(i,[18,-1,<0.75,0.75,0.75>,0.95]);
@@ -412,7 +412,7 @@ default {
             if ((!((perm & 2048) && (perm & 1024)))) {
                 (g_iMsg = 0);
                 (g_iOn = 0);
-                (g_iNr = 1);
+                (g_iNr = 2);
                 do  {
                     setButtonCol(-1);
                 }
@@ -425,14 +425,12 @@ default {
                 if (g_iMsg2) {
                     (g_iMsg2 = 0);
                     if (verbose) llOwnerSay("touch registered");
-                    if ((1 < g_iNr)) setButtonCol(-1);
+                    setButtonCol(-1);
                 }
                 else  if ((time >= 2.8)) {
                     (g_iMsg = 0);
                     if (verbose) llOwnerSay("long touch registered");
-                    if ((3 == g_iNr)) {
-                        setButtonCol(0);
-                    }
+                    if ((3 == g_iNr)) setButtonCol(0);
                 }
             }
         }
