@@ -614,7 +614,6 @@ setCam(string cam)
 					i = TRUE;
 			} else g_iCamNr = 0;
 		} else {
-			g_iCamNr = 0;
 			if (verbose) llOwnerSay("Incorrect camera chosen ("+cam+")");
 			return;
 		}

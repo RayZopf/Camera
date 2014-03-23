@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 23 01:09:25 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Sun Mar 23 01:32:40 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -279,7 +279,6 @@ setCam(string cam){
             else  (g_iCamNr = 0);
         }
         else  {
-            (g_iCamNr = 0);
             if (verbose) llOwnerSay((("Incorrect camera chosen (" + cam) + ")"));
             return;
         }
