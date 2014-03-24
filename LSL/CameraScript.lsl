@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Sun Mar 23 17:23:50 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Mon Mar 24 01:55:43 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -12,8 +12,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//23. Mrz. 2014
-//v2.6.3
+//24. Mrz. 2014
+//v2.6.4
 //
 
 //Files:
@@ -53,7 +53,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.6.3";
+string g_sVersion = "2.6.4";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -116,26 +116,34 @@ defCam(){
 //gain permissions to use camera
 //-----------------------------------------------
 initExtension(integer conf){
+    llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
     llListenRemove(g_iHandle);
     (g_iHandle = llListen(CH,"",g_kOwner,""));
-    if (conf) {
-        if (g_iOn) llRequestPermissions(g_kOwner,3072);
-    }
-    else  {
-        resetCamPos();
-        setCol();
-    }
-    llOwnerSay(((((g_sTitle + " (") + g_sVersion) + ") written/enhanced by ") + g_sAuthors));
+    llOwnerSay((("Camera Control HUD listens on channel: " + ((string)CH)) + "\n"));
     if (verbose) {
         
         llOwnerSay(((((((((("\n\t-used/max available memory: " + ((string)llGetUsedMemory())) + "/") + ((string)llGetMemoryLimit())) + " - free: ") + ((string)llGetFreeMemory())) + "-\n(v) ") + g_sTitle) + "/") + g_sScriptName));
     }
-    llOwnerSay(("HUD listens on channel: " + ((string)CH)));
-    if ((verbose || 0)) {
-        llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off*");
-        llOwnerSay("Long touch on CameraControl button for on/default view\ntouch death sign to get SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-        llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries");
+    if (conf) {
+        if (g_iOn) {
+            llRequestPermissions(g_kOwner,3072);
+            if (verbose) infoLines();
+        }
+        else  resetCamPos();
     }
+    else  {
+        resetCamPos();
+        setCol();
+        if (verbose) infoLines();
+    }
+}
+
+
+infoLines(){
+    llOwnerSay(("\nHUD listens on channel: " + ((string)CH)));
+    llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off*");
+    llOwnerSay("Long touch on CameraControl button for on/default view\ntouch death sign to get SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
+    llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries\n");
 }
 
 
@@ -182,6 +190,11 @@ setButtonCol(integer on){
             do  llSetLinkPrimitiveParamsFast(i,[18,-1,<0.75,0.75,0.75>,0.95]);
             while ((7 > (i++)));
         }
+    }
+    else  if ((!(~g_iNr))) {
+        (g_iNr = 2);
+        do  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<1.0,0.0,1.0>,1]);
+        while ((7 > (g_iNr++)));
     }
     else  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<1.0,0.0,1.0>,1]);
 }
@@ -405,14 +418,11 @@ default {
 
 	touch(integer num_detected) {
         if (g_iMsg) {
-            if ((!((perm & 2048) && (perm & 1024)))) {
+            if (((!(perm & 2048)) || (!(perm & 1024)))) {
                 (g_iMsg = 0);
-                (g_iOn = 0);
-                (g_iNr = 2);
-                do  {
-                    setButtonCol(-1);
-                }
-                while ((7 > (g_iNr++)));
+                (g_iOn = -1);
+                (g_iNr = -1);
+                setButtonCol(-1);
                 llOwnerSay("To work camera permissions are needed\nend clicking to get menu");
                 return;
             }
@@ -436,9 +446,16 @@ default {
 
 	touch_end(integer num_detected) {
         (g_iMsg = (g_iMsg2 = 1));
-        float time = llGetTime();
         string status = "off";
-        if ((((time > 1.3) && (3 < g_iNr)) && (perm & 1024))) {
+        float time;
+        if ((!(~g_iOn))) {
+            (g_iOn = 0);
+            if (verbose) (status = "on");
+            llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            return;
+        }
+        else  (time = llGetTime());
+        if (((time > 1.3) && (3 < g_iNr))) {
             if ((4 == g_iNr)) {
                 (g_vPos1 = llGetCameraPos());
                 (g_vFoc1 = (g_vPos1 + llRot2Fwd(llGetCameraRot())));
@@ -468,54 +485,51 @@ default {
             setButtonCol(1);
             (g_iCamPos = 1);
         }
-        else  if ((perm & 2048)) {
-            if ((time < 1.3)) {
-                if ((3 == g_iNr)) {
-                    if (g_iOn) setButtonCol(1);
-                    llClearCameraParams();
-                    llSetCameraParams([12,1]);
-                    (g_iCamLock = 0);
-                    llOwnerSay("Resetting view to SL standard");
-                }
-                else  if (g_iOn) {
-                    if ((2 == g_iNr)) {
-                        if (verbose) (status = "on");
-                        llDialog(g_kOwner,(((MSG_VER + g_sVersion) + MSG_DIALOG) + status),MENU_MAIN,CH);
-                    }
-                    else  if ((4 == g_iNr)) setCam("cam1");
-                    else  if ((5 == g_iNr)) setCam("cam2");
-                    else  if ((6 == g_iNr)) setCam("cam3");
-                    else  if ((7 == g_iNr)) setCam("cam4");
-                }
-                else  {
+        else  if ((time < 1.3)) {
+            if ((3 == g_iNr)) {
+                if (g_iOn) setButtonCol(1);
+                llClearCameraParams();
+                llSetCameraParams([12,1]);
+                (g_iCamLock = 0);
+                llOwnerSay("Resetting view to SL standard");
+            }
+            else  if (g_iOn) {
+                if ((2 == g_iNr)) {
                     if (verbose) (status = "on");
-                    llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+                    llDialog(g_kOwner,(((MSG_VER + g_sVersion) + MSG_DIALOG) + status),MENU_MAIN,CH);
                 }
+                else  if ((4 == g_iNr)) setCam("cam1");
+                else  if ((5 == g_iNr)) setCam("cam2");
+                else  if ((6 == g_iNr)) setCam("cam3");
+                else  if ((7 == g_iNr)) setCam("cam4");
             }
-            else  if ((3 == g_iNr)) {
-                resetCamPos();
-                if ((time < 2.8)) {
-                    
-                    if (g_iOn) setButtonCol(1);
-                    else  setButtonCol(0);
-                }
-                else  releaseCamCtrl();
+            else  {
+                if (verbose) (status = "on");
+                llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
             }
-            else  if ((2 >= g_iNr)) {
-                if (g_iOn) {
-                    setButtonCol(1);
-                    defCam();
-                    if (verbose) llOwnerSay("Setting default view");
-                }
-                else  {
-                    takeCamCtrl();
-                    defCam();
-                }
+        }
+        else  if ((3 == g_iNr)) {
+            resetCamPos();
+            if ((time < 2.8)) {
+                
+                if (g_iOn) setButtonCol(1);
+                else  setButtonCol(0);
+            }
+            else  releaseCamCtrl();
+        }
+        else  if ((2 >= g_iNr)) {
+            if (g_iOn) {
+                setButtonCol(1);
+                defCam();
+                if (verbose) llOwnerSay("Setting default view");
+            }
+            else  {
+                takeCamCtrl();
+                defCam();
             }
         }
         else  {
-            if (verbose) (status = "on");
-            llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            llOwnerSay("Touching Camera Control HUD mysteriously led to a fail");
         }
     }
 
@@ -525,53 +539,51 @@ default {
 //-----------------------------------------------
 	listen(integer channel,string name,key id,string message) {
         (message = llToLower(message));
+        if ((("---" == message) || ("close" == message))) return;
         string status = "off";
         if (verbose) (status = "on");
+        (perm = llGetPermissions());
+        if (((!(perm & 2048)) || (!(perm & 1024)))) {
+            (g_iOn = 0);
+            (g_iNr = -1);
+            setButtonCol(-1);
+            if (("on" == message)) {
+                (g_iOn = 1);
+                initExtension(1);
+                resetCamPos();
+            }
+            else  llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            return;
+        }
         if (("more..." == message)) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Me","Worm","Drop","Spin","Spaz","---","DEFAULT","Center","STANDARD"],CH);
         else  if (("...back" == message)) llDialog(id,(((MSG_VER + g_sVersion) + MSG_DIALOG) + status),MENU_MAIN,CH);
         else  if (("help" == message)) {
-            llOwnerSay(("HUD listens on channel: " + ((string)CH)));
-            if ((verbose || 1)) {
-                llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off*");
-                llOwnerSay("Long touch on CameraControl button for on/default view\ntouch death sign to get SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-                llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries");
-            }
+            infoLines();
         }
         else  if (("verbose" == message)) {
             (verbose = (!verbose));
             if (verbose) llOwnerSay("Verbose messages turned ON");
             else  llOwnerSay("Verbose messages turned OFF");
         }
-        else  if ((("---" == message) || ("close" == message))) return;
         else  if (("distance" == message)) {
-            (perm = llGetPermissions());
-            if ((perm & 2048)) {
-                if (g_iFar) {
-                    (g_iOn = 0);
-                    (g_iFar = 0);
-                    releaseCamCtrl();
-                }
-                else  if ((!g_iOn)) {
-                    takeCamCtrl();
-                }
-                else  (g_iFar = 1);
-                if (g_iFar) (g_fDist = 2.0);
-                else  (g_fDist = 0.5);
-                if (g_iOn) setPers();
+            if (g_iFar) {
+                (g_iOn = 0);
+                (g_iFar = 0);
+                releaseCamCtrl();
             }
-            else  llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            else  if ((!g_iOn)) {
+                takeCamCtrl();
+            }
+            else  (g_iFar = 1);
+            if (g_iFar) (g_fDist = 2.0);
+            else  (g_fDist = 0.5);
+            if (g_iOn) setPers();
         }
         else  if (("on" == message)) {
             if ((!g_iOn)) {
-                (perm = llGetPermissions());
-                if (((perm & 2048) && (perm & 1024))) {
-                    takeCamCtrl();
-                    defCam();
-                }
-                else  {
-                    (g_iOn = 1);
-                    initExtension(1);
-                }
+                if (verbose) infoLines();
+                takeCamCtrl();
+                defCam();
             }
         }
         else  if (("off" == message)) {
@@ -689,8 +701,8 @@ default {
             }
             else  if (("spaz" == message)) {
                 if (verbose) llOwnerSay("Spaz cam for 7 seconds");
-                float _i15;
-                for ((_i15 = 0); (_i15 < 70); (_i15 += 1)) {
+                float _i14;
+                for ((_i14 = 0); (_i14 < 70); (_i14 += 1)) {
                     vector xyz = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                     vector xyz2 = (llGetPos() + <(llFrand(80.0) - 40),(llFrand(80.0) - 40),llFrand(10.0)>);
                     llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,(llFrand(125.0) - 45),13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<(llFrand(20.0) - 10),(llFrand(20.0) - 10),(llFrand(20) - 10)>]);
@@ -709,9 +721,7 @@ default {
             else  llOwnerSay((("Invalid option picked (" + message) + ").\n"));
         }
         else  if ((!g_iOn)) {
-            if (verbose) (status = "on");
-            if (((perm & 2048) && (perm & 1024))) llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
-            else  llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
+            llDialog(g_kOwner,(((MSG_VER + g_sVersion) + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: ") + status),["verbose","help","CLOSE","ON"],CH);
         }
         else  llOwnerSay("something went wrong");
     }
@@ -719,13 +729,15 @@ default {
 
 
 	run_time_permissions(integer _perm0) {
-        if ((_perm0 & 2048)) {
+        if (((_perm0 & 2048) && (_perm0 & 1024))) {
             llSetCameraParams([12,1]);
-            (g_iOn = 1);
-            resetCamPos();
             setCol();
-            llOwnerSay(("Camera permissions have been taken \nAvatar key: " + ((string)llGetPermissionsKey())));
+            llOwnerSay(("Camera permissions have been taken; Avatar key: " + ((string)llGetPermissionsKey())));
             setPers();
+        }
+        else  {
+            (g_iOn = 0);
+            llOwnerSay((g_sScriptName + " did not gain needed permissions"));
         }
     }
 
@@ -742,9 +754,12 @@ default {
 
 
 	attach(key id) {
-        if ((id == g_kOwner)) {
-            initExtension(1);
+        if (id) {
+            if ((id == g_kOwner)) initExtension(1);
         }
-        else  llResetScript();
+        else  if ((!g_iOn)) {
+            llSleep(1.5);
+            llResetScript();
+        }
     }
 }
