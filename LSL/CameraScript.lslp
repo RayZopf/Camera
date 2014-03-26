@@ -11,8 +11,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//24. Mrz. 2014
-//v2.6.4
+//27. Mrz. 2014
+//v2.7.1
 //
 
 //Files:
@@ -52,7 +52,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.6.4";            // version
+string g_sVersion = "2.7.0";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -695,7 +695,7 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		MemRestrict(50000, FALSE);
+		//MemRestrict(50000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -771,10 +771,11 @@ default
 				g_iCam3 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
 			} else if (7 == g_iNr) {
-				g_vPos4 = llGetCameraPos();
-				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
-				g_iCam4 = TRUE;
-				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
+				state grantedPermissions;
+//				g_vPos4 = llGetCameraPos();
+//				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
+//				g_iCam4 = TRUE;
+//				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
 			} else return;
 
 			if (verbose) llOwnerSay("Cam position saved");
@@ -793,7 +794,7 @@ default
 				} else if (4 == g_iNr) setCam("cam1");
 				else if (5 == g_iNr) setCam("cam2");
 				else if (6 == g_iNr) setCam("cam3");
-				else if (7 == g_iNr) setCam("cam4");
+				//else if (7 == g_iNr) setCam("cam4");
 			} else {
 				if (verbose) status = "on";
 				dialogTurnOn(status);
@@ -950,4 +951,59 @@ default
 //-----------------------------------------------
 //END STATE: default
 //-----------------------------------------------
+}
+
+state grantedPermissions
+{
+	
+	state_entry()
+	{
+		llOwnerSay("in sync state");
+		CH = 8374;
+		setupListen();
+	}
+
+	touch_start(integer num_detected)
+	{
+		if (verbose) llOwnerSay("*short touch to disable syncing, long touch to leave sync*");
+		llResetTime();
+		g_iNr = llDetectedLinkNumber(0);
+		if (7 == g_iNr && g_iOn) setButtonCol(FALSE);
+	}
+
+
+	touch(integer num_detected)
+	{
+		float time = llGetTime();
+		if (time > g_fTouchTimer) {
+			if (g_iMsg) {
+					g_iMsg = FALSE;
+					if (verbose) llOwnerSay("touch registered");
+					if (7 == g_iNr) setButtonCol(-1);
+			}
+		}
+	}
+	
+	touch_end(integer num_detected)
+	{
+		g_iMsg = TRUE;
+		g_iNr = llDetectedLinkNumber(0);
+		if (llGetTime() > g_fTouchTimer && 7 == g_iNr) {
+			llOwnerSay("leaving sync state");
+			state default;
+		}
+	}
+
+
+	listen(integer channel, string name, key id, string message)
+	{
+		llOwnerSay("leaving sync state");
+		state default;
+	}
+
+    
+    link_message(integer link, integer num, string str, key id)
+    {
+        savedCam((vector)((string)id), (vector)str);
+    }
 }
