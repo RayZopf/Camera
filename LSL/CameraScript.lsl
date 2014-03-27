@@ -1,4 +1,4 @@
-// LSL script generated: LSL.CameraScript.lslp Thu Mar 27 00:27:17 Mitteleuropäische Zeit 2014
+// LSL script generated: LSL.CameraScript.lslp Thu Mar 27 02:26:29 Mitteleuropäische Zeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -13,7 +13,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //27. Mrz. 2014
-//v2.7.1
+//v2.7.3
 //
 
 //Files:
@@ -43,6 +43,10 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //TODU: cycling to focusCamMe does not work reliablely - same with saved positions
 //test case: set to default, try to set to saved (empty) position, set to default, then try to set to a saved (really saved) position; do that all with a certain speed = fail
 //is the reasond some kind of delay or lag??? use llMinEventDelay for touch events? add llSleep before changing perspectives?
+//NASTY: http://wiki.secondlife.com/wiki/Listen 
+//A prim cannot hear/listen to chat it generates.
+// The location of the listen is not at the listening prim's location but at the root prim's location. This is to deter people using child prims for spying over parcel boundaries. Chat generating functions on the other hand generate chat at the calling prim's location (and not at the root prim's location).
+//TODO: Gesture to 'toggle' cam sync
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -53,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.7.0";
+string g_sVersion = "2.7.3";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -102,6 +106,9 @@ integer g_iCam4;
 integer g_iCamPos;
 integer g_iCamNr = 0;
 integer g_iCamLock = 0;
+
+integer g_iSync = 0;
+integer g_iRequest = 0;
 
 
 //===============================================
@@ -470,7 +477,15 @@ default {
                 
             }
             else  if ((7 == g_iNr)) {
-                state grantedPermissions;
+                (g_iRequest = (!g_iRequest));
+                if (g_iRequest) {
+                    llOwnerSay("requesting cam");
+                    llMessageLinked(1,1,"start",g_kOwner);
+                }
+                else  {
+                    llOwnerSay("releasing cam");
+                    llMessageLinked(1,1,"stop",g_kOwner);
+                }
             }
             else  return;
             if (verbose) llOwnerSay("Cam position saved");
@@ -493,6 +508,14 @@ default {
                 else  if ((4 == g_iNr)) setCam("cam1");
                 else  if ((5 == g_iNr)) setCam("cam2");
                 else  if ((6 == g_iNr)) setCam("cam3");
+                else  if ((7 == g_iNr)) {
+                    if (g_iRequest) {
+                        (g_iSync = (!g_iSync));
+                        if (g_iSync) llOwnerSay("sync active");
+                        else  llOwnerSay("sync not active");
+                    }
+                    else  llOwnerSay("no cam to sync requested");
+                }
             }
             else  {
                 if (verbose) (status = "on");
@@ -719,6 +742,12 @@ default {
 
 
 
+    link_message(integer link,integer num,string str,key id) {
+        if (g_iSync) savedCam(((vector)((string)id)),((vector)str));
+    }
+
+
+
 	run_time_permissions(integer _perm0) {
         if (((_perm0 & 2048) && (_perm0 & 1024))) {
             llSetCameraParams([12,1]);
@@ -752,61 +781,5 @@ default {
             llSleep(1.5);
             llResetScript();
         }
-    }
-}
-
-state grantedPermissions {
-
-	
-	state_entry() {
-        llOwnerSay("in sync state");
-        (CH = 8374);
-        llListenRemove(g_iHandle);
-        (g_iHandle = llListen(CH,"",g_kOwner,""));
-        llOwnerSay((("Camera Control HUD listens on channel: " + ((string)CH)) + "\n"));
-    }
-
-
-	touch_start(integer num_detected) {
-        if (verbose) llOwnerSay("*short touch to disable syncing, long touch to leave sync*");
-        llResetTime();
-        (g_iNr = llDetectedLinkNumber(0));
-        if (((7 == g_iNr) && g_iOn)) setButtonCol(0);
-    }
-
-
-
-	touch(integer num_detected) {
-        float time = llGetTime();
-        if ((time > 1.3)) {
-            if (g_iMsg) {
-                (g_iMsg = 0);
-                if (verbose) llOwnerSay("touch registered");
-                if ((7 == g_iNr)) setButtonCol(-1);
-            }
-        }
-    }
-
-	
-	touch_end(integer num_detected) {
-        (g_iMsg = 1);
-        (g_iNr = llDetectedLinkNumber(0));
-        if (((llGetTime() > 1.3) && (7 == g_iNr))) {
-            llOwnerSay("leaving sync state");
-            state default;
-        }
-    }
-
-
-
-	listen(integer channel,string name,key id,string message) {
-        llOwnerSay("leaving sync state");
-        state default;
-    }
-
-
-    
-    link_message(integer link,integer num,string str,key id) {
-        savedCam(((vector)((string)id)),((vector)str));
     }
 }

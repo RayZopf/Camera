@@ -14,8 +14,6 @@ string ownerFirstName;
 //string cameraScript = "2.) Track their Camera"; // Name of the script that controls camera position/rotation. (Must be in with this script)
 list avatars;
 
-integer g_iNr;
-float g_fTouchTimer = 1.3;
 
 any_state_on_rez(integer start)
 {
@@ -80,25 +78,23 @@ default
     {
         llOwnerSay("No nearby avatars were found.");
     }
+
+
+    link_message(integer link, integer num, string str, key id)
+    {
+        if(num == 1)
+        {
+            if(llToLower(str)=="start")
+            {
+                llSensor("", NULL_KEY, AGENT, 96, PI); // Scan for nearby avatars to populate avatar picker dialog
+            }
+        }
+    }
+
     
-
-	touch_start(integer num_detected)
-	{
-		llResetTime();
-		g_iNr= llDetectedLinkNumber(0);
-	}
-
-
-	touch_end(integer num_detected)
-	{
-		if (llGetTime() < g_fTouchTimer && 7 == g_iNr) {
-			llSensor("", NULL_KEY, AGENT, 96, PI); // Scan for nearby avatars to populate avatar picker dialog
-		}
-	}
-
-
     listen(integer channel, string name, key id, string message)
     {
+    	llOwnerSay((string)channel + "-" + name +"-"+ (string)id + " " + message);
         if(channel == 1)
         {
             if(llToLower(message)=="start")
@@ -125,6 +121,13 @@ state avatarChosen // assumes target, targetFirstName, and ownerFirstName have e
     {
         any_state_on_rez(start);
     }
+
+
+    link_message(integer link, integer num, string str, key id)
+    {
+        any_state_listen(num, id, id, str); // global listen event
+    }
+
 
     listen(integer channel, string name, key id, string message)
     {
@@ -161,23 +164,13 @@ state tracking // Assumes target, targetFirstName, and ownerFirstName have expec
         any_state_on_rez(start);
     }
     
-
-	touch_start(integer num_detected)
-	{
-		llResetTime();
-		g_iNr= llDetectedLinkNumber(0);
-	}
-
-
-	touch_end(integer num_detected)
-	{
-		if (llGetTime() < g_fTouchTimer && 7 == g_iNr) {
-			llOwnerSay("end sync, Resetting");
-			llResetScript();
-		}
-	}
-
-
+    
+    link_message(integer link, integer num, string str, key id)
+    {
+        any_state_listen(num, id, id, str); // global listen event
+    }
+    
+    
     listen(integer channel, string name, key id, string message)
     {
         any_state_listen(channel, name, id, message); // global listen event
