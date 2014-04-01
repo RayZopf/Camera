@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 16:17:05 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 16:42:10 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -167,7 +167,7 @@ takeCamCtrl(){
 releaseCamCtrl(){
     llOwnerSay("release CamCtrl");
     llClearCameraParams();
-    g_iCamLock = g_iFar = g_iOn = 0;
+    g_iCamLock = g_iFar = g_iOn = g_iSync = 0;
     g_fDist = 0.5;
     setCol();
 }
@@ -198,6 +198,8 @@ setCol(){
         llSetLinkPrimitiveParamsFast(2,[18,-1,<0.5,0.5,0.5>,0.85]);
         llSetLinkPrimitiveParamsFast(3,[18,-1,<0.75,0.75,0.75>,0.95]);
     }
+    if (g_iSyncPerms) llSetLinkPrimitiveParamsFast(4,[18,-1,<1.0,1.0,0.0>,1]);
+    else  llSetLinkPrimitiveParamsFast(4,[18,-1,<0.75,0.75,0.75>,0.95]);
 }
 
 
@@ -211,9 +213,9 @@ setButtonCol(integer on){
     else  if (!on) {
         if (2 < g_iNr) llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<0.75,0.75,0.75>,0.95]);
         else  {
-            integer i = 4;
+            integer i = 5;
             do  llSetLinkPrimitiveParamsFast(i,[18,-1,<0.75,0.75,0.75>,0.95]);
-            while (7 > i++);
+            while (8 > i++);
         }
     }
     else  if (2 == on) llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<1.0,1.0,0.0>,1]);

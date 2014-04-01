@@ -203,7 +203,7 @@ releaseCamCtrl()
 {
 	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
-	g_iCamLock = g_iFar = g_iOn = FALSE;
+	g_iCamLock = g_iFar = g_iOn = g_iSync = FALSE;
 	g_fDist = DIST_NEAR;
 	setCol();
 }
@@ -234,6 +234,8 @@ setCol()
 		llSetLinkPrimitiveParamsFast(2, [PRIM_COLOR, ALL_SIDES, <0.5,0.5,0.5>, 0.85]);
 		llSetLinkPrimitiveParamsFast(3, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
 	}
+	if (g_iSyncPerms) llSetLinkPrimitiveParamsFast(4, [PRIM_COLOR, ALL_SIDES, <1,1,0>, 1]);   // yellow for sync perms
+		else llSetLinkPrimitiveParamsFast(4, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
 }
 
 
@@ -248,10 +250,10 @@ setButtonCol(integer on)
 	} else if (!on) {
 		if (2 < g_iNr) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);
 		else {
-			integer i = 4;
+			integer i = 5;
 			do
 				llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);   // all saved cam positions buttons grey
-			while (7 > i++ );
+			while (8 > i++ );
 		}
 	} else if (2 == on) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,1,0>, 1]);   // yellow for sync perms
 	else if (3 == on) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,0>, 1]);    // green for sync active
