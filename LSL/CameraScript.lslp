@@ -215,6 +215,8 @@ syncPerms()
 	g_iReq = !g_iReq;
 	if (g_iReq) {
 		llOwnerSay("requesting cam");
+		llSetScriptState("RequestCameraData.lsl", 1);
+		llSleep(1.7);
 		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);	
 	} else {
 		llOwnerSay("releasing cam");
@@ -984,6 +986,7 @@ default
 				g_iSync = FALSE;
 				setButtonCol(FALSE);
 				if (g_iOn) defCam();
+				if ("0" == str) llSetScriptState("RequestCameraData.lsl", 0);
 			}
 		}
 	}

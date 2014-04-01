@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 15:59:25 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 16:17:05 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -178,6 +178,8 @@ syncPerms(){
     g_iReq = !g_iReq;
     if (g_iReq) {
         llOwnerSay("requesting cam");
+        llSetScriptState("RequestCameraData.lsl",1);
+        llSleep(1.7);
         llMessageLinked(1,1,"start",g_kOwner);
     }
     else  {
@@ -801,6 +803,7 @@ default {
                 g_iSync = 0;
                 setButtonCol(0);
                 if (g_iOn) defCam();
+                if ("0" == str) llSetScriptState("RequestCameraData.lsl",0);
             }
         }
     }
