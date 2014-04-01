@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 21:28:08 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 22:23:42 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -13,7 +13,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //01. Apr. 2014
-//v3.0.1
+//v3.0.2
 //
 
 //Files:
@@ -58,7 +58,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "3.0.1";
+string g_sVersion = "3.0.2";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -111,6 +111,7 @@ integer g_iCamLock = 0;
 
 integer g_iSyncOn = 0;
 integer g_iSyncPerms = 0;
+integer g_iNewSync = 0;
 
 
 //===============================================
@@ -440,6 +441,11 @@ default {
         CH = 8374;
         g_kOwner = llGetOwner();
         g_sScriptName = llGetScriptName();
+        integer rc = 0;
+        rc = llSetMemoryLimit(56000);
+        if (verbose && !rc) {
+            llOwnerSay("(v) " + g_sTitle + "/" + g_sScriptName + " - could not set memory limit");
+        }
         
         initExtension(0);
     }
@@ -546,16 +552,20 @@ default {
                 else  if (6 == g_iNr) setCam("cam2");
                 else  if (7 == g_iNr) setCam("cam3");
                 else  if (8 == g_iNr) setCam("cam4");
-                if (4 != g_iNr && g_iSyncOn) {
-                    setSyncCol();
-                }
             }
             else  {
                 if (verbose) status = "on";
                 llDialog(g_kOwner,MSG_VER + g_sVersion + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: " + status,["verbose","help","CLOSE","ON"],CH);
+                if (4 != g_iNr && g_iSyncOn) {
+                    setSyncCol();
+                }
             }
         }
         else  if (4 == g_iNr && g_iOn) {
+            if (time >= 2.8) {
+                setButtonCol(-1);
+                if (g_iSyncPerms) g_iNewSync = 1;
+            }
             if (g_iSyncPerms) {
                 llOwnerSay("releasing cam");
                 llMessageLinked(1,1,"stop",g_kOwner);
@@ -565,18 +575,6 @@ default {
                 llSetScriptState(REQUESTSCRIP,1);
                 llSleep(1.7);
                 llMessageLinked(1,1,"start",g_kOwner);
-            }
-            if (time >= 2.8) {
-                if (g_iSyncPerms) {
-                    llOwnerSay("releasing cam");
-                    llMessageLinked(1,1,"stop",g_kOwner);
-                }
-                else  {
-                    llOwnerSay("requesting cam");
-                    llSetScriptState(REQUESTSCRIP,1);
-                    llSleep(1.7);
-                    llMessageLinked(1,1,"start",g_kOwner);
-                }
             }
         }
         else  if (3 == g_iNr) {
@@ -838,8 +836,14 @@ default {
             else  {
                 g_iSyncOn = g_iSyncPerms = 0;
                 setButtonCol(0);
-                if (g_iOn) defCam();
-                if ("0" == str) llSetScriptState(REQUESTSCRIP,0);
+                if (g_iNewSync) {
+                    llMessageLinked(1,1,"start",g_kOwner);
+                    g_iNewSync = 0;
+                }
+                else  {
+                    if (g_iOn) defCam();
+                    if ("0" == str) llSetScriptState(REQUESTSCRIP,0);
+                }
             }
         }
     }
@@ -863,7 +867,19 @@ default {
 
 	changed(integer change) {
         if (change & 256) {
-            if (g_iCamLock) defCam();
+            if (g_iCamLock) {
+                if (g_iSyncPerms) {
+                    llOwnerSay("releasing cam");
+                    llMessageLinked(1,1,"stop",g_kOwner);
+                }
+                else  {
+                    llOwnerSay("requesting cam");
+                    llSetScriptState(REQUESTSCRIP,1);
+                    llSleep(1.7);
+                    llMessageLinked(1,1,"start",g_kOwner);
+                }
+                defCam();
+            }
             if (g_iCamPos) resetCamPos();
         }
         if (change & 128) llResetScript();

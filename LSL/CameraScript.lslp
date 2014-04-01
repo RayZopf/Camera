@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //01. Apr. 2014
-//v3.0.1
+//v3.0.2
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "3.0.1";            // version
+string g_sVersion = "3.0.2";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -115,6 +115,7 @@ integer g_iCamLock = FALSE;
 
 integer g_iSyncOn = FALSE;
 integer g_iSyncPerms = FALSE;
+integer g_iNewSync = FALSE;
 
 //===============================================
 //LSLForge MODULES
@@ -756,7 +757,7 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		//MemRestrict(50000, FALSE);
+		MemRestrict(56000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -857,16 +858,19 @@ default
 				else if (6 == g_iNr) setCam("cam2");
 				else if (7 == g_iNr) setCam("cam3");
 				else if (8 == g_iNr) setCam("cam4");
-
-				if (4 != g_iNr && g_iSyncOn) { setSyncCol(); } 
 			} else {
 				if (verbose) status = "on";
 				dialogTurnOn(status);
+
+			if (4 != g_iNr && g_iSyncOn) { setSyncCol(); } 
 			}
 
 		} else if (4 == g_iNr && g_iOn) {
+			if (time >= (g_fTouchTimer + 1.5)) {
+				setButtonCol(-1);
+				if (g_iSyncPerms) g_iNewSync = TRUE;
+			}
 			syncPerms();
-			if (time >= (g_fTouchTimer + 1.5)) { syncPerms(); }
 
 		} else if (3 == g_iNr) {
 			resetCamPos();
@@ -1006,8 +1010,13 @@ default
 			} else {
 				g_iSyncOn = g_iSyncPerms = FALSE;
 				setButtonCol(FALSE);
-				if (g_iOn) defCam();
-				if ("0" == str) llSetScriptState(REQUESTSCRIP, 0);
+				if (g_iNewSync) {
+					llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
+					g_iNewSync = FALSE;
+				} else {
+					if (g_iOn) defCam();
+					if ("0" == str) llSetScriptState(REQUESTSCRIP, 0);
+				}
 			}
 		}
 	}
@@ -1030,7 +1039,10 @@ default
 	changed(integer change)
 	{
 		if (change & CHANGED_REGION) {
-			if (g_iCamLock) defCam();
+			if (g_iCamLock) {
+				syncPerms();
+				defCam();
+			}
 			if (g_iCamPos) resetCamPos();
 		}
 		if (change & CHANGED_OWNER) llResetScript();
