@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //01. Apr. 2014
-//v3.0.2
+//v3.0.3
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "3.0.2";            // version
+string g_sVersion = "3.0.3";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -115,7 +115,7 @@ integer g_iCamLock = FALSE;
 
 integer g_iSyncOn = FALSE;
 integer g_iSyncPerms = FALSE;
-integer g_iNewSync = FALSE;
+integer g_iSyncNew = FALSE;
 
 //===============================================
 //LSLForge MODULES
@@ -212,7 +212,6 @@ releaseCamCtrl()
 }
 
 
-// pragma inline
 syncPerms()
 {
 	if (g_iSyncPerms) {
@@ -224,6 +223,16 @@ syncPerms()
 		llSleep(1.7);
 		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
 	}
+}
+
+
+setSyncCol()
+{
+	g_iSyncOn = FALSE;
+	integer NrTmp = g_iNr;
+	g_iNr = 4;
+	setButtonCol(2);
+	g_iNr = NrTmp;
 }
 
 
@@ -266,16 +275,6 @@ setButtonCol(integer on)
 			llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,0,1>, 1]);
 		while (7 > g_iNr++);
 	} else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,0,1>, 1]);   //pink button
-}
-
-
-setSyncCol()
-{
-	g_iSyncOn = FALSE;
-	integer NrTmp = g_iNr;
-	g_iNr = 4;
-	setButtonCol(2);
-	g_iNr = NrTmp;
 }
 
 
@@ -868,9 +867,10 @@ default
 		} else if (4 == g_iNr && g_iOn) {
 			if (time >= (g_fTouchTimer + 1.5)) {
 				setButtonCol(-1);
-				if (g_iSyncPerms) g_iNewSync = TRUE;
+				if (g_iSyncPerms) g_iSyncNew = TRUE;
 			}
 			syncPerms();
+			if (!g_iSyncNew) toggleSync();
 
 		} else if (3 == g_iNr) {
 			resetCamPos();
@@ -1014,9 +1014,9 @@ default
 			} else {
 				g_iSyncOn = g_iSyncPerms = FALSE;
 				setButtonCol(FALSE);
-				if (g_iNewSync) {
+				if (g_iSyncNew) {
 					llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
-					g_iNewSync = FALSE;
+					g_iSyncNew = FALSE;
 				} else {
 					if (g_iOn) defCam();
 					if ("0" == str) llSetScriptState(REQUESTSCRIP, 0);
