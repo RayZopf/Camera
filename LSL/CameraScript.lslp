@@ -878,7 +878,10 @@ default
 				if (debug) Debug("Button: "+(string)g_iNr +" - " +(string)g_iOn+"=g_iOn, time:"+(string)time+" variable: "+(string)g_fTouchTimer+" calc: "+(string)(g_fTouchTimer + 1.5),FALSE,FALSE);
 				if (g_iOn) setButtonCol(TRUE);
 					else setButtonCol(FALSE);
-			} else releaseCamCtrl();
+			} else {
+				syncPerms();
+				releaseCamCtrl();
+			}
 
 		} else if (2 >= g_iNr) {
 			if (g_iOn) {
@@ -946,6 +949,7 @@ default
 				defCam();
 			}
 		} else if ("clear" == message) {
+			syncPerms();
 			resetCamPos();
 			releaseCamCtrl();
 		} else if ("standard" == message) {

@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 22:23:42 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:06:08 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -584,7 +584,19 @@ default {
                 if (g_iOn) setButtonCol(1);
                 else  setButtonCol(0);
             }
-            else  releaseCamCtrl();
+            else  {
+                if (g_iSyncPerms) {
+                    llOwnerSay("releasing cam");
+                    llMessageLinked(1,1,"stop",g_kOwner);
+                }
+                else  {
+                    llOwnerSay("requesting cam");
+                    llSetScriptState(REQUESTSCRIP,1);
+                    llSleep(1.7);
+                    llMessageLinked(1,1,"start",g_kOwner);
+                }
+                releaseCamCtrl();
+            }
         }
         else  if (2 >= g_iNr) {
             if (g_iOn) {
@@ -674,6 +686,16 @@ default {
             }
         }
         else  if ("clear" == message) {
+            if (g_iSyncPerms) {
+                llOwnerSay("releasing cam");
+                llMessageLinked(1,1,"stop",g_kOwner);
+            }
+            else  {
+                llOwnerSay("requesting cam");
+                llSetScriptState(REQUESTSCRIP,1);
+                llSleep(1.7);
+                llMessageLinked(1,1,"start",g_kOwner);
+            }
             resetCamPos();
             releaseCamCtrl();
         }
@@ -779,8 +801,8 @@ default {
             }
             else  if ("spaz" == message) {
                 if (verbose) llOwnerSay("Spaz cam for 7 seconds");
-                float _i14;
-                for (_i14 = 0; _i14 < 70; _i14 += 1) {
+                float _i15;
+                for (_i15 = 0; _i15 < 70; _i15 += 1) {
                     vector xyz = llGetPos() + <llFrand(80.0) - 40,llFrand(80.0) - 40,llFrand(10.0)>;
                     vector xyz2 = llGetPos() + <llFrand(80.0) - 40,llFrand(80.0) - 40,llFrand(10.0)>;
                     llSetCameraParams([12,1,8,180.0,9,llFrand(3.0),7,llFrand(10.0),6,llFrand(3.0),22,1,11,llFrand(4.0),0,llFrand(125.0) - 45,13,xyz2,5,llFrand(3.0),21,1,10,llFrand(4.0),1,<llFrand(20.0) - 10,llFrand(20.0) - 10,llFrand(20) - 10>]);
