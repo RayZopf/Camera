@@ -91,7 +91,7 @@ default
             if(llToLower(str)=="start")
             {
                 llSensor("", NULL_KEY, AGENT, 96, PI); // Scan for nearby avatars to populate avatar picker dialog
-            }
+            } else llMessageLinked(LINK_THIS, 2, "0", "");
         }
     }
 
