@@ -31,12 +31,14 @@ any_state_listen(integer channel, string name, key id, string message)
             {
                 llOwnerSay("Stopping. Your camera has been returned to you.");
                 llInstantMessage(target, ownerFirstName + " has stopped viewing your camera.");
+                llMessageLinked(LINK_THIS, 2, "0", "");
                 llResetScript();
             }
             else if(id==target)
             {
                 llOwnerSay(targetFirstName + " has requested that you stop viewing their camera. Your camera is being returned to you.");
                 llInstantMessage(target, "At your request, " + ownerFirstName + " has stopped viewing your camera and permissions have been revoked.");
+                llMessageLinked(LINK_THIS, 2, "0", "");
                 llResetScript();
             }
         }
@@ -147,11 +149,13 @@ state avatarChosen // assumes target, targetFirstName, and ownerFirstName have e
         if(perm & PERMISSION_TRACK_CAMERA)
         {
             llOwnerSay(targetFirstName + " accepted your request to track their camera. You are now viewing their camera. If this is not working, press ESC twice to exit your alt-cam. To stop viewing their camera, type /1 stop");
+            llMessageLinked(LINK_THIS, 2, "1", "");
             state tracking;
         }
         else
         {
             llOwnerSay(targetFirstName + " declined your request to view their camera.");
+            llMessageLinked(LINK_THIS, 2, "0", "");
             llResetScript();
         }
     }
