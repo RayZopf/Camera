@@ -69,6 +69,8 @@ default
         avatars = [];
         for(i=0; i<num&&i<12; i++) // 12 max
         {
+        	string name = llDetectedName(i);
+        	if (24 < llStringLength(name)) name = llGetSubString(name, 0, 23);
             avatars += [llDetectedName(i)];
             avatars += [llDetectedKey(i)];
         }
