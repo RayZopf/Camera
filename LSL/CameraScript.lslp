@@ -870,7 +870,6 @@ default
 				if (g_iSyncPerms) g_iSyncNew = TRUE;
 			}
 			syncPerms();
-			if (!g_iSyncNew) toggleSync();
 
 		} else if (3 == g_iNr) {
 			resetCamPos();
@@ -990,7 +989,6 @@ default
 				setButtonCol(TRUE);
 			} else if ("sync" == message) {
 				if (!g_iSyncPerms) syncPerms();
-				toggleSync();
 			} else llOwnerSay("Invalid option picked (" + message + ").\n"); // not a valid dialog choice
 
 			if ("sync" != message && g_iSyncOn) { setSyncCol(); }
@@ -1011,6 +1009,7 @@ default
 			if ("1" == str) {
 				setButtonCol(2);
 				g_iSyncPerms = TRUE;
+				toggleSync();
 			} else {
 				g_iSyncOn = g_iSyncPerms = FALSE;
 				setButtonCol(FALSE);

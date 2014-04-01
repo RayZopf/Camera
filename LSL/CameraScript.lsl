@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:15:22 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:21:00 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -581,7 +581,6 @@ default {
                 if (g_iSyncPerms) g_iSyncNew = 1;
             }
             syncPerms();
-            if (!g_iSyncNew) toggleSync();
         }
         else  if (3 == g_iNr) {
             resetCamPos();
@@ -808,7 +807,6 @@ default {
             }
             else  if ("sync" == message) {
                 if (!g_iSyncPerms) syncPerms();
-                toggleSync();
             }
             else  llOwnerSay("Invalid option picked (" + message + ").\n");
             if ("sync" != message && g_iSyncOn) {
@@ -833,6 +831,7 @@ default {
             if ("1" == str) {
                 setButtonCol(2);
                 g_iSyncPerms = 1;
+                toggleSync();
             }
             else  {
                 g_iSyncOn = g_iSyncPerms = 0;
