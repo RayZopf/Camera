@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:13:34 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:15:22 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -233,7 +233,7 @@ setButtonCol(integer on){
     else  if (!~g_iNr) {
         g_iNr = 2;
         do  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<1.0,0.0,1.0>,1]);
-        while (7 > g_iNr++);
+        while (8 > g_iNr++);
     }
     else  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<1.0,0.0,1.0>,1]);
 }

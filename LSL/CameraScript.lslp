@@ -273,7 +273,7 @@ setButtonCol(integer on)
 		g_iNr = 2;
 		do
 			llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,0,1>, 1]);
-		while (7 > g_iNr++);
+		while (8 > g_iNr++);
 	} else llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,0,1>, 1]);   //pink button
 }
 
