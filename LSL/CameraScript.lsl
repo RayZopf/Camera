@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:37:29 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:39:26 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -538,10 +538,30 @@ default {
 //listen to usercommands
 //-----------------------------------------------
 	listen(integer channel,string name,key id,string message) {
-        message = llToLower(message);
-        if ("---" == message || "close" == message) return;
         string status = "off";
         if (verbose) status = "on";
+        message = llToLower(message);
+        if ("---" == message || "close" == message) {
+            return;
+        }
+        else  if ("verbose" == message) {
+            verbose = !verbose;
+            if (verbose) llOwnerSay("Verbose messages turned ON");
+            else  llOwnerSay("Verbose messages turned OFF");
+        }
+        else  if ("help" == message) {
+            infoLines();
+        }
+        else  if ("off" == message) {
+            releaseCamCtrl();
+        }
+        else  if ("delete" == message) {
+            g_iNr = 3;
+            setButtonCol(-1);
+            llSleep(0.2);
+            setButtonCol(1);
+            resetCamPos();
+        }
         perm = llGetPermissions();
         if (!(perm & 3072)) {
             g_iOn = 0;
@@ -555,15 +575,11 @@ default {
             else  llDialog(g_kOwner,MSG_VER + g_sVersion + "\n\nHUD has not all needed permissions\nDo you want to let CameraControl HUD take over your camera?\n\tverbose: " + status,["verbose","help","CLOSE","ON"],CH);
             return;
         }
-        if ("more..." == message) llDialog(id,"Pick an option!",["...Back","help","CLOSE","Me","Worm","Drop","Spin","Spaz","---","DEFAULT","Center","STANDARD"],CH);
-        else  if ("...back" == message) llDialog(id,MSG_VER + g_sVersion + MSG_DIALOG + status,MENU_MAIN,CH);
-        else  if ("help" == message) {
-            infoLines();
+        if ("more..." == message) {
+            llDialog(id,"Pick an option!",["...Back","help","CLOSE","Me","Worm","Drop","Spin","Spaz","---","DEFAULT","Center","STANDARD"],CH);
         }
-        else  if ("verbose" == message) {
-            verbose = !verbose;
-            if (verbose) llOwnerSay("Verbose messages turned ON");
-            else  llOwnerSay("Verbose messages turned OFF");
+        else  if ("...back" == message) {
+            llDialog(id,MSG_VER + g_sVersion + MSG_DIALOG + status,MENU_MAIN,CH);
         }
         else  if ("distance" == message) {
             if (g_iFar) {
@@ -586,19 +602,9 @@ default {
                 defCam();
             }
         }
-        else  if ("off" == message) {
-            releaseCamCtrl();
-        }
         else  if ("clear" == message) {
             resetCamPos();
             releaseCamCtrl();
-        }
-        else  if ("delete" == message) {
-            g_iNr = 3;
-            setButtonCol(-1);
-            llSleep(0.2);
-            setButtonCol(1);
-            resetCamPos();
         }
         else  if ("standard" == message) {
             if (g_iOn) {

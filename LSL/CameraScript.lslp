@@ -827,13 +827,26 @@ default
 //-----------------------------------------------
 	listen(integer channel, string name, key id, string message)
 	{
-		message = llToLower(message);
-		if ("---" == message || "close" == message) return;
-
 		string status = "off";
 		if (verbose) status = "on";
-		perm =llGetPermissions();
 
+		message = llToLower(message);
+		if ("---" == message || "close" == message) { return; }
+		else if ("verbose" == message) {
+			verbose = !verbose;
+			if (verbose) llOwnerSay("Verbose messages turned ON");
+				else llOwnerSay("Verbose messages turned OFF");
+		} else if ("help" == message) { infoLines(); }
+		else if ("off" == message) { releaseCamCtrl(); }
+		else if ("delete" == message) {
+			g_iNr = 3;
+			setButtonCol(-1);
+			llSleep(0.2);
+			setButtonCol(TRUE);
+			resetCamPos();
+		}
+
+		perm =llGetPermissions();
 		if (!(perm & (PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA))) {
 			g_iOn = FALSE;
 			g_iNr = -1;
@@ -846,33 +859,21 @@ default
 			return;
 		}
 
-		if ("more..." == message) llDialog(id, "Pick an option!",
+		if ("more..." == message) { llDialog(id, "Pick an option!",
 			["...Back", "help", "CLOSE",
 			"Me", "Worm", "Drop",
 			"Spin", "Spaz", "---", "DEFAULT","Center", "STANDARD"], CH); // present submenu on request
-		else if ("...back" == message) llDialog(id, MSG_VER + g_sVersion + MSG_DIALOG + status, MENU_MAIN, CH); // present main menu on request to go back
-		else if ("help" == message) { infoLines(); }
-		else if ("verbose" == message) {
-			verbose = !verbose;
-			if (verbose) llOwnerSay("Verbose messages turned ON");
-				else llOwnerSay("Verbose messages turned OFF");
-		} else if ("distance" == message) { toggleDist(); }
+		} else if ("...back" == message) { llDialog(id, MSG_VER + g_sVersion + MSG_DIALOG + status, MENU_MAIN, CH); } // present main menu on request to go back
+		else if ("distance" == message) { toggleDist(); }
 		else if ("on" == message) {
 			if (!g_iOn) {
 				if (verbose) infoLines();
 				takeCamCtrl();
 				defCam();
 			}
-		} else if ("off" == message) { releaseCamCtrl(); }
-		else if ("clear" == message) {
+		} else if ("clear" == message) {
 			resetCamPos();
 			releaseCamCtrl();
-		} else if ("delete" == message) {
-			g_iNr = 3;
-			setButtonCol(-1);
-			llSleep(0.2);
-			setButtonCol(TRUE);
-			resetCamPos();
 		} else if ("standard" == message) {
 			if (g_iOn) {
 				g_iNr = 3;
