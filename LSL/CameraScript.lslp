@@ -268,6 +268,16 @@ setButtonCol(integer on)
 }
 
 
+setSyncCol()
+{
+	g_iSyncOn = FALSE;
+	integer NrTmp = g_iNr;
+	g_iNr = 4;
+	setButtonCol(2);
+	g_iNr = NrTmp;
+}
+
+
 resetCamPos()
 {
 	integer NrTmp = g_iNr;
@@ -785,8 +795,7 @@ default
 				} else if (time >= (g_fTouchTimer + 1.5)) {
 					g_iMsg = FALSE;
 					if (verbose) llOwnerSay("long touch registered");
-					//if (3 == g_iNr || 4 == g_iNr) setButtonCol(FALSE);
-					if (3 == g_iNr) setButtonCol(FALSE);
+					if (3 == g_iNr || 4 == g_iNr) setButtonCol(FALSE);
 				}
 			}
 		}
@@ -806,12 +815,7 @@ default
 			return;
 		} else time = llGetTime();
 
-		if (time > g_fTouchTimer && 3 < g_iNr) {
-			if (4 == g_iNr) {
-				syncPerms();
-				return;
-			}
-
+		if (time > g_fTouchTimer && 4 < g_iNr) {
 			if (5 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
@@ -853,10 +857,16 @@ default
 				else if (6 == g_iNr) setCam("cam2");
 				else if (7 == g_iNr) setCam("cam3");
 				else if (8 == g_iNr) setCam("cam4");
+
+				if (4 != g_iNr && g_iSyncOn) { setSyncCol(); } 
 			} else {
 				if (verbose) status = "on";
 				dialogTurnOn(status);
 			}
+
+		} else if (4 == g_iNr && g_iOn) {
+			syncPerms();
+			if (time >= (g_fTouchTimer + 1.5)) { syncPerms(); }
 
 		} else if (3 == g_iNr) {
 			resetCamPos();
@@ -869,6 +879,7 @@ default
 		} else if (2 >= g_iNr) {
 			if (g_iOn) {
 				setButtonCol(TRUE);
+				setSyncCol();
 				defCam();
 				if (verbose) llOwnerSay("Setting default view");
 			} else {
@@ -923,7 +934,7 @@ default
 			"Me", "Worm", "Drop",
 			"Spin", "Spaz", "---", "DEFAULT","Center", "STANDARD"], CH); // present submenu on request
 		} else if ("...back" == message) { llDialog(id, MSG_VER + g_sVersion + MSG_DIALOG + status, MENU_MAIN, CH); } // present main menu on request to go back
-		else if ("distance" == message) { toggleDist(); }
+		else if ("distance" == message) { if (g_iSyncOn) setSyncCol(); toggleDist(); }
 		else if ("on" == message) {
 			if (!g_iOn) {
 				if (verbose) infoLines();
@@ -937,6 +948,7 @@ default
 			if (g_iOn) {
 				g_iNr = 3;
 				setButtonCol(FALSE);
+				if (g_iSyncOn) setSyncCol();
 				slCam();
 				llSleep(0.2);
 				setButtonCol(TRUE);
@@ -972,8 +984,12 @@ default
 				if (!g_iSyncPerms) syncPerms();
 				toggleSync();
 			} else llOwnerSay("Invalid option picked (" + message + ").\n"); // not a valid dialog choice
+
+			if ("sync" != message && g_iSyncOn) { setSyncCol(); }
+
 		} else if (!g_iOn) { dialogTurnOn(status); }
 		else llOwnerSay("something went wrong");
+
 	}
 
 

@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 20:37:35 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 21:28:08 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -212,6 +212,15 @@ setButtonCol(integer on){
         while (7 > g_iNr++);
     }
     else  llSetLinkPrimitiveParamsFast(g_iNr,[18,-1,<1.0,0.0,1.0>,1]);
+}
+
+
+setSyncCol(){
+    g_iSyncOn = 0;
+    integer NrTmp = g_iNr;
+    g_iNr = 4;
+    setButtonCol(2);
+    g_iNr = NrTmp;
 }
 
 
@@ -468,7 +477,7 @@ default {
                 else  if (time >= 2.8) {
                     g_iMsg = 0;
                     if (verbose) llOwnerSay("long touch registered");
-                    if (3 == g_iNr) setButtonCol(0);
+                    if (3 == g_iNr || 4 == g_iNr) setButtonCol(0);
                 }
             }
         }
@@ -487,20 +496,7 @@ default {
             return;
         }
         else  time = llGetTime();
-        if (time > 1.3 && 3 < g_iNr) {
-            if (4 == g_iNr) {
-                if (g_iSyncPerms) {
-                    llOwnerSay("releasing cam");
-                    llMessageLinked(1,1,"stop",g_kOwner);
-                }
-                else  {
-                    llOwnerSay("requesting cam");
-                    llSetScriptState(REQUESTSCRIP,1);
-                    llSleep(1.7);
-                    llMessageLinked(1,1,"start",g_kOwner);
-                }
-                return;
-            }
+        if (time > 1.3 && 4 < g_iNr) {
             if (5 == g_iNr) {
                 g_vPos1 = llGetCameraPos();
                 g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
@@ -550,10 +546,37 @@ default {
                 else  if (6 == g_iNr) setCam("cam2");
                 else  if (7 == g_iNr) setCam("cam3");
                 else  if (8 == g_iNr) setCam("cam4");
+                if (4 != g_iNr && g_iSyncOn) {
+                    setSyncCol();
+                }
             }
             else  {
                 if (verbose) status = "on";
                 llDialog(g_kOwner,MSG_VER + g_sVersion + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: " + status,["verbose","help","CLOSE","ON"],CH);
+            }
+        }
+        else  if (4 == g_iNr && g_iOn) {
+            if (g_iSyncPerms) {
+                llOwnerSay("releasing cam");
+                llMessageLinked(1,1,"stop",g_kOwner);
+            }
+            else  {
+                llOwnerSay("requesting cam");
+                llSetScriptState(REQUESTSCRIP,1);
+                llSleep(1.7);
+                llMessageLinked(1,1,"start",g_kOwner);
+            }
+            if (time >= 2.8) {
+                if (g_iSyncPerms) {
+                    llOwnerSay("releasing cam");
+                    llMessageLinked(1,1,"stop",g_kOwner);
+                }
+                else  {
+                    llOwnerSay("requesting cam");
+                    llSetScriptState(REQUESTSCRIP,1);
+                    llSleep(1.7);
+                    llMessageLinked(1,1,"start",g_kOwner);
+                }
             }
         }
         else  if (3 == g_iNr) {
@@ -568,6 +591,7 @@ default {
         else  if (2 >= g_iNr) {
             if (g_iOn) {
                 setButtonCol(1);
+                setSyncCol();
                 defCam();
                 if (verbose) llOwnerSay("Setting default view");
             }
@@ -630,6 +654,7 @@ default {
             llDialog(id,MSG_VER + g_sVersion + MSG_DIALOG + status,MENU_MAIN,CH);
         }
         else  if ("distance" == message) {
+            if (g_iSyncOn) setSyncCol();
             if (g_iFar) {
                 g_iOn = 0;
                 g_iFar = 0;
@@ -658,6 +683,7 @@ default {
             if (g_iOn) {
                 g_iNr = 3;
                 setButtonCol(0);
+                if (g_iSyncOn) setSyncCol();
                 llClearCameraParams();
                 llSetCameraParams([12,1]);
                 g_iCamLock = 0;
@@ -786,6 +812,9 @@ default {
                 toggleSync();
             }
             else  llOwnerSay("Invalid option picked (" + message + ").\n");
+            if ("sync" != message && g_iSyncOn) {
+                setSyncCol();
+            }
         }
         else  if (!g_iOn) {
             llDialog(g_kOwner,MSG_VER + g_sVersion + "\n\nHUD is disabled\nDo you want to enable CameraControl?\n\tverbose: " + status,["verbose","help","CLOSE","ON"],CH);
