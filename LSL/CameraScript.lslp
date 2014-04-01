@@ -11,8 +11,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//24. Mrz. 2014
-//v2.6.4
+//01. Apr. 2014
+//v2.6.5
 //
 
 //Files:
@@ -52,7 +52,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.6.4";            // version
+string g_sVersion = "2.6.5";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -716,7 +716,7 @@ default
 	touch(integer num_detected)
 	{
 		if (g_iMsg) {
-			if (!(perm & PERMISSION_CONTROL_CAMERA) || !(perm & PERMISSION_TRACK_CAMERA)) {
+			if (!(perm & (PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA))) {
 				g_iMsg = FALSE;
 				g_iOn = -1;
 				g_iNr = -1;
@@ -834,7 +834,7 @@ default
 		if (verbose) status = "on";
 		perm =llGetPermissions();
 
-		if (!(perm & PERMISSION_CONTROL_CAMERA) || !(perm & PERMISSION_TRACK_CAMERA)) {
+		if (!(perm & (PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA))) {
 			g_iOn = FALSE;
 			g_iNr = -1;
 			setButtonCol(-1);
@@ -916,7 +916,7 @@ default
 
 	run_time_permissions(integer perm)
 	{
-		if ((perm & PERMISSION_CONTROL_CAMERA) && (perm & PERMISSION_TRACK_CAMERA)) {
+		if (perm & (PERMISSION_CONTROL_CAMERA | PERMISSION_TRACK_CAMERA)) {
 			llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
 			setCol();
 			llOwnerSay("Camera permissions have been taken; Avatar key: "+(string)llGetPermissionsKey());
