@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //01. Apr. 2014
-//v2.7.4
+//v3.0.0
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.7.4";            // version
+string g_sVersion = "3.0.0";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -113,7 +113,8 @@ integer g_iCamNr = 0;
 integer g_iCamLock = FALSE;
 
 integer g_iSync = FALSE;
-integer g_iRequest = FALSE;
+integer g_iReq = FALSE;
+integer g_iSyncPerms = FALSE;
 
 //===============================================
 //LSLForge MODULES
@@ -208,6 +209,20 @@ releaseCamCtrl()
 }
 
 
+syncPerms()
+{
+	g_iSyncPerms = FALSE;
+	g_iReq = !g_iReq;
+	if (g_iReq) {
+		llOwnerSay("requesting cam");
+		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);	
+	} else {
+		llOwnerSay("releasing cam");
+		llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
+	}
+}
+
+
 setCol()
 {
 	if (g_iOn) {
@@ -236,7 +251,10 @@ setButtonCol(integer on)
 				llSetLinkPrimitiveParamsFast(i, [PRIM_COLOR, ALL_SIDES, <0.75,0.75,0.75>, 0.95]);   // all saved cam positions buttons grey
 			while (7 > i++ );
 		}
-	} else if (!(~g_iNr)) {
+	} else if (2 == on) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,1,0>, 1]);   // yellow for sync perms
+	else if (3 == on) llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <0,1,0>, 1]);    // green for sync active
+
+	else if (!(~g_iNr)) {
 		g_iNr = 2;
 		do
 			llSetLinkPrimitiveParamsFast(g_iNr, [PRIM_COLOR, ALL_SIDES, <1,0,1>, 1]);
@@ -547,6 +565,25 @@ spazCam()
 }
 
 
+toggleSync()
+{
+	g_iNr = 4;
+	if (g_iSyncPerms) {
+		g_iSync = !g_iSync;
+		if (g_iSync) {
+			setButtonCol(3);
+			llOwnerSay("sync active");
+		} else {
+			llOwnerSay("sync not active");
+			setButtonCol(2);
+		}
+	} else {
+		llOwnerSay("no cam to sync requested");
+		setButtonCol(FALSE);
+	}
+}
+
+
 // pragma inline
 toggleCam()
 {
@@ -741,7 +778,7 @@ default
 				} else if (time >= (g_fTouchTimer + 1.5)) {
 					g_iMsg = FALSE;
 					if (verbose) llOwnerSay("long touch registered");
-					if (3 == g_iNr) setButtonCol(FALSE);
+					if (3 == g_iNr || 4 == g_iNr) setButtonCol(FALSE);
 				}
 			}
 		}
@@ -763,34 +800,32 @@ default
 
 		if (time > g_fTouchTimer && 3 < g_iNr) {
 			if (4 == g_iNr) {
+				syncPerms();
+				return;
+			}
+
+			if (5 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
 				g_iCam1 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos1+" foc: "+(string)g_vFoc1, FALSE,FALSE);
-			} else if (5 == g_iNr) {
+			} else if (6 == g_iNr) {
 				g_vPos2 = llGetCameraPos();
 				g_vFoc2 = g_vPos2 + llRot2Fwd(llGetCameraRot());
 				g_iCam2 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos2+" foc: "+(string)g_vFoc2, FALSE,FALSE);
-			} else if (6 == g_iNr) {
+			} else if (7 == g_iNr) {
 				g_vPos3 = llGetCameraPos();
 				g_vFoc3 = g_vPos3 + llRot2Fwd(llGetCameraRot());
 				g_iCam3 = TRUE;
 				if (debug) Debug("save pos: "+(string)g_vPos3+" foc: "+(string)g_vFoc3, FALSE,FALSE);
-			} else if (7 == g_iNr) {
-				g_iRequest = !g_iRequest;
-				if (g_iRequest) {
-					llOwnerSay("requesting cam");
-					llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);	
-				} else {
-					llOwnerSay("releasing cam");
-					llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
-				}
-//				g_vPos4 = llGetCameraPos();
-//				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
-//				g_iCam4 = TRUE;
-//				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
-			} else return;
+			} else if (8 == g_iNr) {
+				g_vPos4 = llGetCameraPos();
+				g_vFoc4 = g_vPos4 + llRot2Fwd(llGetCameraRot());
+				g_iCam4 = TRUE;
+				if (debug) Debug("save pos: "+(string)g_vPos4+" foc: "+(string)g_vFoc4, FALSE,FALSE);
+			}
+			else return;
 
 			if (verbose) llOwnerSay("Cam position saved");
 			setButtonCol(TRUE);
@@ -805,16 +840,11 @@ default
 				// not using key of num_detected avi, as this is a HUD and we only want to talk to owner
 					if (verbose) status = "on";
 					llDialog(g_kOwner, MSG_VER + g_sVersion + MSG_DIALOG + status, MENU_MAIN, CH); // present dialog on click
-				} else if (4 == g_iNr) setCam("cam1");
-				else if (5 == g_iNr) setCam("cam2");
-				else if (6 == g_iNr) setCam("cam3");
-				else if (7 == g_iNr) {
-					if (g_iRequest) {
-						g_iSync = !g_iSync;
-						if (g_iSync) llOwnerSay("sync active");
-							else llOwnerSay("sync not active");
-					} else llOwnerSay("no cam to sync requested");
-				}
+				} else if (4 == g_iNr) { toggleSync(); }
+				else if (5 == g_iNr) setCam("cam1");
+				else if (6 == g_iNr) setCam("cam2");
+				else if (7 == g_iNr) setCam("cam3");
+				else if (8 == g_iNr) setCam("cam4");
 			} else {
 				if (verbose) status = "on";
 				dialogTurnOn(status);
@@ -930,16 +960,33 @@ default
 				defCam();
 				llSleep(0.2);
 				setButtonCol(TRUE);
+			} else if ("sync" == message) {
+				if (!g_iSyncPerms) syncPerms();
+				toggleSync();
 			} else llOwnerSay("Invalid option picked (" + message + ").\n"); // not a valid dialog choice
 		} else if (!g_iOn) { dialogTurnOn(status); }
 		else llOwnerSay("something went wrong");
 	}
 
 
-    link_message(integer link, integer num, string str, key id)
-    {
-        if (g_iSync) savedCam((vector)((string)id), (vector)str);
-    }
+	link_message(integer link, integer num, string str, key id)
+	{
+		if ( 0 != num || 2 != num) return;
+
+		if (g_iSyncPerms && 0 == num && g_iSync) { savedCam((vector)((string)id), (vector)str); }
+		else if (g_iReq && 2 == num) {
+			g_iNr = 4;
+			if ("1" == str) {
+				setButtonCol(2);
+				g_iSyncPerms = TRUE;
+			} else {
+				g_iReq = g_iSyncPerms = FALSE;
+				g_iSync = FALSE;
+				setButtonCol(FALSE);
+				if (g_iOn) defCam();
+			}
+		}
+	}
 
 
 	run_time_permissions(integer perm)
