@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //01. Apr. 2014
-//v3.0.0
+//v3.0.1
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "3.0.0";            // version
+string g_sVersion = "3.0.1";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -65,6 +65,7 @@ string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 integer CH; // dialog channel
 
 // Constants
+string REQUESTSCRIP = "RequestCameraData.lsl";
 list MENU_MAIN = ["More...", "help", "CLOSE",
 	"Left", "Shoulder", "Right",
 	"DELETE", "Distance", "CLEAR", "ON", "verbose", "OFF"]; // the main menu
@@ -112,8 +113,7 @@ integer g_iCamPos;
 integer g_iCamNr = 0;
 integer g_iCamLock = FALSE;
 
-integer g_iSync = FALSE;
-integer g_iReq = FALSE;
+integer g_iSyncOn = FALSE;
 integer g_iSyncPerms = FALSE;
 
 //===============================================
@@ -155,6 +155,8 @@ initExtension(integer conf)
 		setCol();
 		if (verbose) infoLines();
 	}
+	llSleep(2);
+	llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
 }
 
 
@@ -203,24 +205,23 @@ releaseCamCtrl()
 {
 	llOwnerSay("release CamCtrl"); // say function name for debugging
 	llClearCameraParams();
-	g_iCamLock = g_iFar = g_iOn = g_iSync = FALSE;
+	g_iCamLock = g_iFar = g_iOn = g_iSyncOn = FALSE;
 	g_fDist = DIST_NEAR;
 	setCol();
 }
 
 
+// pragma inline
 syncPerms()
 {
-	g_iSyncPerms = FALSE;
-	g_iReq = !g_iReq;
-	if (g_iReq) {
-		llOwnerSay("requesting cam");
-		llSetScriptState("RequestCameraData.lsl", 1);
-		llSleep(1.7);
-		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);	
-	} else {
+	if (g_iSyncPerms) {
 		llOwnerSay("releasing cam");
 		llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
+	} else {
+		llOwnerSay("requesting cam");
+		llSetScriptState(REQUESTSCRIP, 1);
+		llSleep(1.7);
+		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
 	}
 }
 
@@ -294,7 +295,7 @@ slCam()
 
 savedCam(vector foc, vector pos)
 {
-	llClearCameraParams(); // reset camera to default
+	if (!g_iSyncOn) llClearCameraParams(); // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -573,13 +574,15 @@ toggleSync()
 {
 	g_iNr = 4;
 	if (g_iSyncPerms) {
-		g_iSync = !g_iSync;
-		if (g_iSync) {
+		g_iSyncOn = !g_iSyncOn;
+		if (g_iSyncOn) {
 			setButtonCol(3);
 			llOwnerSay("sync active");
+			llClearCameraParams(); // reset camera to default
 		} else {
 			llOwnerSay("sync not active");
 			setButtonCol(2);
+			defCam();
 		}
 	} else {
 		llOwnerSay("no cam to sync requested");
@@ -782,7 +785,8 @@ default
 				} else if (time >= (g_fTouchTimer + 1.5)) {
 					g_iMsg = FALSE;
 					if (verbose) llOwnerSay("long touch registered");
-					if (3 == g_iNr || 4 == g_iNr) setButtonCol(FALSE);
+					//if (3 == g_iNr || 4 == g_iNr) setButtonCol(FALSE);
+					if (3 == g_iNr) setButtonCol(FALSE);
 				}
 			}
 		}
@@ -975,20 +979,19 @@ default
 
 	link_message(integer link, integer num, string str, key id)
 	{
-		if ( 0 != num || 2 != num) return;
+		if (0 != num && 2 != num) return;
 
-		if (g_iSyncPerms && 0 == num && g_iSync) { savedCam((vector)((string)id), (vector)str); }
-		else if (g_iReq && 2 == num) {
+		if (g_iSyncPerms && 0 == num && g_iSyncOn) { savedCam((vector)((string)id), (vector)str); }
+		else if (2 == num) {
 			g_iNr = 4;
 			if ("1" == str) {
 				setButtonCol(2);
 				g_iSyncPerms = TRUE;
 			} else {
-				g_iReq = g_iSyncPerms = FALSE;
-				g_iSync = FALSE;
+				g_iSyncOn = g_iSyncPerms = FALSE;
 				setButtonCol(FALSE);
 				if (g_iOn) defCam();
-				if ("0" == str) llSetScriptState("RequestCameraData.lsl", 0);
+				if ("0" == str) llSetScriptState(REQUESTSCRIP, 0);
 			}
 		}
 	}
