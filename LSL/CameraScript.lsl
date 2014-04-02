@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:21:00 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Wed Apr  2 13:39:41 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -12,7 +12,7 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//01. Apr. 2014
+//02. Apr. 2014
 //v3.0.3
 //
 
@@ -301,7 +301,7 @@ setCam(string cam){
         i = 0;
         if ("cam1" == cam || "cam 1" == cam || "1" == cam) {
             if (g_iCam1) {
-                g_iNr = 4;
+                g_iNr = 5;
                 setButtonCol(0);
                 savedCam(g_vFoc1,g_vPos1);
                 llSleep(0.2);
@@ -318,7 +318,7 @@ setCam(string cam){
         }
         else  if ("cam2" == cam || "cam 2" == cam || "2" == cam) {
             if (g_iCam2) {
-                g_iNr = 5;
+                g_iNr = 6;
                 setButtonCol(0);
                 savedCam(g_vFoc2,g_vPos2);
                 llSleep(0.2);
@@ -335,7 +335,7 @@ setCam(string cam){
         }
         else  if ("cam3" == cam || "cam 3" == cam || "3" == cam) {
             if (g_iCam3) {
-                g_iNr = 6;
+                g_iNr = 7;
                 setButtonCol(0);
                 savedCam(g_vFoc3,g_vPos3);
                 llSleep(0.2);
@@ -352,7 +352,7 @@ setCam(string cam){
         }
         else  if ("cam4" == cam || "cam 4" == cam || "4" == cam) {
             if (g_iCam4) {
-                g_iNr = 7;
+                g_iNr = 8;
                 setButtonCol(0);
                 savedCam(g_vFoc4,g_vPos4);
                 llSleep(0.2);
