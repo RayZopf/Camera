@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Wed Apr  2 13:39:41 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Wed Apr  2 16:52:49 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -66,7 +66,7 @@ string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 integer CH;
 
 // Constants
-string REQUESTSCRIP = "RequestCameraData.lsl";
+string REQUESTSCRIPT = "RequestCameraData.lsl";
 list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","DELETE","Distance","CLEAR","ON","verbose","OFF"];
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as only used once
 string MSG_DIALOG = "\n\nWhat do you want to do?\n\tverbose: ";
@@ -183,7 +183,7 @@ syncPerms(){
     }
     else  {
         llOwnerSay("requesting cam");
-        llSetScriptState(REQUESTSCRIP,1);
+        llSetScriptState(REQUESTSCRIPT,1);
         llSleep(1.7);
         llMessageLinked(1,1,"start",g_kOwner);
     }
@@ -842,7 +842,7 @@ default {
                 }
                 else  {
                     if (g_iOn) defCam();
-                    if ("0" == str) llSetScriptState(REQUESTSCRIP,0);
+                    if ("0" == str) llSetScriptState(REQUESTSCRIPT,0);
                 }
             }
         }
@@ -868,7 +868,7 @@ default {
 	changed(integer change) {
         if (change & 256) {
             if (g_iCamLock) {
-                syncPerms();
+                if (g_iSyncPerms) syncPerms();
                 defCam();
             }
             if (g_iCamPos) resetCamPos();

@@ -65,7 +65,7 @@ string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 integer CH; // dialog channel
 
 // Constants
-string REQUESTSCRIP = "RequestCameraData.lsl";
+string REQUESTSCRIPT = "RequestCameraData.lsl";
 list MENU_MAIN = ["More...", "help", "CLOSE",
 	"Left", "Shoulder", "Right",
 	"DELETE", "Distance", "CLEAR", "ON", "verbose", "OFF"]; // the main menu
@@ -219,7 +219,7 @@ syncPerms()
 		llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
 	} else {
 		llOwnerSay("requesting cam");
-		llSetScriptState(REQUESTSCRIP, 1);
+		llSetScriptState(REQUESTSCRIPT, 1);
 		llSleep(1.7);
 		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
 	}
@@ -1018,7 +1018,7 @@ default
 					g_iSyncNew = FALSE;
 				} else {
 					if (g_iOn) defCam();
-					if ("0" == str) llSetScriptState(REQUESTSCRIP, 0);
+					if ("0" == str) llSetScriptState(REQUESTSCRIPT, 0);
 				}
 			}
 		}
@@ -1043,7 +1043,7 @@ default
 	{
 		if (change & CHANGED_REGION) {
 			if (g_iCamLock) {
-				syncPerms();
+				if (g_iSyncPerms) syncPerms();
 				defCam();
 			}
 			if (g_iCamPos) resetCamPos();
