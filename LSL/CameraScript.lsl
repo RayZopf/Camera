@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Tue Apr  1 23:39:26 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 00:49:00 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -12,8 +12,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//01. Apr. 2014
-//v2.6.5
+//04. Apr. 2014
+//v2.7.0
 //
 
 //Files:
@@ -53,7 +53,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.6.5";
+string g_sVersion = "2.7.0";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -147,19 +147,18 @@ infoLines(){
 }
 
 
-takeCamCtrl(){
-    if (verbose) llOwnerSay("enabling CameraControl HUD");
-    llSetCameraParams([12,1]);
-    g_iOn = 1;
-    setCol();
-}
-
-
-releaseCamCtrl(){
-    llOwnerSay("release CamCtrl");
-    llClearCameraParams();
-    g_iCamLock = g_iFar = g_iOn = 0;
-    g_fDist = 0.5;
+toggleCamCtrl(){
+    if (g_iOn) {
+        llOwnerSay("release CamCtrl");
+        llClearCameraParams();
+        g_iCamLock = g_iFar = g_iOn = 0;
+        g_fDist = 0.5;
+    }
+    else  {
+        if (verbose) llOwnerSay("enabling CameraControl HUD");
+        llSetCameraParams([12,1]);
+        g_iOn = 1;
+    }
     setCol();
 }
 
@@ -515,7 +514,10 @@ default {
                 if (g_iOn) setButtonCol(1);
                 else  setButtonCol(0);
             }
-            else  releaseCamCtrl();
+            else  {
+                g_iOn = 1;
+                toggleCamCtrl();
+            }
         }
         else  if (2 >= g_iNr) {
             if (g_iOn) {
@@ -524,7 +526,7 @@ default {
                 if (verbose) llOwnerSay("Setting default view");
             }
             else  {
-                takeCamCtrl();
+                toggleCamCtrl();
                 defCam();
             }
         }
@@ -553,7 +555,8 @@ default {
             infoLines();
         }
         else  if ("off" == message) {
-            releaseCamCtrl();
+            g_iOn = 1;
+            toggleCamCtrl();
         }
         else  if ("delete" == message) {
             g_iNr = 3;
@@ -583,12 +586,12 @@ default {
         }
         else  if ("distance" == message) {
             if (g_iFar) {
-                g_iOn = 0;
+                g_iOn = 1;
                 g_iFar = 0;
-                releaseCamCtrl();
+                toggleCamCtrl();
             }
             else  if (!g_iOn) {
-                takeCamCtrl();
+                toggleCamCtrl();
             }
             else  g_iFar = 1;
             if (g_iFar) g_fDist = 2.0;
@@ -598,13 +601,14 @@ default {
         else  if ("on" == message) {
             if (!g_iOn) {
                 if (verbose) infoLines();
-                takeCamCtrl();
+                toggleCamCtrl();
                 defCam();
             }
         }
         else  if ("clear" == message) {
+            g_iOn = 1;
             resetCamPos();
-            releaseCamCtrl();
+            toggleCamCtrl();
         }
         else  if ("standard" == message) {
             if (g_iOn) {
@@ -617,7 +621,10 @@ default {
                 llSleep(0.2);
                 setButtonCol(1);
             }
-            else  releaseCamCtrl();
+            else  {
+                g_iOn = 1;
+                toggleCamCtrl();
+            }
         }
         else  if (g_iOn) {
             if (~llSubStringIndex(message,"cam") || (string)((integer)message) == message) {
