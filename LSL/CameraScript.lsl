@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 00:51:54 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 01:40:22 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -13,7 +13,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //04. Apr. 2014
-//v3.1.0
+//v3.1.1
 //
 
 //Files:
@@ -58,7 +58,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "3.1.0";
+string g_sVersion = "3.1.1";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -154,9 +154,9 @@ initExtension(integer conf){
 
 infoLines(){
     llOwnerSay("\nHUD listens on channel: " + (string)CH);
-    llOwnerSay("*Long touch on colored buttons to save current view*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off*");
+    llOwnerSay("*Long touch on buttons to save current view or request cam sync*\n*long touch on death sign to delete current positions,\n\teven longer touch to clear all saved positions and turn off/reset, longer touch on camsync to release*");
     llOwnerSay("Long touch on CameraControl button for on/default view\ntouch death sign to get SL standard\n\nPressing ESC key resets camera perspective to default/last chosen one,\nuse this to end manual mode after camerawalking");
-    llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries\n");
+    llOwnerSay("available chat commands:\n'cam1' to 'cam4' to recall saved camera positions and 'sync' to get other avis view,\n '1' to '4' to recall that camera or the next stored,\ncycling trough saved positions or given perspectives with 'cam' 'cycle' cycle2'\n'distance' to change distance and switch on/off, or use 'default', 'delete', 'clear', 'help' and all other menu entries\n");
 }
 
 
@@ -864,6 +864,7 @@ default {
         g_iSyncPerms = g_iSyncOn = g_iSyncNew = 0;
         llSetScriptState(REQUESTSCRIPT,0);
         llSetTimerEvent(0);
+        if (verbose) llOwnerSay("Got no reply from RequestCameraData script, sending to sleep again");
     }
 
 
