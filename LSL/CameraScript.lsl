@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Wed Apr  2 16:52:49 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 00:08:08 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -176,15 +176,16 @@ releaseCamCtrl(){
 }
 
 
-syncPerms(){
+toggleSyncCtrl(){
+    llSetTimerEvent(150);
     if (g_iSyncPerms) {
         llOwnerSay("releasing cam");
         llMessageLinked(1,1,"stop",g_kOwner);
     }
     else  {
-        llOwnerSay("requesting cam");
         llSetScriptState(REQUESTSCRIPT,1);
-        llSleep(1.7);
+        llOwnerSay("requesting cam");
+        llSleep(1.5);
         llMessageLinked(1,1,"start",g_kOwner);
     }
 }
@@ -276,11 +277,13 @@ toggleSync(){
     if (g_iSyncPerms) {
         g_iSyncOn = !g_iSyncOn;
         if (g_iSyncOn) {
+            llSetScriptState(REQUESTSCRIPT,1);
             setButtonCol(3);
             llOwnerSay("sync active");
             llClearCameraParams();
         }
         else  {
+            llSetScriptState(REQUESTSCRIPT,0);
             llOwnerSay("sync not active");
             setButtonCol(2);
             defCam();
@@ -455,11 +458,6 @@ default {
         CH = 8374;
         g_kOwner = llGetOwner();
         g_sScriptName = llGetScriptName();
-        integer rc = 0;
-        rc = llSetMemoryLimit(56000);
-        if (verbose && !rc) {
-            llOwnerSay("(v) " + g_sTitle + "/" + g_sScriptName + " - could not set memory limit");
-        }
         
         initExtension(0);
     }
@@ -576,11 +574,8 @@ default {
             }
         }
         else  if (4 == g_iNr && g_iOn) {
-            if (time >= 2.8) {
-                setButtonCol(-1);
-                if (g_iSyncPerms) g_iSyncNew = 1;
-            }
-            syncPerms();
+            if (time < 2.8 && g_iSyncPerms) g_iSyncNew = 1;
+            toggleSyncCtrl();
         }
         else  if (3 == g_iNr) {
             resetCamPos();
@@ -590,8 +585,10 @@ default {
                 else  setButtonCol(0);
             }
             else  {
-                syncPerms();
                 releaseCamCtrl();
+                llResetOtherScript(REQUESTSCRIPT);
+                llSleep(1);
+                llSetScriptState(REQUESTSCRIPT,0);
             }
         }
         else  if (2 >= g_iNr) {
@@ -682,7 +679,7 @@ default {
             }
         }
         else  if ("clear" == message) {
-            syncPerms();
+            toggleSyncCtrl();
             resetCamPos();
             releaseCamCtrl();
         }
@@ -806,7 +803,7 @@ default {
                 setButtonCol(1);
             }
             else  if ("sync" == message) {
-                if (!g_iSyncPerms) syncPerms();
+                if (!g_iSyncPerms) toggleSyncCtrl();
             }
             else  llOwnerSay("Invalid option picked (" + message + ").\n");
             if ("sync" != message && g_iSyncOn) {
@@ -829,6 +826,7 @@ default {
         else  if (2 == num) {
             g_iNr = 4;
             if ("1" == str) {
+                llSetTimerEvent(0);
                 setButtonCol(2);
                 g_iSyncPerms = 1;
                 toggleSync();
@@ -843,9 +841,22 @@ default {
                 else  {
                     if (g_iOn) defCam();
                     if ("0" == str) llSetScriptState(REQUESTSCRIPT,0);
+                    llSetTimerEvent(0);
                 }
             }
         }
+    }
+
+
+
+	timer() {
+        integer NrTmp = g_iNr;
+        g_iNr = 4;
+        setButtonCol(0);
+        g_iNr = NrTmp;
+        g_iSyncPerms = g_iSyncOn = g_iSyncNew = 0;
+        llSetScriptState(REQUESTSCRIPT,0);
+        llSetTimerEvent(0);
     }
 
 
@@ -868,7 +879,7 @@ default {
 	changed(integer change) {
         if (change & 256) {
             if (g_iCamLock) {
-                if (g_iSyncPerms) syncPerms();
+                if (g_iSyncPerms) toggleSyncCtrl();
                 defCam();
             }
             if (g_iCamPos) resetCamPos();

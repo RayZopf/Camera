@@ -212,15 +212,16 @@ releaseCamCtrl()
 }
 
 
-syncPerms()
+toggleSyncCtrl()
 {
+	llSetTimerEvent(150);
 	if (g_iSyncPerms) {
 		llOwnerSay("releasing cam");
 		llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
 	} else {
-		llOwnerSay("requesting cam");
 		llSetScriptState(REQUESTSCRIPT, 1);
-		llSleep(1.7);
+		llOwnerSay("requesting cam");
+		llSleep(1.5);
 		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
 	}
 }
@@ -586,10 +587,12 @@ toggleSync()
 	if (g_iSyncPerms) {
 		g_iSyncOn = !g_iSyncOn;
 		if (g_iSyncOn) {
+			llSetScriptState(REQUESTSCRIPT, TRUE);
 			setButtonCol(3);
 			llOwnerSay("sync active");
 			llClearCameraParams(); // reset camera to default
 		} else {
+			llSetScriptState(REQUESTSCRIPT, FALSE);
 			llOwnerSay("sync not active");
 			setButtonCol(2);
 			defCam();
@@ -756,7 +759,7 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		MemRestrict(56000, FALSE);
+		//MemRestrict(56000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		initExtension(FALSE);
@@ -815,7 +818,7 @@ default
 			return;
 		} else time = llGetTime();
 
-		if (time > g_fTouchTimer && 4 < g_iNr) {
+		if (time > g_fTouchTimer && 4 < g_iNr) {   // long touch
 			if (5 == g_iNr) {
 				g_vPos1 = llGetCameraPos();
 				g_vFoc1 = g_vPos1 + llRot2Fwd(llGetCameraRot());
@@ -843,7 +846,7 @@ default
 			setButtonCol(TRUE);
 			g_iCamPos = TRUE;
 
-		} else if (time < g_fTouchTimer) {
+		} else if (time < g_fTouchTimer) {    // short touch
 			if (3 == g_iNr) {
 				if (g_iOn) setButtonCol(TRUE);
 				slCam();
@@ -865,21 +868,20 @@ default
 			}
 
 		} else if (4 == g_iNr && g_iOn) {
-			if (time >= (g_fTouchTimer + 1.5)) {
-				setButtonCol(-1);
-				if (g_iSyncPerms) g_iSyncNew = TRUE;
-			}
-			syncPerms();
+			if (time < (g_fTouchTimer + 1.5) && g_iSyncPerms) g_iSyncNew = TRUE;  // no super long touch
+			toggleSyncCtrl();
 
 		} else if (3 == g_iNr) {
 			resetCamPos();
-			if (time < (g_fTouchTimer + 1.5)) {
+			if (time < (g_fTouchTimer + 1.5)) {  // no super long touch
 				if (debug) Debug("Button: "+(string)g_iNr +" - " +(string)g_iOn+"=g_iOn, time:"+(string)time+" variable: "+(string)g_fTouchTimer+" calc: "+(string)(g_fTouchTimer + 1.5),FALSE,FALSE);
 				if (g_iOn) setButtonCol(TRUE);
 					else setButtonCol(FALSE);
 			} else {
-				syncPerms();
 				releaseCamCtrl();
+				llResetOtherScript(REQUESTSCRIPT);
+				llSleep(1);
+				llSetScriptState(REQUESTSCRIPT, 0);
 			}
 
 		} else if (2 >= g_iNr) {
@@ -948,7 +950,7 @@ default
 				defCam();
 			}
 		} else if ("clear" == message) {
-			syncPerms();
+			toggleSyncCtrl();
 			resetCamPos();
 			releaseCamCtrl();
 		} else if ("standard" == message) {
@@ -988,7 +990,7 @@ default
 				llSleep(0.2);
 				setButtonCol(TRUE);
 			} else if ("sync" == message) {
-				if (!g_iSyncPerms) syncPerms();
+				if (!g_iSyncPerms) toggleSyncCtrl();
 			} else llOwnerSay("Invalid option picked (" + message + ").\n"); // not a valid dialog choice
 
 			if ("sync" != message && g_iSyncOn) { setSyncCol(); }
@@ -1007,21 +1009,35 @@ default
 		else if (2 == num) {
 			g_iNr = 4;
 			if ("1" == str) {
+				llSetTimerEvent(0);
 				setButtonCol(2);
 				g_iSyncPerms = TRUE;
 				toggleSync();
 			} else {
 				g_iSyncOn = g_iSyncPerms = FALSE;
 				setButtonCol(FALSE);
-				if (g_iSyncNew) {
+				if (g_iSyncNew) {  // renew sync (released one avi, now get new one)
 					llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
 					g_iSyncNew = FALSE;
 				} else {
 					if (g_iOn) defCam();
 					if ("0" == str) llSetScriptState(REQUESTSCRIPT, 0);
+					llSetTimerEvent(0);
 				}
 			}
 		}
+	}
+
+
+	timer()
+	{
+		integer NrTmp = g_iNr;
+		g_iNr = 4;
+		setButtonCol(FALSE);
+		g_iNr = NrTmp;
+		g_iSyncPerms = g_iSyncOn = g_iSyncNew = FALSE;
+		llSetScriptState(REQUESTSCRIPT, 0);
+		llSetTimerEvent(0);
 	}
 
 
@@ -1043,7 +1059,7 @@ default
 	{
 		if (change & CHANGED_REGION) {
 			if (g_iCamLock) {
-				if (g_iSyncPerms) syncPerms();
+				if (g_iSyncPerms) toggleSyncCtrl();
 				defCam();
 			}
 			if (g_iCamPos) resetCamPos();
