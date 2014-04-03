@@ -193,21 +193,18 @@ dialogPerms(string status)
 }
 
 
-takeCamCtrl()
+toggleCamCtrl()
 {
-	if (verbose) llOwnerSay("enabling CameraControl HUD"); // say function name for debugging
-	llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
-	g_iOn = TRUE;
-	setCol();
-}
-
-
-releaseCamCtrl()
-{
-	llOwnerSay("release CamCtrl"); // say function name for debugging
-	llClearCameraParams();
-	g_iCamLock = g_iFar = g_iOn = g_iSyncOn = FALSE;
-	g_fDist = DIST_NEAR;
+	if (g_iOn) {
+		llOwnerSay("release CamCtrl"); // say function name for debugging
+		llClearCameraParams();
+		g_iCamLock = g_iFar = g_iOn = g_iSyncOn = FALSE;
+		g_fDist = DIST_NEAR;
+	} else {
+		if (verbose) llOwnerSay("enabling CameraControl HUD"); // say function name for debugging
+		llSetCameraParams([CAMERA_ACTIVE, TRUE]); // 1 is active, 0 is inactive
+		g_iOn = TRUE;
+	}
 	setCol();
 }
 
@@ -695,11 +692,11 @@ setCam(string cam)
 toggleDist()
 {
 	if (g_iFar) {
-		g_iOn = FALSE;
+		g_iOn = TRUE;
 		g_iFar = FALSE;
-		releaseCamCtrl();
+		toggleCamCtrl();
 	} else if (!g_iOn) {
-		takeCamCtrl();
+		toggleCamCtrl();
 	} else g_iFar = TRUE;
 
 	if (g_iFar) g_fDist = DIST_FAR;
@@ -878,7 +875,8 @@ default
 				if (g_iOn) setButtonCol(TRUE);
 					else setButtonCol(FALSE);
 			} else {
-				releaseCamCtrl();
+				g_iOn = TRUE;
+				toggleCamCtrl();
 				llResetOtherScript(REQUESTSCRIPT);
 				llSleep(1);
 				llSetScriptState(REQUESTSCRIPT, 0);
@@ -891,7 +889,7 @@ default
 				defCam();
 				if (verbose) llOwnerSay("Setting default view");
 			} else {
-				takeCamCtrl();
+				toggleCamCtrl();
 				defCam();
 			}
 
@@ -915,7 +913,7 @@ default
 			if (verbose) llOwnerSay("Verbose messages turned ON");
 				else llOwnerSay("Verbose messages turned OFF");
 		} else if ("help" == message) { infoLines(); }
-		else if ("off" == message) { releaseCamCtrl(); }
+		else if ("off" == message) { g_iOn = TRUE; toggleCamCtrl(); }
 		else if ("delete" == message) {
 			g_iNr = 3;
 			setButtonCol(-1);
@@ -946,13 +944,14 @@ default
 		else if ("on" == message) {
 			if (!g_iOn) {
 				if (verbose) infoLines();
-				takeCamCtrl();
+				toggleCamCtrl();
 				defCam();
 			}
 		} else if ("clear" == message) {
+			g_iSyncPerms = g_iOn = TRUE;
 			toggleSyncCtrl();
 			resetCamPos();
-			releaseCamCtrl();
+			toggleCamCtrl();
 		} else if ("standard" == message) {
 			if (g_iOn) {
 				g_iNr = 3;
@@ -961,7 +960,7 @@ default
 				slCam();
 				llSleep(0.2);
 				setButtonCol(TRUE);
-			} else releaseCamCtrl();
+			} else { g_iOn = TRUE; toggleCamCtrl(); }
 		} else if (g_iOn) {
 			if ((~llSubStringIndex(message, "cam")) || ((string)((integer)message) == message)) {
 				if (g_iCamPos) {

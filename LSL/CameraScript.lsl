@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 00:08:08 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 00:28:28 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -159,19 +159,18 @@ infoLines(){
 }
 
 
-takeCamCtrl(){
-    if (verbose) llOwnerSay("enabling CameraControl HUD");
-    llSetCameraParams([12,1]);
-    g_iOn = 1;
-    setCol();
-}
-
-
-releaseCamCtrl(){
-    llOwnerSay("release CamCtrl");
-    llClearCameraParams();
-    g_iCamLock = g_iFar = g_iOn = g_iSyncOn = 0;
-    g_fDist = 0.5;
+toggleCamCtrl(){
+    if (g_iOn) {
+        llOwnerSay("release CamCtrl");
+        llClearCameraParams();
+        g_iCamLock = g_iFar = g_iOn = g_iSyncOn = 0;
+        g_fDist = 0.5;
+    }
+    else  {
+        if (verbose) llOwnerSay("enabling CameraControl HUD");
+        llSetCameraParams([12,1]);
+        g_iOn = 1;
+    }
     setCol();
 }
 
@@ -585,7 +584,8 @@ default {
                 else  setButtonCol(0);
             }
             else  {
-                releaseCamCtrl();
+                g_iOn = 1;
+                toggleCamCtrl();
                 llResetOtherScript(REQUESTSCRIPT);
                 llSleep(1);
                 llSetScriptState(REQUESTSCRIPT,0);
@@ -599,7 +599,7 @@ default {
                 if (verbose) llOwnerSay("Setting default view");
             }
             else  {
-                takeCamCtrl();
+                toggleCamCtrl();
                 defCam();
             }
         }
@@ -628,7 +628,8 @@ default {
             infoLines();
         }
         else  if ("off" == message) {
-            releaseCamCtrl();
+            g_iOn = 1;
+            toggleCamCtrl();
         }
         else  if ("delete" == message) {
             g_iNr = 3;
@@ -659,12 +660,12 @@ default {
         else  if ("distance" == message) {
             if (g_iSyncOn) setSyncCol();
             if (g_iFar) {
-                g_iOn = 0;
+                g_iOn = 1;
                 g_iFar = 0;
-                releaseCamCtrl();
+                toggleCamCtrl();
             }
             else  if (!g_iOn) {
-                takeCamCtrl();
+                toggleCamCtrl();
             }
             else  g_iFar = 1;
             if (g_iFar) g_fDist = 2.0;
@@ -674,14 +675,15 @@ default {
         else  if ("on" == message) {
             if (!g_iOn) {
                 if (verbose) infoLines();
-                takeCamCtrl();
+                toggleCamCtrl();
                 defCam();
             }
         }
         else  if ("clear" == message) {
+            g_iSyncPerms = g_iOn = 1;
             toggleSyncCtrl();
             resetCamPos();
-            releaseCamCtrl();
+            toggleCamCtrl();
         }
         else  if ("standard" == message) {
             if (g_iOn) {
@@ -695,7 +697,10 @@ default {
                 llSleep(0.2);
                 setButtonCol(1);
             }
-            else  releaseCamCtrl();
+            else  {
+                g_iOn = 1;
+                toggleCamCtrl();
+            }
         }
         else  if (g_iOn) {
             if (~llSubStringIndex(message,"cam") || (string)((integer)message) == message) {
