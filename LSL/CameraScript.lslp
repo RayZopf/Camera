@@ -990,6 +990,7 @@ default
 				setButtonCol(TRUE);
 			} else if ("sync" == message) {
 				if (!g_iSyncPerms) toggleSyncCtrl();
+					else toggleSync();
 			} else llOwnerSay("Invalid option picked (" + message + ").\n"); // not a valid dialog choice
 
 			if ("sync" != message && g_iSyncOn) { setSyncCol(); }
