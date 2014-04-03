@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 00:34:59 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 00:51:54 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -148,6 +148,7 @@ initExtension(integer conf){
     }
     llSleep(2);
     llMessageLinked(1,1,"stop",g_kOwner);
+    llSetTimerEvent(150);
 }
 
 

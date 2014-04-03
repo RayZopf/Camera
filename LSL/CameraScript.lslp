@@ -158,6 +158,7 @@ initExtension(integer conf)
 	}
 	llSleep(2);
 	llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
+	llSetTimerEvent(150);
 }
 
 
