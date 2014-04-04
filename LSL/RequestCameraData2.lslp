@@ -92,7 +92,7 @@ toggleSyncCtrl(key id)
 {
 	if(id == target)
 	{
-		llOwnerSay(targetFirstName + " has requested that you stop viewing their camera. Your camera is being returned to you.");
+		llOwnerSay(targetFirstName + MSG_STOP);
 		llInstantMessage(target, "At your request, " + ownerFirstName + " has stopped viewing your camera and permissions have been revoked.");
 		llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
 	} else {

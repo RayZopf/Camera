@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.RequestCameraData2.lslp Fri Apr  4 15:23:11 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.RequestCameraData2.lslp Fri Apr  4 15:58:08 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Sync Control
 //
@@ -60,6 +60,7 @@ integer silent = 0;
 key g_kOwner;
 integer g_iHandle = 0;
 integer g_iSyncPerms = 0;
+string MSG_STOP = " has requested that you stop viewing their camera. Your camera is being returned to you.";
 integer CH;
 integer COMMAND_CH = 1;
 integer REMOTE_CH = 2;
@@ -108,7 +109,7 @@ default {
         str = llToLower(str);
         if ("stop" == str) {
             if (id == target) {
-                llOwnerSay(targetFirstName + " has requested that you stop viewing their camera. Your camera is being returned to you.");
+                llOwnerSay(targetFirstName + MSG_STOP);
                 llInstantMessage(target,"At your request, " + ownerFirstName + " has stopped viewing your camera and permissions have been revoked.");
                 llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
             }
@@ -130,7 +131,7 @@ default {
 	listen(integer channel,string name,key id,string message) {
         if (AVI_CH == channel && "stop" == llToLower(message)) {
             if (id == target) {
-                llOwnerSay(targetFirstName + " has requested that you stop viewing their camera. Your camera is being returned to you.");
+                llOwnerSay(targetFirstName + MSG_STOP);
                 llInstantMessage(target,"At your request, " + ownerFirstName + " has stopped viewing your camera and permissions have been revoked.");
                 llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
             }

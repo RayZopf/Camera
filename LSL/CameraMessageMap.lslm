@@ -3,7 +3,7 @@
 //
 //by: Zopf Resident - Ray Zopf (Raz)
 //04. Apr. 2014
-//v0.1
+//v0.1.1
 
 //Files:
 // CameraMessageMap.lslm
@@ -36,12 +36,14 @@ integer silent = FALSE;         // silent startup
 // Variables
 key g_kOwner;                             // object owner
 integer g_iHandle = 0;
+integer g_iHandleAvi = 0;
 
 integer g_iSyncOn = FALSE;
 integer g_iSyncPerms = FALSE;
 
 // Constants
-string REQUESTSCRIPT = "RequestCameraData2.lsl"; 
+string REQUESTSCRIPT = "RequestCameraData2.lsl";
+string MSG_STOP = " has requested that you stop viewing their camera. Your camera is being returned to you.";
 
 //Camera MESSAGE MAP
 integer CH; // dialog channel
@@ -55,7 +57,7 @@ integer AVI_CH = 1010;
 
 //###
 //CameraMessageMap.lslm
-//0.1 - 04Apr2014
+//0.1.1 - 04Apr2014
 
 // pragma inline
 LSLFORGE_OPTIMIZER_MODUL()

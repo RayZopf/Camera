@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 14:56:21 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 16:12:40 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -13,7 +13,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //04. Apr. 2014
-//v3.1.4
+//v3.1.5
 //
 
 //Files:
@@ -58,7 +58,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "3.1.4";
+string g_sVersion = "3.1.5";
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
 // Constants
@@ -103,13 +103,16 @@ integer verbose = 1;
 string g_sScriptName;
 key g_kOwner;
 integer g_iHandle = 0;
+integer g_iHandleAvi = 0;
 integer g_iSyncOn = 0;
 integer g_iSyncPerms = 0;
 string REQUESTSCRIPT = "RequestCameraData2.lsl";
+string MSG_STOP = " has requested that you stop viewing their camera. Your camera is being returned to you.";
 integer CH;
 integer COMMAND_CH = 1;
 integer REMOTE_CH = 2;
 integer CAM_CH = 0;
+integer AVI_CH = 1010;
 
 
 //===============================================
@@ -126,7 +129,10 @@ defCam(){
 initExtension(integer conf){
     llOwnerSay(g_sTitle + " (" + g_sVersion + ") written/enhanced by " + g_sAuthors);
     llListenRemove(g_iHandle);
+    llListenRemove(g_iHandleAvi);
     g_iHandle = llListen(CH,"",g_kOwner,"");
+    g_iHandleAvi = llListen(AVI_CH,"","","");
+    llListenControl(g_iHandleAvi,0);
     llOwnerSay("Camera Control HUD listens on channel: " + (string)CH + "\n");
     if (verbose) {
         
@@ -180,6 +186,7 @@ toggleSyncCtrl(){
     if (g_iSyncPerms) {
         llOwnerSay("releasing cam");
         llMessageLinked(1,COMMAND_CH,"stop",g_kOwner);
+        llListenControl(g_iHandleAvi,0);
     }
     else  {
         llOwnerSay("requesting cam");
@@ -282,10 +289,12 @@ toggleSync(){
             llSetScriptState(REQUESTSCRIPT,1);
             setButtonCol(3);
             llOwnerSay("sync active");
+            llListenControl(g_iHandleAvi,0);
             llClearCameraParams();
             llSleep(0.1);
         }
         else  {
+            llListenControl(g_iHandleAvi,1);
             llSetScriptState(REQUESTSCRIPT,0);
             llOwnerSay("sync not active");
             setButtonCol(2);
@@ -467,7 +476,7 @@ default {
         g_kOwner = llGetOwner();
         g_sScriptName = llGetScriptName();
         integer rc = 0;
-        rc = llSetMemoryLimit(56000);
+        rc = llSetMemoryLimit(58000);
         if (verbose && !rc) {
             llOwnerSay("(v) " + g_sTitle + "/" + g_sScriptName + " - could not set memory limit");
         }
@@ -641,6 +650,11 @@ default {
         string status = "off";
         if (verbose) status = "on";
         message = llToLower(message);
+        if (AVI_CH == channel && "stop" == message) {
+            llOwnerSay("Avatar" + MSG_STOP);
+            toggleSyncCtrl();
+            return;
+        }
         if ("---" == message || "close" == message) {
             return;
         }
@@ -648,13 +662,11 @@ default {
             verbose = !verbose;
             if (verbose) llOwnerSay("Verbose messages turned ON");
             else  llOwnerSay("Verbose messages turned OFF");
+            return;
         }
         else  if ("help" == message) {
             infoLines();
-        }
-        else  if ("off" == message) {
-            g_iOn = 1;
-            toggleCamCtrl();
+            return;
         }
         else  if ("delete" == message) {
             g_iNr = 3;
@@ -662,6 +674,7 @@ default {
             llSleep(0.2);
             setButtonCol(1);
             resetCamPos();
+            return;
         }
         perm = llGetPermissions();
         if (!(perm & 3072)) {
@@ -681,6 +694,10 @@ default {
         }
         else  if ("...back" == message) {
             llDialog(id,MSG_VER + g_sVersion + MSG_DIALOG + status,MENU_MAIN,CH);
+        }
+        else  if ("off" == message) {
+            g_iOn = 1;
+            toggleCamCtrl();
         }
         else  if ("distance" == message) {
             if (g_iSyncOn) setSyncCol();

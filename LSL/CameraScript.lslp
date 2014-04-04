@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //04. Apr. 2014
-//v3.1.4
+//v3.1.5
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "3.1.4";            // version
+string g_sVersion = "3.1.5";            // version
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
 // Constants
@@ -160,7 +160,10 @@ initExtension(integer conf)
 setupListen()
 {
 	llListenRemove(g_iHandle);
+	llListenRemove(g_iHandleAvi);
 	g_iHandle = llListen(CH, "", g_kOwner, ""); // listen for dialog answers
+	g_iHandleAvi = llListen(AVI_CH, "", "", "");
+	llListenControl(g_iHandleAvi, FALSE);
 	llOwnerSay("Camera Control HUD listens on channel: "+(string)CH+"\n");
 }
 
@@ -207,11 +210,12 @@ toggleCamCtrl()
 toggleSyncCtrl()
 {
 	llSetTimerEvent(150);
-	llSetScriptState(REQUESTSCRIPT, 1);
+	llSetScriptState(REQUESTSCRIPT, TRUE);
 
 	if (g_iSyncPerms) {
 		llOwnerSay("releasing cam");
 		llMessageLinked(LINK_ROOT, COMMAND_CH, "stop", g_kOwner);
+		llListenControl(g_iHandleAvi, FALSE);
 	} else {
 		llOwnerSay("requesting cam");
 		llSleep(1.5);
@@ -600,9 +604,11 @@ toggleSync()
 			llSetScriptState(REQUESTSCRIPT, TRUE);
 			setButtonCol(3);
 			llOwnerSay("sync active");
+			llListenControl(g_iHandleAvi, FALSE);
 			llClearCameraParams(); // reset camera to default
 			llSleep(0.1);
 		} else {
+			llListenControl(g_iHandleAvi, TRUE);
 			llSetScriptState(REQUESTSCRIPT, FALSE);
 			llOwnerSay("sync not active");
 			setButtonCol(2);
@@ -770,7 +776,7 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		MemRestrict(56000, FALSE);
+		MemRestrict(58000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		llSleep(1);
@@ -922,19 +928,26 @@ default
 		if (verbose) status = "on";
 
 		message = llToLower(message);
+		if (AVI_CH == channel && "stop" == message) {
+			llOwnerSay("Avatar" + MSG_STOP);
+			toggleSyncCtrl();
+			return;
+		}
+		
 		if ("---" == message || "close" == message) { return; }
 		else if ("verbose" == message) {
 			verbose = !verbose;
 			if (verbose) llOwnerSay("Verbose messages turned ON");
 				else llOwnerSay("Verbose messages turned OFF");
-		} else if ("help" == message) { infoLines(); }
-		else if ("off" == message) { g_iOn = TRUE; toggleCamCtrl(); }
+			return;
+		} else if ("help" == message) { infoLines(); return; }
 		else if ("delete" == message) {
 			g_iNr = 3;
 			setButtonCol(-1);
 			llSleep(0.2);
 			setButtonCol(TRUE);
 			resetCamPos();
+			return;
 		}
 
 		perm =llGetPermissions();
@@ -955,6 +968,7 @@ default
 			"Me", "Worm", "Drop",
 			"Spin", "Spaz", "---", "DEFAULT","Center", "STANDARD"], CH); // present submenu on request
 		} else if ("...back" == message) { llDialog(id, MSG_VER + g_sVersion + MSG_DIALOG + status, MENU_MAIN, CH); } // present main menu on request to go back
+		else if ("off" == message) { g_iOn = TRUE; toggleCamCtrl(); }
 		else if ("distance" == message) { if (g_iSyncOn) setSyncCol(); toggleDist(); }
 		else if ("on" == message) {
 			if (!g_iOn) {
