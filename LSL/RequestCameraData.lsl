@@ -17,6 +17,7 @@ list avatars;
 
 any_state_on_rez(integer start)
 {
+	llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
     llResetScript();
 }
 
@@ -31,6 +32,7 @@ any_state_listen(integer channel, string name, key id, string message)
             {
                 llOwnerSay("Stopping. Your camera has been returned to you.");
                 llInstantMessage(target, ownerFirstName + " has stopped viewing your camera.");
+                llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
                 llMessageLinked(LINK_THIS, 2, "0", "");
                 llResetScript();
             }
@@ -38,6 +40,7 @@ any_state_listen(integer channel, string name, key id, string message)
             {
                 llOwnerSay(targetFirstName + " has requested that you stop viewing their camera. Your camera is being returned to you.");
                 llInstantMessage(target, "At your request, " + ownerFirstName + " has stopped viewing your camera and permissions have been revoked.");
+                llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
                 llMessageLinked(LINK_THIS, 2, "0", "");
                 llResetScript();
             }
@@ -54,6 +57,8 @@ default
     
     state_entry()
     {
+    	llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
+    	llMessageLinked(LINK_THIS, 2, "0", "");
             llOwnerSay("Type /1 start to begin viewing someone's camera.");
             llListen(1, "", llGetOwner(), "start");
             ownerFirstName = llGetSubString(llKey2Name(llGetOwner()), 0, llSubStringIndex(llKey2Name(llGetOwner()), " ")-1); // Note to self: Request a llGetFirstName function
@@ -81,6 +86,7 @@ default
     no_sensor()
     {
         llOwnerSay("No nearby avatars were found.");
+        //llMessageLinked(LINK_THIS, 2, "0", "");   // don't do this, let timer catch it - maybe user want's a second try
     }
 
 
@@ -152,6 +158,7 @@ state avatarChosen // assumes target, targetFirstName, and ownerFirstName have e
         {
             llOwnerSay(targetFirstName + " accepted your request to track their camera. You are now viewing their camera. If this is not working, press ESC twice to exit your alt-cam. To stop viewing their camera, type /1 stop");
             llMessageLinked(LINK_THIS, 2, "1", "");
+             llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t["+targetFirstName+"]", <1,1,1>, 1]);
             state tracking;
         }
         else

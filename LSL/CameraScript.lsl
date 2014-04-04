@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 01:40:22 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 03:53:10 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -13,7 +13,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //04. Apr. 2014
-//v3.1.1
+//v3.1.3
 //
 
 //Files:
@@ -58,7 +58,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "3.1.1";
+string g_sVersion = "3.1.3";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -146,7 +146,7 @@ initExtension(integer conf){
         setCol();
         if (verbose) infoLines();
     }
-    llSleep(2);
+    llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
     llMessageLinked(1,1,"stop",g_kOwner);
     llSetTimerEvent(150);
 }
@@ -178,12 +178,12 @@ toggleCamCtrl(){
 
 toggleSyncCtrl(){
     llSetTimerEvent(150);
+    llSetScriptState(REQUESTSCRIPT,1);
     if (g_iSyncPerms) {
         llOwnerSay("releasing cam");
         llMessageLinked(1,1,"stop",g_kOwner);
     }
     else  {
-        llSetScriptState(REQUESTSCRIPT,1);
         llOwnerSay("requesting cam");
         llSleep(1.5);
         llMessageLinked(1,1,"start",g_kOwner);
@@ -255,7 +255,10 @@ resetCamPos(){
 
 
 savedCam(vector foc,vector pos){
-    if (!g_iSyncOn) llClearCameraParams();
+    if (!g_iSyncOn) {
+        llClearCameraParams();
+        llSleep(0.1);
+    }
     llSetCameraParams([12,1,17,foc,6,0.0,22,1,13,pos,5,0.0,21,1]);
     g_iCamLock = 1;
     
@@ -265,6 +268,7 @@ savedCam(vector foc,vector pos){
 shoulderCamRight(){
     if (verbose) llOwnerSay("Right Shoulder");
     llClearCameraParams();
+    llSleep(0.1);
     llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
     g_iCamLock = 0;
     g_iPersNr = 0;
@@ -281,6 +285,7 @@ toggleSync(){
             setButtonCol(3);
             llOwnerSay("sync active");
             llClearCameraParams();
+            llSleep(0.1);
         }
         else  {
             llSetScriptState(REQUESTSCRIPT,0);
@@ -390,6 +395,7 @@ setPers(){
         if (g_iPerspective == -1) {
             if (verbose) llOwnerSay("Focussing on yourself");
             llClearCameraParams();
+            llSleep(0.1);
             vector here = llGetPos();
             llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,here + <1.5 + 2 * g_fDist,1.5 + 2 * g_fDist,1.5 + 2 * g_fDist>,5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
             g_iCamLock = 1;
@@ -399,6 +405,7 @@ setPers(){
         else  if (g_iPerspective == 0) {
             if (verbose) llOwnerSay("Worm Cam");
             llClearCameraParams();
+            llSleep(0.1);
             llSetCameraParams([12,1,8,180.0,9,0.0,7,g_fDist + 4,6,0.0,22,0,11,2.5,0,-35.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
             g_iCamLock = 0;
             g_iPersNr = 1;
@@ -407,6 +414,7 @@ setPers(){
         else  if (g_iPerspective == 1) {
             if (verbose) llOwnerSay("Center Cam");
             llClearCameraParams();
+            llSleep(0.1);
             llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
             g_iCamLock = 0;
             g_iPersNr = 1;
@@ -421,6 +429,7 @@ setPers(){
         if (g_iPerspective == -1) {
             if (verbose) llOwnerSay("Left Shoulder");
             llClearCameraParams();
+            llSleep(0.1);
             llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
             g_iCamLock = 0;
             g_iPersNr = 0;
@@ -429,6 +438,7 @@ setPers(){
         else  if (g_iPerspective == 0) {
             if (verbose) llOwnerSay("Shoulder Cam");
             llClearCameraParams();
+            llSleep(0.1);
             llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
             g_iCamLock = 0;
             g_iPersNr = 0;
@@ -458,7 +468,13 @@ default {
         CH = 8374;
         g_kOwner = llGetOwner();
         g_sScriptName = llGetScriptName();
+        integer rc = 0;
+        rc = llSetMemoryLimit(56000);
+        if (verbose && !rc) {
+            llOwnerSay("(v) " + g_sTitle + "/" + g_sScriptName + " - could not set memory limit");
+        }
         
+        llSleep(1);
         initExtension(0);
     }
 
@@ -548,6 +564,7 @@ default {
             if (3 == g_iNr) {
                 if (g_iOn) setButtonCol(1);
                 llClearCameraParams();
+                llSleep(0.1);
                 llSetCameraParams([12,1]);
                 g_iCamLock = 0;
                 llOwnerSay("Resetting view to SL standard");
@@ -574,7 +591,15 @@ default {
             }
         }
         else  if (4 == g_iNr && g_iOn) {
-            if (time < 2.8 && g_iSyncPerms) g_iSyncNew = 1;
+            if (time < 2.8) {
+                if (g_iSyncPerms) g_iSyncNew = 1;
+            }
+            else  if (!g_iSyncPerms) {
+                llResetOtherScript(REQUESTSCRIPT);
+                llSleep(0.7);
+                llSetScriptState(REQUESTSCRIPT,0);
+                return;
+            }
             toggleSyncCtrl();
         }
         else  if (3 == g_iNr) {
@@ -588,7 +613,7 @@ default {
                 g_iOn = 1;
                 toggleCamCtrl();
                 llResetOtherScript(REQUESTSCRIPT);
-                llSleep(1);
+                llSleep(0.7);
                 llSetScriptState(REQUESTSCRIPT,0);
             }
         }
@@ -692,6 +717,7 @@ default {
                 setButtonCol(0);
                 if (g_iSyncOn) setSyncCol();
                 llClearCameraParams();
+                llSleep(0.1);
                 llSetCameraParams([12,1]);
                 g_iCamLock = 0;
                 llOwnerSay("Resetting view to SL standard");
@@ -730,6 +756,7 @@ default {
             else  if ("left" == message) {
                 if (verbose) llOwnerSay("Left Shoulder");
                 llClearCameraParams();
+                llSleep(0.1);
                 llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.5,0.75>]);
                 g_iCamLock = 0;
                 g_iPersNr = 0;
@@ -738,6 +765,7 @@ default {
             else  if ("shoulder" == message) {
                 if (verbose) llOwnerSay("Shoulder Cam");
                 llClearCameraParams();
+                llSleep(0.1);
                 llSetCameraParams([12,1,8,5.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,-0.5,0.75>]);
                 g_iCamLock = 0;
                 g_iPersNr = 0;
@@ -749,6 +777,7 @@ default {
             else  if ("center" == message) {
                 if (verbose) llOwnerSay("Center Cam");
                 llClearCameraParams();
+                llSleep(0.1);
                 llSetCameraParams([12,1,8,0.0,9,0.0,7,g_fDist,6,1.0e-2,22,0,11,0.0,0,15.0,5,0.1,21,0,10,0.0,1,<-0.5,0.0,0.75>]);
                 g_iCamLock = 0;
                 g_iPersNr = 1;
@@ -757,6 +786,7 @@ default {
             else  if ("me" == message) {
                 if (verbose) llOwnerSay("Focussing on yourself");
                 llClearCameraParams();
+                llSleep(0.1);
                 vector here = llGetPos();
                 llSetCameraParams([12,1,8,0.0,9,0.0,7,0.0,17,here,6,0.0,22,1,11,0.0,13,here + <1.5 + 2 * g_fDist,1.5 + 2 * g_fDist,1.5 + 2 * g_fDist>,5,0.0,21,1,10,0.0,1,ZERO_VECTOR]);
                 g_iCamLock = 1;
@@ -766,6 +796,7 @@ default {
             else  if ("worm" == message) {
                 if (verbose) llOwnerSay("Worm Cam");
                 llClearCameraParams();
+                llSleep(0.1);
                 llSetCameraParams([12,1,8,180.0,9,0.0,7,g_fDist + 4,6,0.0,22,0,11,2.5,0,-35.0,5,1.0,21,0,10,1.0,1,<0.0,0.0,0.0>]);
                 g_iCamLock = 0;
                 g_iPersNr = 1;
@@ -778,6 +809,7 @@ default {
             }
             else  if ("spin" == message) {
                 llClearCameraParams();
+                llSleep(0.1);
                 llSetCameraParams([12,1,8,180.0,9,0.5,6,5.0e-2,22,0,11,0.0,0,30.0,5,0.0,21,0,10,0.0,1,<0.0,0.0,0.0>]);
                 float i;
                 vector camera_position;
@@ -840,12 +872,12 @@ default {
             }
             else  {
                 g_iSyncOn = g_iSyncPerms = 0;
-                setButtonCol(0);
                 if (g_iSyncNew) {
                     llMessageLinked(1,1,"start",g_kOwner);
                     g_iSyncNew = 0;
                 }
                 else  {
+                    setButtonCol(0);
                     if (g_iOn) defCam();
                     if ("0" == str) llSetScriptState(REQUESTSCRIPT,0);
                     llSetTimerEvent(0);
@@ -864,6 +896,7 @@ default {
         g_iSyncPerms = g_iSyncOn = g_iSyncNew = 0;
         llSetScriptState(REQUESTSCRIPT,0);
         llSetTimerEvent(0);
+        llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
         if (verbose) llOwnerSay("Got no reply from RequestCameraData script, sending to sleep again");
     }
 

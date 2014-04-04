@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //04. Apr. 2014
-//v3.1.1
+//v3.1.3
 //
 
 //Files:
@@ -57,7 +57,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "3.1.1";            // version
+string g_sVersion = "3.1.3";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -156,7 +156,7 @@ initExtension(integer conf)
 		setCol();
 		if (verbose) infoLines();
 	}
-	llSleep(2);
+	llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
 	llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
 	llSetTimerEvent(150);
 }
@@ -213,15 +213,25 @@ toggleCamCtrl()
 toggleSyncCtrl()
 {
 	llSetTimerEvent(150);
+	llSetScriptState(REQUESTSCRIPT, 1);
+
 	if (g_iSyncPerms) {
 		llOwnerSay("releasing cam");
 		llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
 	} else {
-		llSetScriptState(REQUESTSCRIPT, 1);
 		llOwnerSay("requesting cam");
 		llSleep(1.5);
 		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
 	}
+}
+
+
+// pragma inline
+resetSyncCtrl()
+{
+	llResetOtherScript(REQUESTSCRIPT);
+	llSleep(0.7);
+	llSetScriptState(REQUESTSCRIPT, 0);
 }
 
 
@@ -296,6 +306,7 @@ resetCamPos()
 slCam()
 {
 	llClearCameraParams(); // reset camera to default
+	llSleep(0.1);
 	llSetCameraParams([CAMERA_ACTIVE, TRUE]);
 	g_iCamLock = FALSE;
 	llOwnerSay("Resetting view to SL standard");
@@ -304,7 +315,7 @@ slCam()
 
 savedCam(vector foc, vector pos)
 {
-	if (!g_iSyncOn) llClearCameraParams(); // reset camera to default
+	if (!g_iSyncOn) { llClearCameraParams(); llSleep(0.1); } // reset camera to default
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		//CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -331,6 +342,7 @@ shoulderCamLeft()
 {
 	if (verbose) llOwnerSay("Left Shoulder"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
+	llSleep(0.1);
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -358,6 +370,7 @@ shoulderCam()
 {
 	if (verbose) llOwnerSay("Shoulder Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
+	llSleep(0.1);
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 5.0, // (0 to 180) degrees
@@ -384,6 +397,7 @@ shoulderCamRight()
 {
 	if (verbose) llOwnerSay("Right Shoulder"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
+	llSleep(0.1);
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -411,6 +425,7 @@ centreCam()
 {
 	if (verbose) llOwnerSay("Center Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
+	llSleep(0.1);
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 0.0, // (0 to 180) degrees
@@ -438,6 +453,7 @@ focusCamMe()
 {
 	if (verbose) llOwnerSay("Focussing on yourself"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
+	llSleep(0.1);
 	vector here = llGetPos();
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
@@ -466,6 +482,7 @@ wormCam()
 {
 	if (verbose) llOwnerSay("Worm Cam"); // say function name for debugging
 	llClearCameraParams(); // reset camera to default
+	llSleep(0.1);
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -516,6 +533,7 @@ dropCam()
 spinCam()
 {
 	llClearCameraParams(); // reset camera to default
+	llSleep(0.1);
 	llSetCameraParams([
 		CAMERA_ACTIVE, TRUE, // 1 is active, 0 is inactive
 		CAMERA_BEHINDNESS_ANGLE, 180.0, // (0 to 180) degrees
@@ -589,6 +607,7 @@ toggleSync()
 			setButtonCol(3);
 			llOwnerSay("sync active");
 			llClearCameraParams(); // reset camera to default
+			llSleep(0.1);
 		} else {
 			llSetScriptState(REQUESTSCRIPT, FALSE);
 			llOwnerSay("sync not active");
@@ -757,9 +776,10 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		//MemRestrict(56000, FALSE);
+		MemRestrict(56000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
+		llSleep(1);
 		initExtension(FALSE);
 	}
 
@@ -866,7 +886,8 @@ default
 			}
 
 		} else if (4 == g_iNr && g_iOn) {
-			if (time < (g_fTouchTimer + 1.5) && g_iSyncPerms) g_iSyncNew = TRUE;  // no super long touch
+			if (time < (g_fTouchTimer + 1.5)) { if (g_iSyncPerms) g_iSyncNew = TRUE; }  // no super long touch
+				else if (!g_iSyncPerms) { resetSyncCtrl(); return; }
 			toggleSyncCtrl();
 
 		} else if (3 == g_iNr) {
@@ -878,9 +899,7 @@ default
 			} else {
 				g_iOn = TRUE;
 				toggleCamCtrl();
-				llResetOtherScript(REQUESTSCRIPT);
-				llSleep(1);
-				llSetScriptState(REQUESTSCRIPT, 0);
+				resetSyncCtrl();
 			}
 
 		} else if (2 >= g_iNr) {
@@ -1016,11 +1035,11 @@ default
 				toggleSync();
 			} else {
 				g_iSyncOn = g_iSyncPerms = FALSE;
-				setButtonCol(FALSE);
 				if (g_iSyncNew) {  // renew sync (released one avi, now get new one)
 					llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
 					g_iSyncNew = FALSE;
 				} else {
+					setButtonCol(FALSE);
 					if (g_iOn) defCam();
 					if ("0" == str) llSetScriptState(REQUESTSCRIPT, 0);
 					llSetTimerEvent(0);
@@ -1039,6 +1058,7 @@ default
 		g_iSyncPerms = g_iSyncOn = g_iSyncNew = FALSE;
 		llSetScriptState(REQUESTSCRIPT, 0);
 		llSetTimerEvent(0);
+		llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
 		if (verbose) llOwnerSay("Got no reply from RequestCameraData script, sending to sleep again");
 	}
 
