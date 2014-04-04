@@ -1,0 +1,73 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Module that holds Camera Message variables used in more than one script
+//
+//by: Zopf Resident - Ray Zopf (Raz)
+//04. Apr. 2014
+//v0.1
+
+//Files:
+// CameraMessageMap.lslm
+//
+//
+//Prequisites: LSLForge
+//
+//
+//Changelog
+
+//FIXME: ---
+
+//TODO: ---
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+$module ()
+
+
+//user changeable variables
+//-----------------------------------------------
+integer verbose = TRUE;
+
+
+//internal variables
+//-----------------------------------------------
+string g_sScriptName;
+integer silent = FALSE;         // silent startup
+
+// Variables
+key g_kOwner;                             // object owner
+integer g_iHandle = 0;
+
+integer g_iSyncOn = FALSE;
+integer g_iSyncPerms = FALSE;
+
+// Constants
+string REQUESTSCRIPT = "RequestCameraData.lsl"; 
+
+//Camera MESSAGE MAP
+integer CH; // dialog channel
+
+integer COMMAND_CH = 1;
+integer REMOTE_CH = 2;         // remote channel - for listen and link_messages (register extension)
+integer CAM_CH = 0;
+integer AVI_CH = 1010;
+
+
+
+//###
+//CameraMessageMap.lslm
+//0.1 - 04Apr2014
+
+// pragma inline
+LSLFORGE_OPTIMIZER_MODUL()
+{
+	verbose = verbose;
+	silent = silent;
+
+	COMMAND_CH = COMMAND_CH;
+	REMOTE_CH = REMOTE_CH;
+	CAM_CH = CAM_CH;
+	AVI_CH = AVI_CH;
+}
+
+//END CameraMessageMap.lslm
+//###
