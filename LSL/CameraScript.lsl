@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 03:53:10 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 14:29:45 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -13,7 +13,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //04. Apr. 2014
-//v3.1.3
+//v3.1.4
 //
 
 //Files:
@@ -58,29 +58,18 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "3.1.3";
-string g_sScriptName;
+string g_sVersion = "3.1.4";
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
-//SCRIPT MESSAGE MAP
-integer CH;
-
 // Constants
-string REQUESTSCRIPT = "RequestCameraData.lsl";
 list MENU_MAIN = ["More...","help","CLOSE","Left","Shoulder","Right","DELETE","Distance","CLEAR","ON","verbose","OFF"];
 //list MENU_2 = ["...Back", "---", "CLOSE", "Worm", "Drop", "Spin"]; // menu 2, commented out, as long as only used once
 string MSG_DIALOG = "\n\nWhat do you want to do?\n\tverbose: ";
 string MSG_VER = "Script version: ";
 string MSG_EMPTY = "no position saved on slot ";
 string MSG_CYCLE = ", cycling to next one";
-
-
-// Variables
-integer verbose = 1;
-key g_kOwner;
 integer perm;
 
-integer g_iHandle = 0;
 integer g_iOn = 0;
 
 // for gesture support
@@ -109,9 +98,18 @@ integer g_iCamPos;
 integer g_iCamNr = 0;
 integer g_iCamLock = 0;
 
+integer g_iSyncNew = 0;
+integer verbose = 1;
+string g_sScriptName;
+key g_kOwner;
+integer g_iHandle = 0;
 integer g_iSyncOn = 0;
 integer g_iSyncPerms = 0;
-integer g_iSyncNew = 0;
+string REQUESTSCRIPT = "RequestCameraData2.lsl";
+integer CH;
+integer COMMAND_CH = 1;
+integer REMOTE_CH = 2;
+integer CAM_CH = 0;
 
 
 //===============================================
@@ -147,7 +145,7 @@ initExtension(integer conf){
         if (verbose) infoLines();
     }
     llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
-    llMessageLinked(1,1,"stop",g_kOwner);
+    llMessageLinked(1,COMMAND_CH,"stop",g_kOwner);
     llSetTimerEvent(150);
 }
 
@@ -181,12 +179,12 @@ toggleSyncCtrl(){
     llSetScriptState(REQUESTSCRIPT,1);
     if (g_iSyncPerms) {
         llOwnerSay("releasing cam");
-        llMessageLinked(1,1,"stop",g_kOwner);
+        llMessageLinked(1,COMMAND_CH,"stop",g_kOwner);
     }
     else  {
         llOwnerSay("requesting cam");
         llSleep(1.5);
-        llMessageLinked(1,1,"start",g_kOwner);
+        llMessageLinked(1,COMMAND_CH,"start",g_kOwner);
     }
 }
 
@@ -858,11 +856,11 @@ default {
 
 
 	link_message(integer link,integer num,string str,key id) {
-        if (0 != num && 2 != num) return;
+        if (CAM_CH != num && REMOTE_CH != num) return;
         if (g_iSyncPerms && 0 == num && g_iSyncOn) {
             savedCam((vector)((string)id),(vector)str);
         }
-        else  if (2 == num) {
+        else  if (REMOTE_CH == num) {
             g_iNr = 4;
             if ("1" == str) {
                 llSetTimerEvent(0);
@@ -873,7 +871,8 @@ default {
             else  {
                 g_iSyncOn = g_iSyncPerms = 0;
                 if (g_iSyncNew) {
-                    llMessageLinked(1,1,"start",g_kOwner);
+                    llSleep(0.5);
+                    llMessageLinked(1,COMMAND_CH,"start",g_kOwner);
                     g_iSyncNew = 0;
                 }
                 else  {

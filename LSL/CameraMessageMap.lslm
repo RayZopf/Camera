@@ -41,7 +41,7 @@ integer g_iSyncOn = FALSE;
 integer g_iSyncPerms = FALSE;
 
 // Constants
-string REQUESTSCRIPT = "RequestCameraData.lsl"; 
+string REQUESTSCRIPT = "RequestCameraData2.lsl"; 
 
 //Camera MESSAGE MAP
 integer CH; // dialog channel

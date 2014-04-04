@@ -12,7 +12,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
 //04. Apr. 2014
-//v3.1.3
+//v3.1.4
 //
 
 //Files:
@@ -57,15 +57,10 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "3.1.3";            // version
-string g_sScriptName;
+string g_sVersion = "3.1.4";            // version
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
-//SCRIPT MESSAGE MAP
-integer CH; // dialog channel
-
 // Constants
-string REQUESTSCRIPT = "RequestCameraData.lsl";
 list MENU_MAIN = ["More...", "help", "CLOSE",
 	"Left", "Shoulder", "Right",
 	"DELETE", "Distance", "CLEAR", "ON", "verbose", "OFF"]; // the main menu
@@ -79,12 +74,9 @@ float DIST_FAR = 2.0;
 
 
 // Variables
-integer verbose = TRUE;         // show more/less info during startup
-key g_kOwner;                      // object owner
 float g_fTouchTimer = 1.3;
 integer perm;
 
-integer g_iHandle = 0;
 integer g_iOn = FALSE;
 
 // for gesture support
@@ -113,8 +105,6 @@ integer g_iCamPos;
 integer g_iCamNr = 0;
 integer g_iCamLock = FALSE;
 
-integer g_iSyncOn = FALSE;
-integer g_iSyncPerms = FALSE;
 integer g_iSyncNew = FALSE;
 
 //===============================================
@@ -125,6 +115,10 @@ integer g_iSyncNew = FALSE;
 //-----------------------------------------------
 $import Debug2.lslm(m_sScriptName=g_sScriptName);
 $import MemoryManagement2.lslm(m_sTitle=g_sTitle, m_sScriptName=g_sScriptName, m_iVerbose=verbose);
+
+//project specific modules
+//-----------------------------------------------
+$import CameraMessageMap.lslm();
 
 
 //===============================================
@@ -157,7 +151,7 @@ initExtension(integer conf)
 		if (verbose) infoLines();
 	}
 	llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
-	llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
+	llMessageLinked(LINK_ROOT, COMMAND_CH, "stop", g_kOwner);
 	llSetTimerEvent(150);
 }
 
@@ -217,11 +211,11 @@ toggleSyncCtrl()
 
 	if (g_iSyncPerms) {
 		llOwnerSay("releasing cam");
-		llMessageLinked(LINK_ROOT, 1, "stop", g_kOwner);
+		llMessageLinked(LINK_ROOT, COMMAND_CH, "stop", g_kOwner);
 	} else {
 		llOwnerSay("requesting cam");
 		llSleep(1.5);
-		llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
+		llMessageLinked(LINK_ROOT, COMMAND_CH, "start", g_kOwner);
 	}
 }
 
@@ -1023,10 +1017,10 @@ default
 
 	link_message(integer link, integer num, string str, key id)
 	{
-		if (0 != num && 2 != num) return;
+		if (CAM_CH != num && REMOTE_CH != num) return;
 
 		if (g_iSyncPerms && 0 == num && g_iSyncOn) { savedCam((vector)((string)id), (vector)str); }
-		else if (2 == num) {
+		else if (REMOTE_CH == num) {
 			g_iNr = 4;
 			if ("1" == str) {
 				llSetTimerEvent(0);
@@ -1036,7 +1030,8 @@ default
 			} else {
 				g_iSyncOn = g_iSyncPerms = FALSE;
 				if (g_iSyncNew) {  // renew sync (released one avi, now get new one)
-					llMessageLinked(LINK_ROOT, 1, "start", g_kOwner);
+					llSleep(0.5);
+					llMessageLinked(LINK_ROOT, COMMAND_CH, "start", g_kOwner);
 					g_iSyncNew = FALSE;
 				} else {
 					setButtonCol(FALSE);
