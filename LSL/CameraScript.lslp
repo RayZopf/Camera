@@ -861,6 +861,7 @@ default
 		} else if (time < g_fTouchTimer) {    // short touch
 			if (3 == g_iNr) {
 				if (g_iOn) setButtonCol(TRUE);
+				if (g_iSyncOn) toggleSync();
 				slCam();
 			} else if (g_iOn) {
 				if (2 == g_iNr) {

@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 14:29:45 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 14:56:21 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -561,6 +561,7 @@ default {
         else  if (time < 1.3) {
             if (3 == g_iNr) {
                 if (g_iOn) setButtonCol(1);
+                if (g_iSyncOn) toggleSync();
                 llClearCameraParams();
                 llSleep(0.1);
                 llSetCameraParams([12,1]);
