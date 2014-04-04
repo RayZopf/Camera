@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.RequestCameraData2.lslp Fri Apr  4 14:22:31 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.RequestCameraData2.lslp Fri Apr  4 15:23:11 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Sync Control
 //
@@ -11,7 +11,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: link messages
 //04. Apr. 2014
-//v0.5
+//v0.5.1
 //
 
 //Files:
@@ -42,7 +42,7 @@
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "RequestCameraData";
-string g_sVersion = "0.5";
+string g_sVersion = "0.5.1";
 string g_sAuthors = "Zopf";
 
 // Constants
@@ -84,7 +84,7 @@ default {
         g_kOwner = llGetOwner();
         g_sScriptName = llGetScriptName();
         integer rc = 0;
-        rc = llSetMemoryLimit(24000);
+        rc = llSetMemoryLimit(20000);
         if (verbose && !rc) {
             llOwnerSay("(v) " + g_sTitle + "/" + g_sScriptName + " - could not set memory limit");
         }
@@ -111,13 +111,11 @@ default {
                 llOwnerSay(targetFirstName + " has requested that you stop viewing their camera. Your camera is being returned to you.");
                 llInstantMessage(target,"At your request, " + ownerFirstName + " has stopped viewing your camera and permissions have been revoked.");
                 llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
-                llMessageLinked(-4,REMOTE_CH,"0","");
             }
             else  {
                 llOwnerSay("Stopping. Your camera has been returned to you.");
                 llInstantMessage(target,ownerFirstName + " has stopped viewing your camera.");
                 llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
-                llMessageLinked(-4,REMOTE_CH,"0","");
             }
             llResetScript();
         }
@@ -135,13 +133,11 @@ default {
                 llOwnerSay(targetFirstName + " has requested that you stop viewing their camera. Your camera is being returned to you.");
                 llInstantMessage(target,"At your request, " + ownerFirstName + " has stopped viewing your camera and permissions have been revoked.");
                 llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
-                llMessageLinked(-4,REMOTE_CH,"0","");
             }
             else  {
                 llOwnerSay("Stopping. Your camera has been returned to you.");
                 llInstantMessage(target,ownerFirstName + " has stopped viewing your camera.");
                 llSetLinkPrimitiveParamsFast(5,[26,"",ZERO_VECTOR,0]);
-                llMessageLinked(-4,REMOTE_CH,"0","");
             }
             llResetScript();
         }

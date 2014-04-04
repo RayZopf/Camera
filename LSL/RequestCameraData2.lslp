@@ -10,7 +10,7 @@
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: link messages
 //04. Apr. 2014
-//v0.5
+//v0.5.1
 //
 
 //Files:
@@ -41,7 +41,7 @@
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "RequestCameraData";     // title
-string g_sVersion = "0.5";            // version
+string g_sVersion = "0.5.1";            // version
 string g_sAuthors = "Zopf";
 
 // Constants
@@ -95,12 +95,10 @@ toggleSyncCtrl(key id)
 		llOwnerSay(targetFirstName + " has requested that you stop viewing their camera. Your camera is being returned to you.");
 		llInstantMessage(target, "At your request, " + ownerFirstName + " has stopped viewing your camera and permissions have been revoked.");
 		llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
-		llMessageLinked(LINK_THIS, REMOTE_CH, "0", "");
 	} else {
 		llOwnerSay("Stopping. Your camera has been returned to you.");
 		llInstantMessage(target, ownerFirstName + " has stopped viewing your camera.");
 		llSetLinkPrimitiveParamsFast(5, [PRIM_TEXT, "", ZERO_VECTOR, 0]);
-		llMessageLinked(LINK_THIS, REMOTE_CH, "0", "");
 	}
 
 	llResetScript();
@@ -143,7 +141,7 @@ default
 		g_kOwner = llGetOwner();
 		g_sScriptName = llGetScriptName();
 
-		MemRestrict(24000, FALSE);
+		MemRestrict(20000, FALSE);
 		if (debug) Debug("state_entry", TRUE, TRUE);
 
 		llSleep(1);
