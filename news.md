@@ -1,10 +1,6 @@
 Current News
 ====
-fixed "too many listens"  
-fixed permissions stuff on script reset  
-ability to save camera positions  
-incorporated gesture support  
-improved HUD object
+use patched LSLForge.exe
 
 Changes
 ====
@@ -18,3 +14,14 @@ Mrz. 2014
  - comparison of HUD and Firestorm's Advanced phototools
  - gesture support
  - added visual feedback
+
+Apr. 2014
+----------------
+ - bugfixes
+  - permissions
+  - button coloring
+ - code cleanup
+ - work on info/ dialog text
+ - fewer parenthesis in 'compiled' lsl code
+  - should now run in OpenSim worlds like SoaS/Simona (SIM on a stick)
+  - not fully tested
