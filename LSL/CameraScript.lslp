@@ -11,8 +11,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//04. Apr. 2014
-//v2.7.0
+//06. Apr. 2014
+//v2.7.1
 //
 
 //Files:
@@ -52,7 +52,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";     // title
-string g_sVersion = "2.7.0";            // version
+string g_sVersion = "2.7.1";            // version
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -836,14 +836,15 @@ default
 			verbose = !verbose;
 			if (verbose) llOwnerSay("Verbose messages turned ON");
 				else llOwnerSay("Verbose messages turned OFF");
-		} else if ("help" == message) { infoLines(); }
-		else if ("off" == message) { g_iOn = TRUE; toggleCamCtrl(); }
+			return;
+		} else if ("help" == message) { infoLines(); return; }
 		else if ("delete" == message) {
 			g_iNr = 3;
 			setButtonCol(-1);
 			llSleep(0.2);
 			setButtonCol(TRUE);
 			resetCamPos();
+			return;
 		}
 
 		perm =llGetPermissions();
@@ -864,6 +865,7 @@ default
 			"Me", "Worm", "Drop",
 			"Spin", "Spaz", "---", "DEFAULT","Center", "STANDARD"], CH); // present submenu on request
 		} else if ("...back" == message) { llDialog(id, MSG_VER + g_sVersion + MSG_DIALOG + status, MENU_MAIN, CH); } // present main menu on request to go back
+		else if ("off" == message) { g_iOn = TRUE; toggleCamCtrl(); }
 		else if ("distance" == message) { toggleDist(); }
 		else if ("on" == message) {
 			if (!g_iOn) {

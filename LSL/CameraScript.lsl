@@ -1,4 +1,4 @@
-// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Fri Apr  4 00:49:00 Mitteleuropäische Sommerzeit 2014
+// LSL script generated - patched Render.hs (0.1.3.2): LSL.CameraScript.lslp Sun Apr  6 02:42:13 Mitteleuropäische Sommerzeit 2014
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Camera Control
 //
@@ -12,8 +12,8 @@
 //
 //modified by: Zopf Resident - Ray Zopf (Raz)
 //Additions: Abillity to save cam positions, gesture support, visual feedback
-//04. Apr. 2014
-//v2.7.0
+//06. Apr. 2014
+//v2.7.1
 //
 
 //Files:
@@ -53,7 +53,7 @@ However, if the object is made up of multiple prims or there is an avatar seated
 //internal variables
 //-----------------------------------------------
 string g_sTitle = "CameraScript";
-string g_sVersion = "2.7.0";
+string g_sVersion = "2.7.1";
 string g_sScriptName;
 string g_sAuthors = "Dan Linden, Penny Patton, Core Taurog, Zopf";
 
@@ -550,13 +550,11 @@ default {
             verbose = !verbose;
             if (verbose) llOwnerSay("Verbose messages turned ON");
             else  llOwnerSay("Verbose messages turned OFF");
+            return;
         }
         else  if ("help" == message) {
             infoLines();
-        }
-        else  if ("off" == message) {
-            g_iOn = 1;
-            toggleCamCtrl();
+            return;
         }
         else  if ("delete" == message) {
             g_iNr = 3;
@@ -564,6 +562,7 @@ default {
             llSleep(0.2);
             setButtonCol(1);
             resetCamPos();
+            return;
         }
         perm = llGetPermissions();
         if (!(perm & 3072)) {
@@ -583,6 +582,10 @@ default {
         }
         else  if ("...back" == message) {
             llDialog(id,MSG_VER + g_sVersion + MSG_DIALOG + status,MENU_MAIN,CH);
+        }
+        else  if ("off" == message) {
+            g_iOn = 1;
+            toggleCamCtrl();
         }
         else  if ("distance" == message) {
             if (g_iFar) {
